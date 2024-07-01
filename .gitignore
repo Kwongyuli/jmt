@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# application.properties 파일을 제외
+src/main/resources/application.properties

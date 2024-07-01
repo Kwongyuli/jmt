@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meal List</title>
+</head>
+<body>
+<h1>맛집(밥) 글 리스트</h1>
+<table>
+    <thead>
+    <tr>
+        <th>제목</th>
+        <th>내용</th>
+        <th>작성일</th>
+        <th>수정일</th>
+        <th>위도</th>
+        <th>경도</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="meal : ${meals}">
+        <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title}"></a></td>
+        <td th:text="${meal.content}"></td>
+        <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+        <td th:text="${#temporals.format(meal.updatedAt, 'yyyy.MM.dd HH:mm')}"></td>
+        <td th:text="${meal.lat}"></td>
+        <td th:text="${meal.lng}"></td>
+
+
+    </tr>
+    </tbody>
+</table>
+<a href="/meals/new">글작성</a>
+</body>
+</html>

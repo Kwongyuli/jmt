@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meal Detail</title>
+</head>
+<body>
+<h1>맛집(밥) 글 상세페이지</h1>
+<div>
+    <h2 th:text="${meal.title}">제목</h2>
+    <p th:text="${meal.content}">내용</p>
+    <p>작성일: <span th:text="${meal.createdAt}"></span></p>
+    <p>수정일: <span th:text="${meal.updatedAt}"></span></p>
+    <p>위도: <span th:text="${meal.lat}"></span></p>
+    <p>경도: <span th:text="${meal.lng}"></span></p>
+</div>
+<a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a>
+<form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
+    <button type="submit">삭제</button>
+</form>
+<a href="/meals">목록으로 돌아가기</a>
+</body>
+</html>

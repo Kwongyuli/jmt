@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>글 수정</title>
+    <script>
+        function validateForm() {
+            var title = document.getElementById("title").value;
+            var content = document.getElementById("content").value;
+
+            if (title.trim() === "" || content.trim() === "") {
+                alert("제목과 내용을 입력해 주세요.");
+                return false; // 폼 제출 중단
+            }
+            return true; // 폼 제출 허용
+        }
+    </script>
+</head>
+<body>
+<h1>글 수정</h1>
+<form th:action="@{/meals/{id}(id=${mealId})}" th:object="${mealUpdate}" method="post" onsubmit="return validateForm()">
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}">
+        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">제목 오류</div>
+    </div>
+    <div>
+        <label for="content">내용</label>
+        <textarea id="content" th:field="*{content}"></textarea>
+        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">내용 오류</div>
+    </div>
+    <div>
+        <label for="lat">위도</label>
+        <input type="text" id="lat" th:field="*{lat}">
+    </div>
+    <div>
+        <label for="lng">경도</label>
+        <input type="text" id="lng" th:field="*{lng}">
+    </div>
+    <div>
+        <button type="submit">저장</button>
+    </div>
+</form>
+<form th:action="@{/meals/{id}/delete(id=${mealId})}" method="post">
+    <button type="submit">삭제</button>
+</form>
+<a th:href="@{/meals}">뒤로가기</a>
+</body>
+</html>
