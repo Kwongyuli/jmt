@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Meal List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
 <h1>맛집(밥) 글 리스트</h1>
@@ -27,8 +28,50 @@
 
 
     </tr>
+
     </tbody>
+
+
+
+
 </table>
-<a href="/meals/new">글작성</a>
+
+<script>
+    function search() {
+        const search = document.querySelector('[name=search]');
+        location = `/meals/list?search=${search.value}`;
+    }
+
+    document.querySelector('#write-btn').addEventListener('click', () => {
+        location = '/meals/write';
+    });
+</script>
+
+<ul class="pagination">
+    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+        <a class="page-link" th:href="@{|/meals/list?page=${currentPage - 1}|}">Previous</a>
+    </li>
+
+    <li class="page-item"
+        th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a class="page-link" th:href="@{|/meals/list?page=${page}|}"
+           th:text="${page}"></a>
+    </li>
+
+    <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+        <a class="page-link" th:href="@{|/meals/list?page=${currentPage + 1}|}">Next</a>
+    </li>
+
+    <form th:action="@{/meals/list}" method="get">
+        <input type="text" name="search" th:value="${search}" placeholder="Search..."/>
+        <button type="submit">Search</button>
+    </form>
+
+</ul>
+
+
+<a href="/meals/write">글작성</a>
+
+
 </body>
 </html>
