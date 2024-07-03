@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+
+    <title>ㅈㅁㅌ</title>
+</head>
+
+<style>
+    body {
+        background-color: beige;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+
+    .span {
+        margin-top: 1.5vw;
+    }
+
+    span {
+        position: relative;
+        top: 2vw;
+        display: inline-block;
+        animation: bounce .3s ease infinite alternate;
+        font-family: 'Titan One', cursive;
+        font-size: 7vw;
+        text-shadow: 0 1px 0 #CCC,
+            0 2px 0 #CCC,
+            0 3px 0 #CCC,
+            0 4px 0 #CCC,
+            0 5px 0 #CCC,
+            0 6px 0 transparent,
+            0 7px 0 transparent,
+            0 8px 0 transparent,
+            0 9px 0 transparent,
+            0 10px 10px rgba(0, 0, 0, .4);
+    }
+
+    #a {
+        animation-delay: .1s;
+    }
+
+    #b {
+        animation-delay: .2s;
+    }
+
+    #c {
+        animation-delay: .3s;
+    }
+
+    #d {
+        animation-delay: .4s;
+    }
+
+    #e {
+        animation-delay: .5s;
+    }
+
+    #f {
+        animation-delay: .6s;
+    }
+
+    #g {
+        animation-delay: .7s;
+    }
+
+    #h {
+        animation-delay: .8s;
+    }
+
+    #i {
+        animation-delay: .9s;
+    }
+
+    @keyframes bounce {
+        100% {
+            top: -20px;
+            text-shadow: 0 1px 0 #CCC,
+                0 2px 0 #CCC,
+                0 3px 0 #CCC,
+                0 4px 0 #CCC,
+                0 5px 0 #CCC,
+                0 6px 0 #CCC,
+                0 7px 0 #CCC,
+                0 8px 0 #CCC,
+                0 9px 0 #CCC,
+                0 50px 25px rgba(0, 0, 0, .2);
+        }
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 8vw;
+        text-align: center;
+        margin-bottom: 0.5vw;
+    }
+
+    .board {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        background-color: beige;
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2.5vw;
+        border: 0.18vw solid black;
+        border-radius: 0.8vw;
+        width: 10vw;
+        height: 4vw;
+        margin: 0 0.5vw;
+    }
+
+    .user {
+        text-align: center;
+        margin-top: 0.5vw;
+    }
+
+    .user>a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2.5vw;
+        color: black;
+        margin: 0 1vw;
+        text-decoration: none;
+    }
+</style>
+
+<body>
+    <div class="header"></div>
+
+    <div class="container">
+        <div class="main">
+            <div class="jmt">ㅈㅁㅌ</div>
+            <div class="board">
+                <button class="meal">식사</button>
+                <button class="dessert">디저트</button>
+            </div>
+            <div class="user" id="meal">
+                <a href="/signin">로그인</a>
+                <a href="/signup">회원가입</a>
+            </div>
+            <div class="span">
+                <span id="a">🍙</span>
+                <span id="b">🍕</span>
+                <span id="c">🍩</span>
+                <span id="d">🍦</span>
+                <span id="e">🍺</span>
+                <span id="f">🍭</span>
+                <span id="g">🌮</span>
+                <span id="h">🍟</span>
+                <span id="i">🍱</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer"></div>
+</body>
+
+<script>
+    const meal = document.querySelector('.meal');
+    meal.addEventListener('click', () => {
+        location = '/meallist';
+    });
+
+    const dessert = document.querySelector('.dessert');
+    dessert.addEventListener('click', () => {
+        location = '/dessertlist';
+    });
+</script>
+
+</html>

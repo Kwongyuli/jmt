@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+
+    <title>ㅈㅁㅌ</title>
+</head>
+
+<style>
+    body {
+        background-color: beige;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+
+    p {
+        font-size: 7.5vw;
+        position: absolute;
+    }
+
+    #a {
+        top: -10%;
+        left: 5%;
+    }
+
+    #b {
+        top: 10%;
+        left: 23%;
+    }
+
+    #c {
+        top: -15%;
+        right: 38%;
+    }
+
+    #d {
+        top: -10%;
+        right: 5%;
+    }
+
+    #e {
+        bottom: 15%;
+        left: 2%;
+    }
+
+    #f {
+        bottom: -10%;
+        left: 20%;
+    }
+
+    #g {
+        bottom: -5%;
+        right: 30%;
+    }
+
+    #h {
+        top: 25%;
+        right: 16%;
+    }
+
+    #i {
+        bottom: -10%;
+        right: 3%;
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 8vw;
+        text-align: center;
+        margin-bottom: 0.5vw;
+    }
+
+    .board {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        background-color: beige;
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2.5vw;
+        border: 0.18vw solid black;
+        border-radius: 0.8vw;
+        width: 10vw;
+        height: 4vw;
+        margin: 0 0.5vw;
+    }
+
+    .user {
+        text-align: center;
+        margin-top: 0.5vw;
+    }
+
+    .user>a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2.5vw;
+        color: black;
+        margin: 0 1vw;
+        text-decoration: none;
+    }
+</style>
+
+<body>
+    <div class="header"></div>
+
+    <div class="container">
+        <p id="a">🍙</p>
+        <p id="b">🍕</p>
+        <p id="c">🍩</p>
+        <p id="d">🍦</p>
+        <p id="e">🍺</p>
+        <p id="f">🍭</p>
+        <p id="g">🌮</p>
+        <p id="h">🍟</p>
+        <p id="i">🍱</p>
+        <div class="main">
+            <div class="jmt">ㅈㅁㅌ</div>
+            <div class="board">
+                <button class="meal">식사</button>
+                <button class="dessert">디저트</button>
+            </div>
+            <div class="user" id="meal">
+                <a href="/signin">로그인</a>
+                <a href="/signup">회원가입</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer"></div>
+</body>
+
+<script>
+    const meal = document.querySelector('.meal');
+    meal.addEventListener('click', () => {
+        location = '/meals/list';
+    });
+
+    const dessert = document.querySelector('.dessert');
+    dessert.addEventListener('click', () => {
+        location = '/dessertlist';
+    });
+</script>
+
+</html>
