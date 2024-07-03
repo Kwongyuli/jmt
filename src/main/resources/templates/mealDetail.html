@@ -47,13 +47,39 @@
             // 마커가 지도 위에 표시되도록 설정합니다
             marker.setMap(map);
         });
+
+        function sendVote(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('upvotes').innerText = response.upvotes;
+                    document.getElementById('downvotes').innerText = response.downvotes;
+                }
+            };
+            xhr.send();
+        }
+
+        function upvote() {
+            var mealId = /*[[${meal.id}]]*/ 0;
+            var url = '/meals/' + mealId + '/upvote';
+            sendVote(url);
+        }
+
+        function downvote() {
+            var mealId = /*[[${meal.id}]]*/ 0;
+            var url = '/meals/' + mealId + '/downvote';
+            sendVote(url);
+        }
         /*]]>*/
     </script>
     <p>위도: <span th:text="${meal.lat}"></span></p>
     <p>경도: <span th:text="${meal.lng}"></span></p>
 
-    <p>추천: <span th:text="${upvotes}">0</span></p>
-    <p>비추천: <span th:text="${downvotes}">0</span></p>
+    <p>추천: <span id="upvotes" th:text="${upvotes}">0</span></p>
+    <p>비추천: <span id="downvotes" th:text="${downvotes}">0</span></p>
 
     <div>
         <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
@@ -65,12 +91,8 @@
 
 <!--추천 비추천-->
 <div>
-    <form th:action="@{/meals/{id}/upvote(id=${meal.id})}" method="post">
-        <button type="submit">추천</button>
-    </form>
-    <form th:action="@{/meals/{id}/downvote(id=${meal.id})}" method="post">
-        <button type="submit">비추천</button>
-    </form>
+    <button type="button" onclick="upvote()">추천</button>
+    <button type="button" onclick="downvote()">비추천</button>
 </div>
 
 <!-- 댓글 목록 -->
