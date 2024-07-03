@@ -1,0 +1,23 @@
+질문 수정 페이지 입니다.
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+          <form method="post" th:action="@{/question/edit/} + ${question.id}">
+            <div class="mb-3">
+              <label for="title">제목:</label>
+              <input type="text" class="form-control" id="title" name="title"
+                    th:value="${question.title}">
+            </div>
+            <div class="mb-3">
+              <label for="content">내용:</label>
+              <textarea class="form-control" rows="5" name="content" 
+                    id="content">[[ ${question.content} ]]</textarea>
+            </div>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" id="complete">수정완료</button>
+            </div>
+          </form>
+        </div>
+      </div>
+</body>
