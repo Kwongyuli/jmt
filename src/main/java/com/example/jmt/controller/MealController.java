@@ -1,7 +1,6 @@
 package com.example.jmt.controller;
 
 import com.example.jmt.model.CommentMeal;
-import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.Meal;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
@@ -20,13 +19,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -112,7 +111,6 @@ public class MealController {
         return "redirect:/meals/" + id;
     }
 
-
     @GetMapping("/{id}/edit")
     public String editMealForm(@PathVariable Long id, Model model) {
         MealUpdate mealUpdate = mealService.getMealUpdate(id);
@@ -135,19 +133,41 @@ public class MealController {
         return "redirect:/meals/list";
     }
 
-    // 추천/비추천 컨트롤러
-    @PostMapping("/{id}/upvote")
-    public String upvoteMeal(@PathVariable Long id) {
-        mealService.upvote(id);
-        return "redirect:/meals/" + id;
-    }
+//    // 추천/비추천 컨트롤러
+//    @PostMapping("/{id}/upvote")
+//    public String upvoteMeal(@PathVariable Long id) {
+//        mealService.upvote(id);
+//        return "redirect:/meals/" + id;
+//    }
+//
+//    @PostMapping("/{id}/downvote")
+//    public String downvoteMeal(@PathVariable Long id) {
+//        mealService.downvote(id);
+//        return "redirect:/meals/" + id;
+//    }
+@PostMapping("/{id}/upvote")
+@ResponseBody
+public ResponseEntity<Map<String, Long>> upvoteMeal(@PathVariable Long id) {
+    mealService.upvote(id);
+    long upvotes = mealService.getUpvotes(id);
+    long downvotes = mealService.getDownvotes(id);
+    Map<String, Long> response = new HashMap<>();
+    response.put("upvotes", upvotes);
+    response.put("downvotes", downvotes);
+    return ResponseEntity.ok(response);
+}
 
     @PostMapping("/{id}/downvote")
-    public String downvoteMeal(@PathVariable Long id) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Long>> downvoteMeal(@PathVariable Long id) {
         mealService.downvote(id);
-        return "redirect:/meals/" + id;
+        long upvotes = mealService.getUpvotes(id);
+        long downvotes = mealService.getDownvotes(id);
+        Map<String, Long> response = new HashMap<>();
+        response.put("upvotes", upvotes);
+        response.put("downvotes", downvotes);
+        return ResponseEntity.ok(response);
     }
-
     @PostMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<?> deleteFile(@RequestParam Integer fileId) {

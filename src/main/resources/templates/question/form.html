@@ -1,0 +1,24 @@
+질문 작성 페이지입니다.
+
+<body>
+    <div class="container">
+		<h5 class="my-3 border-bottom pb-2">질문하기</h5>
+		<form method="post" action="/question/form" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label for="title" class="form-label">제목</label>
+				<input type="text" name="title" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label for="content" class="form-label">내용</label>
+				<textarea name="content" class="form-control" rows="10"></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label for="file">파일첨부:</label>
+				<input type="file" class="form-control" id="file" name="file" accept="image/*"> 
+			</div>
+
+			<input type="submit" value="저장하기" class="btn btn-primary my-2">
+		</form>
+	</div>
+</body>

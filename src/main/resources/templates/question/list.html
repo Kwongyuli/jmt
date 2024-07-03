@@ -1,19 +1,47 @@
-<!DOCTYPE html>
-<html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Q&A List</title>
-</head>
+Q&A 리스트 페이지 입니다.
 
 <body>
-    <div th:replace="common/header"></div>
-
-    <div class="container">
-        <h1>Q&A 리스트 페이지</h1>
+  <div class="container my-3">
+    <div class="row my-3">
+      <div class="col-6">
+        <a href="/question/form" class="btn btn-primary">질문 등록하기</a>
+      </div>
     </div>
 
-    <div class="footer"></div>
-</body>
+    <table class="table">
+      <thead class="table-dark">
+        <tr class="text-center">
+          <th>번호</th>
+          <th>제목</th>
+          <th>댓글 수</th>
+          <th>작성자</th>
+          <th>작성일시</th>
+          <th>관리자의 답변완료되었으면 check표시</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="question : ${list}" th:attr="id=${question.id}">
 
-</html>
+          <td th:text="${question.id}"></td>
+
+          <!-- td에 a태그에 thymeleaf 작성 -->
+          <td>
+            <a th:href="@{|/question/${question.id}|}" th:text="${question.title}"></a>
+          </td>
+
+          <!-- 답변수 확인 -->
+          <td><span class="badge bg-warning" th:text="@{|${#lists.size(question.answers)}|}"></span></td>
+
+          <td>닉네임</td>
+          <!-- <td th:text="${question.userId}"></td> -->
+
+          <td>작성일시</td>
+          <!-- <td th:text="${question.userCreateDate}"></td> -->
+
+          <td>
+            답변이 확인 되었으면 작동하게 하는 checkbox
+          </td>
+        </tr>
+    </table>
+
+</body>
