@@ -1,7 +1,6 @@
 package com.example.jmt.controller;
 
 import com.example.jmt.model.CommentMeal;
-import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.Meal;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
@@ -20,11 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

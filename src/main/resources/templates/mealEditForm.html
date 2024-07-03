@@ -324,12 +324,16 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 alert("파일이 삭제되었습니다.");
-                // 페이지를 새로고침하여 파일 목록을 업데이트합니다.
-                location.reload();
+                // 페이지를 새로고침하지 않고 파일 항목을 제거합니다.
+                var fileElement = document.getElementById('file-' + fileId);
+                if (fileElement) {
+                    fileElement.remove();
+                }
             }
         };
         xhr.send("fileId=" + fileId);
     }
+
 </script>
 </body>
 </html>
