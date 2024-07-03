@@ -66,10 +66,10 @@
 <!--추천 비추천-->
 <div>
     <form th:action="@{/meals/{id}/upvote(id=${meal.id})}" method="post">
-        <button type="submit">추천</button>
+        <button type="submit">추천👍</button>
     </form>
     <form th:action="@{/meals/{id}/downvote(id=${meal.id})}" method="post">
-        <button type="submit">비추천</button>
+        <button type="submit">비추천👎</button>
     </form>
 </div>
 

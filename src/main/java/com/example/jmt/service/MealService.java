@@ -178,7 +178,7 @@ public class MealService {
     private void saveFile(MultipartFile file, Meal meal) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+            file.transferTo(new File("c:/files/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
