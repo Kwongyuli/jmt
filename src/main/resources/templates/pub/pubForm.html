@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>글 작성</title>
+    <style>
+        #map {
+            width: 80%;
+            height: 350px;
+        }
+        #menu_wrap {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 300px;
+            max-height: 400px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px #aaa;
+            z-index: 10;
+            overflow-y: auto;
+        }
+        .item {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .item:hover {
+            background-color: #f0f0f0;
+        }
+        #pagination {
+            margin: 10px auto;
+            text-align: center;
+        }
+        #pagination a {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        #pagination a.on {
+            background: #eee;
+            border: 1px solid #999;
+            color: #000;
+        }
+    </style>
+    <script>
+        var markers = [];
+
+        function validateForm() {
+            var title = document.getElementById("title").value;
+            var content = document.getElementById("content").value;
+
+            if (title.trim() === "" || content.trim() === "") {
+                alert("제목과 내용을 입력해 주세요.");
+                return false; // 폼 제출 중단
+            }
+            return true; // 폼 제출 허용
+        }
+
+        function searchPlaces() {
+            var keyword = document.getElementById('keyword').value;
+
+            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                alert('키워드를 입력해주세요!');
+                return false;
+            }
+
+            ps.keywordSearch(keyword, placesSearchCB);
+        }
+
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+                displayPlaces(data);
+                displayPagination(pagination);
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                alert('검색 결과가 존재하지 않습니다.');
+                return;
+            } else if (status === kakao.maps.services.Status.ERROR) {
+                alert('검색 결과 중 오류가 발생했습니다.');
+                return;
+            }
+        }
+
+        function displayPlaces(places) {
+            var listEl = document.getElementById('placesList'),
+                fragment = document.createDocumentFragment(),
+                bounds = new kakao.maps.LatLngBounds(),
+                listStr = '';
+
+            removeAllChildNods(listEl);
+            removeMarker();
+
+            for (var i = 0; i < places.length; i++) {
+                var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+                    marker = addMarker(placePosition, i),
+                    itemEl = getListItem(i, places[i]);
+
+                bounds.extend(placePosition);
+
+                (function(marker, title, place) {
+                    kakao.maps.event.addListener(marker, 'mouseover', function() {
+                        displayInfowindow(marker, title);
+                    });
+
+                    kakao.maps.event.addListener(marker, 'mouseout', function() {
+                        infowindow.close();
+                    });
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        selectLocation(place);
+                    });
+
+                    itemEl.onmouseover = function() {
+                        displayInfowindow(marker, title);
+                    };
+
+                    itemEl.onmouseout = function() {
+                        infowindow.close();
+                    };
+
+                    itemEl.onclick = function() {
+                        selectLocation(place);
+                    };
+                })(marker, places[i].place_name, places[i]);
+
+                fragment.appendChild(itemEl);
+            }
+
+            listEl.appendChild(fragment);
+            map.setBounds(bounds);
+        }
+
+        function getListItem(index, places) {
+            var el = document.createElement('li'),
+                itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                    '<div class="info">' +
+                    '   <h5>' + places.place_name + '</h5>';
+
+            if (places.road_address_name) {
+                itemStr += '    <span>' + places.road_address_name + '</span>' +
+                    '   <span class="jibun gray">' +  places.address_name  + '</span>';
+            } else {
+                itemStr += '    <span>' +  places.address_name  + '</span>';
+            }
+
+            itemStr += '  <span class="tel">' + places.phone  + '</span>' +
+                '</div>';
+
+            el.innerHTML = itemStr;
+            el.className = 'item';
+
+            return el;
+        }
+
+        function addMarker(position, idx, title) {
+            var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
+                imageSize = new kakao.maps.Size(36, 37),
+                imgOptions = {
+                    spriteSize: new kakao.maps.Size(36, 691),
+                    spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10),
+                    offset: new kakao.maps.Point(13, 37)
+                },
+                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                marker = new kakao.maps.Marker({
+                    position: position,
+                    image: markerImage
+                });
+
+            marker.setMap(map);
+            markers.push(marker);
+
+            return marker;
+        }
+
+        function removeMarker() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        }
+
+        function displayPagination(pagination) {
+            var paginationEl = document.getElementById('pagination'),
+                fragment = document.createDocumentFragment(),
+                i;
+
+            while (paginationEl.hasChildNodes()) {
+                paginationEl.removeChild(paginationEl.lastChild);
+            }
+
+            for (i = 1; i <= pagination.last; i++) {
+                var el = document.createElement('a');
+                el.href = "#";
+                el.innerHTML = i;
+
+                if (i === pagination.current) {
+                    el.className = 'on';
+                } else {
+                    el.onclick = (function(i) {
+                        return function() {
+                            pagination.gotoPage(i);
+                        }
+                    })(i);
+                }
+
+                fragment.appendChild(el);
+            }
+            paginationEl.appendChild(fragment);
+        }
+
+        function displayInfowindow(marker, title) {
+            var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+        }
+
+        function removeAllChildNods(el) {
+            while (el.hasChildNodes()) {
+                el.removeChild(el.lastChild);
+            }
+        }
+
+        function selectLocation(place) {
+            var coords = new kakao.maps.LatLng(place.y, place.x);
+            map.setCenter(coords);
+            marker.setPosition(coords);
+            document.getElementById('lat').value = place.y;
+            document.getElementById('lng').value = place.x;
+            document.getElementById('placesList').innerHTML = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('keyword').addEventListener('keyup', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    searchPlaces();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<h1>글 작성</h1>
+<form id="writeForm" th:action="@{/pubs/write}" th:object="${pubCreate}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}">
+        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">제목 오류</div>
+    </div>
+    <div>
+        <label for="content">내용</label>
+        <textarea id="content" th:field="*{content}"></textarea>
+        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">내용 오류</div>
+    </div>
+    <div>
+        <label for="keyword">위치 검색</label>
+        <input type="text" id="keyword" placeholder="Search for a location" />
+        <button type="button" onclick="searchPlaces()">검색</button>
+    </div>
+    <div id="menu_wrap">
+        <ul id="placesList"></ul>
+        <div id="pagination"></div>
+    </div>
+    <div id="map"></div>
+    <div><label for="lat">위도</label>
+        <input type="text" id="lat" th:field="*{lat}" readonly>
+    </div>
+    <div>
+        <label for="lng">경도</label>
+        <input type="text" id="lng" th:field="*{lng}" readonly>
+    </div>
+
+    <div>
+        <label for="files">파일 업로드</label>
+        <input type="file" id="files" name="files" multiple>
+    </div>
+
+    <div>
+        <button type="submit">저장</button>
+    </div>
+
+</form>
+
+<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7&libraries=services"></script>
+
+<script>
+    var mapContainer = document.getElementById('map'),
+        mapOption = {
+            center: new kakao.maps.LatLng(35.17285198, 129.130683),
+            level: 3
+        };
+
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+    var ps = new kakao.maps.services.Places();
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+    var marker = new kakao.maps.Marker({
+        position: map.getCenter()
+    });
+    marker.setMap(map);
+
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        var latlng = mouseEvent.latLng;
+        document.getElementById('lat').value = latlng.getLat();
+        document.getElementById('lng').value = latlng.getLng();
+
+        marker.setPosition(latlng);
+    });
+
+    document.getElementById('writeForm').addEventListener('submit', function(event) {
+        // form submit 시 추가 검증 또는 이벤트 처리
+    });
+</script>
+
+</body>
+</html>

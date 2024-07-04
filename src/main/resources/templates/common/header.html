@@ -11,11 +11,16 @@
     }
 
     .header {
-        height: 10vh;
-        margin-top: 2vw;
+        padding-top: 1vw;
+        padding-bottom: 1vw;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        z-index: 2;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: white;
     }
 
     @font-face {
@@ -29,6 +34,7 @@
         flex: 1;
         display: flex;
         justify-content: center;
+        height: 100%;
     }
 
     .jmt {
@@ -38,6 +44,7 @@
         background-color: beige;
         display: inline-block;
         border: none;
+        height: 100%;
     }
 
     .user {
@@ -46,7 +53,7 @@
         justify-content: flex-end;
     }
 
-    a {
+    .user>a {
         font-family: "Dongle", sans-serif;
         font-weight: 400;
         font-style: normal;

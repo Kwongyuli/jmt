@@ -165,6 +165,7 @@
             <div class="board">
                 <button class="meal">식사</button>
                 <button class="dessert">디저트</button>
+                <button class="pub">술집</button>
             </div>
             <div class="user" id="meal">
                 <a href="/signin">로그인</a>
@@ -190,12 +191,17 @@
 <script>
     const meal = document.querySelector('.meal');
     meal.addEventListener('click', () => {
-        location = '/meallist';
+        location = '/meals/list';
     });
 
     const dessert = document.querySelector('.dessert');
     dessert.addEventListener('click', () => {
-        location = '/dessertlist';
+        location = '/deserts/list';
+    });
+
+    const pub = document.querySelector('.pub');
+    pub.addEventListener('click', () => {
+        location = '/pubs/list';
     });
 </script>
 

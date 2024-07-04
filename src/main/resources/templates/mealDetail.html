@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
     <title>Meal Detail</title>
     <style>
         #map {
@@ -9,113 +15,168 @@
         }
     </style>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#head {
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        height: 4vw;
+        margin-bottom: 2vw;
+        padding-left: 1.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.7vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+</style>
+
 <body>
-<h1>맛집(밥) 글 상세페이지</h1>
-<div>
-    <h2 th:text="${meal.title}">제목</h2>
-    <p>작성일: <span th:text="${meal.createdAt}"></span></p>
-    <p>수정일: <span th:text="${meal.updatedAt}"></span></p>
+    <div th:replace="common/header"></div>
 
-    <p th:text="${meal.content}">내용</p>
+    <div class="container">
+        <div class="main">
+            <div id="head">
+                <div>식사 상세 페이지</div>
+            </div>
+            <div id="con">
 
-    <div id="map"></div>
+                <div>
+                    <h2 th:text="${meal.title}">제목</h2>
+                    <p>작성일: <span th:text="${meal.createdAt}"></span></p>
+                    <p>수정일: <span th:text="${meal.updatedAt}"></span></p>
 
-    <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        document.addEventListener('DOMContentLoaded', function() {
-            // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
-            const lat = /*[[${meal.lat}]]*/ 33.450701;
-            const lng = /*[[${meal.lng}]]*/ 126.570667;
+                    <p th:text="${meal.content}">내용</p>
 
-            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-                mapOption = {
-                    center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-                    level: 3 // 지도의 확대 레벨
-                };
+                    <div id="map"></div>
 
-            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+                    <div>
+                        <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
+                        <div th:each="fileInfo : ${meal.fileInfos}">
+                            <img th:src="@{|/download?fileId=${fileInfo.id}|}"
+                                style="max-width: 100px; max-height: 100px;">
+                        </div>
+                    </div>
+                </div>
 
-            // 마커가 표시될 위치입니다
-            var markerPosition  = new kakao.maps.LatLng(lat, lng);
+                <!--추천 비추천-->
+                <div>
+                    <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
+                    <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
+                        onclick="downvote()"></button>
+                </div>
 
-            // 마커를 생성합니다
-            var marker = new kakao.maps.Marker({
-                position: markerPosition
-            });
+                <!-- 댓글 목록 -->
+                <h2>댓글</h2>
+                <ul>
+                    <li th:each="comment : ${comments}">
+                        <p th:text="${comment.comment}"></p>
+                        <form
+                            th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}"
+                            method="post">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </li>
+                </ul>
 
-            // 마커가 지도 위에 표시되도록 설정합니다
-            marker.setMap(map);
-        });
+                <!-- 댓글 작성 폼 -->
+                <form th:action="@{/meals/{id}/comment(id=${meal.id})}" method="post">
+                    <textarea name="comment" rows="4" cols="50"></textarea>
+                    <button type="submit">댓글 추가</button>
+                </form>
 
-        function sendVote(url) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    document.getElementById('upvotes').innerText = response.upvotes;
-                    document.getElementById('downvotes').innerText = response.downvotes;
-                }
-            };
-            xhr.send();
-        }
+                <a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a>
+                <form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
+                    <button type="submit">삭제</button>
+                </form>
+                <a th:href="@{/meals/list}">목록으로 돌아가기</a>
 
-        function upvote() {
-            var mealId = /*[[${meal.id}]]*/ 0;
-            var url = '/meals/' + mealId + '/upvote';
-            sendVote(url);
-        }
-
-        function downvote() {
-            var mealId = /*[[${meal.id}]]*/ 0;
-            var url = '/meals/' + mealId + '/downvote';
-            sendVote(url);
-        }
-        /*]]>*/
-    </script>
-    <p>위도: <span th:text="${meal.lat}"></span></p>
-    <p>경도: <span th:text="${meal.lng}"></span></p>
-
-    <p>추천: <span id="upvotes" th:text="${upvotes}">0</span></p>
-    <p>비추천: <span id="downvotes" th:text="${downvotes}">0</span></p>
-
-    <div>
-        <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
-        <div th:each="fileInfo : ${meal.fileInfos}">
-            <img th:src="@{|/download?fileId=${fileInfo.id}|}" style="max-width: 100px; max-height: 100px;">
+            </div>
         </div>
     </div>
-</div>
 
-<!--추천 비추천-->
-<div>
-    <button type="button" onclick="upvote()">추천</button>
-    <button type="button" onclick="downvote()">비추천</button>
-</div>
-
-<!-- 댓글 목록 -->
-<h2>댓글</h2>
-<ul>
-    <li th:each="comment : ${comments}">
-        <p th:text="${comment.comment}"></p>
-        <form th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}" method="post">
-            <button type="submit">삭제</button>
-        </form>
-    </li>
-</ul>
-
-<!-- 댓글 작성 폼 -->
-<form th:action="@{/meals/{id}/comment(id=${meal.id})}" method="post">
-    <textarea name="comment" rows="4" cols="50"></textarea>
-    <button type="submit">댓글 추가</button>
-</form>
-
-<a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a>
-<form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
-    <button type="submit">삭제</button>
-</form>
-<a th:href="@{/meals/list}">목록으로 돌아가기</a>
+    <div class="footer"></div>
 </body>
+
+<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
+        const lat = /*[[${meal.lat}]]*/ 33.450701;
+        const lng = /*[[${meal.lng}]]*/ 126.570667;
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+                center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        // 마커가 표시될 위치입니다
+        var markerPosition = new kakao.maps.LatLng(lat, lng);
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
+    });
+
+    function sendVote(url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
+                document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+            }
+        };
+        xhr.send();
+    }
+
+    function upvote() {
+        var mealId = /*[[${meal.id}]]*/ 0;
+        var url = '/meals/' + mealId + '/upvote';
+        sendVote(url);
+    }
+
+    function downvote() {
+        var mealId = /*[[${meal.id}]]*/ 0;
+        var url = '/meals/' + mealId + '/downvote';
+        sendVote(url);
+    }
+    /*]]>*/
+</script>
+
 </html>

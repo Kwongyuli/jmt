@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>맛집(디저트) 글 리스트</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+<h1>맛집(디저트) 글 리스트</h1>
+
+<div>
+    <button onclick="location.href='?sort=viewCount'">조회수 많은 순</button>
+    <button onclick="location.href='?sort=upvotes'">추천수순 정렬</button>
+    <button onclick="location.href='?sort='">원래대로</button>
+
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>제목</th>
+        <th>내용</th>
+        <th>작성일</th>
+        <th>위도</th>
+        <th>경도</th>
+        <th>조회수</th>
+        <th>추천수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="desert : ${deserts}">
+        <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title}"></a></td>
+        <td th:text="${desert.content}"></td>
+        <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+        <td th:text="${desert.lat}"></td>
+        <td th:text="${desert.lng}"></td>
+        <td th:text="${desert.viewCount}"></td>
+        <td th:text="${desert.upvotes}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    function search() {
+        const search = document.querySelector('[name=search]');
+        location = `/deserts/list?search=${search.value}`;
+    }
+
+    document.querySelector('#write-btn').addEventListener('click', () => {
+        location = '/deserts/write';
+    });
+</script>
+
+<ul class="pagination">
+    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+        <a class="page-link" th:href="@{|/deserts/list?page=${currentPage - 1}&search=${search}&sort=${sort}|}">Previous</a>
+    </li>
+
+    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a class="page-link" th:href="@{|/deserts/list?page=${page}&search=${search}&sort=${sort}|}" th:text="${page}"></a>
+    </li>
+
+    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{|/deserts/list?page=${currentPage + 1}&search=${search}&sort=${sort}|}">Next</a>
+    </li>
+</ul>
+
+
+<form th:action="@{/deserts/list}" method="get">
+    <input type="text" name="search" th:value="${search}" placeholder="Search..."/>
+    <button type="submit">Search</button>
+</form>
+
+<a href="/deserts/write" id="write-btn">글작성</a>
+
+</body>
+</html>
