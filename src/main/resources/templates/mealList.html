@@ -22,7 +22,7 @@
         <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title}"></a></td>
         <td th:text="${meal.content}"></td>
         <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-        <td th:text="${#temporals.format(meal.updatedAt, 'yyyy.MM.dd HH:mm')}"></td>
+<!--        <td th:text="${#temporals.format(meal.updatedAt, 'yyyy.MM.dd HH:mm')}"></td>-->
         <td th:text="${meal.lat}"></td>
         <td th:text="${meal.lng}"></td>
 

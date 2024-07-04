@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Meal Detail</title>
+    <title>Desert Detail</title>
     <style>
         #map {
             width: 85%;
@@ -12,10 +13,11 @@
 <body>
 <h1>맛집(밥) 글 상세페이지</h1>
 <div>
-    <h2 th:text="${meal.title}">제목</h2>
-    <p>작성일: <span th:text="${meal.createdAt}"></span></p>
+    <h2 th:text="${desert.title}">제목</h2>
+    <p>작성일: <span th:text="${desert.createdAt}"></span></p>
+    <p>수정일: <span th:text="${desert.updatedAt}"></span></p>
 
-    <p th:text="${meal.content}">내용</p>
+    <p th:text="${desert.content}">내용</p>
 
     <div id="map"></div>
 
@@ -24,8 +26,8 @@
         /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function() {
             // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
-            const lat = /*[[${meal.lat}]]*/ 33.450701;
-            const lng = /*[[${meal.lng}]]*/ 126.570667;
+            const lat = /*[[${desert.lat}]]*/ 33.450701;
+            const lng = /*[[${desert.lng}]]*/ 126.570667;
 
             var mapContainer = document.getElementById('map'), // 지도를 표시할 div
                 mapOption = {
@@ -62,27 +64,27 @@
         }
 
         function upvote() {
-            var mealId = /*[[${meal.id}]]*/ 0;
-            var url = '/meals/' + mealId + '/upvote';
+            var desertId = /*[[${desert.id}]]*/ 0;
+            var url = '/deserts/' + desertId + '/upvote';
             sendVote(url);
         }
 
         function downvote() {
-            var mealId = /*[[${meal.id}]]*/ 0;
-            var url = '/meals/' + mealId + '/downvote';
+            var desertId = /*[[${desert.id}]]*/ 0;
+            var url = '/deserts/' + desertId + '/downvote';
             sendVote(url);
         }
         /*]]>*/
     </script>
-    <p>위도: <span th:text="${meal.lat}"></span></p>
-    <p>경도: <span th:text="${meal.lng}"></span></p>
+    <p>위도: <span th:text="${desert.lat}"></span></p>
+    <p>경도: <span th:text="${desert.lng}"></span></p>
 
     <p>추천: <span id="upvotes" th:text="${upvotes}">0</span></p>
     <p>비추천: <span id="downvotes" th:text="${downvotes}">0</span></p>
 
     <div>
         <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
-        <div th:each="fileInfo : ${meal.fileInfos}">
+        <div th:each="fileInfo : ${desert.fileInfos}">
             <img th:src="@{|/download?fileId=${fileInfo.id}|}" style="max-width: 100px; max-height: 100px;">
         </div>
     </div>
@@ -99,22 +101,22 @@
 <ul>
     <li th:each="comment : ${comments}">
         <p th:text="${comment.comment}"></p>
-        <form th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}" method="post">
+        <form th:action="@{/deserts/{desertId}/comment/{commentId}/delete(desertId=${desert.id}, commentId=${comment.id})}" method="post">
             <button type="submit">삭제</button>
         </form>
     </li>
 </ul>
 
 <!-- 댓글 작성 폼 -->
-<form th:action="@{/meals/{id}/comment(id=${meal.id})}" method="post">
+<form th:action="@{/deserts/{id}/comment(id=${desert.id})}" method="post">
     <textarea name="comment" rows="4" cols="50"></textarea>
     <button type="submit">댓글 추가</button>
 </form>
 
-<a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a>
-<form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
+<a th:href="@{/deserts/{id}/edit(id=${desert.id})}">수정</a>
+<form th:action="@{/deserts/{id}/delete(id=${desert.id})}" method="post">
     <button type="submit">삭제</button>
 </form>
-<a th:href="@{/meals/list}">목록으로 돌아가기</a>
+<a th:href="@{/deserts/list}">목록으로 돌아가기</a>
 </body>
 </html>

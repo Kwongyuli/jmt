@@ -34,7 +34,7 @@ public class MealService {
     // 이미지파일 저장 레포지토리
     private final FileInfoRepository fileInfoRepository;
 
-//    글 저장 메서드 _ 엔티티로 넘기기
+//  글 저장 메서드 _ 엔티티로 넘기기
     public Meal write(MealCreate mealCreate,MultipartFile[] files) throws IOException {
 
         Meal meal = Meal.builder()
@@ -43,7 +43,6 @@ public class MealService {
                 .lat(mealCreate.getLat())
                 .lng(mealCreate.getLng())
                 .createdAt(mealCreate.getCreatedAt())
-                .updatedAt(LocalDateTime.now()) // 현재 시간으로 updatedAt 설정
                 .build();
 
         Meal savedMeal = mealRepository.save(meal);
@@ -98,7 +97,6 @@ public class MealService {
                 .lat(meal.getLat())
                 .lng(meal.getLng())
                 .createdAt(meal.getCreatedAt())
-                .updatedAt(meal.getUpdatedAt())
                 .fileInfos(meal.getFileInfos())
                 .comments(meal.getCommentMeals())
                 .build();
@@ -120,8 +118,7 @@ public class MealService {
         meal.setContent(mealUpdate.getContent());
         meal.setLat(mealUpdate.getLat());
         meal.setLng(mealUpdate.getLng());
-        meal.setCreatedAt(mealUpdate.getCreatedAt());
-        meal.setUpdatedAt(LocalDateTime.now()); // 현재 시간으로 updatedAt 설정
+        meal.setCreatedAt(LocalDateTime.now());
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
@@ -150,7 +147,6 @@ public class MealService {
                 .title(meal.getTitle())
                 .content(meal.getContent())
                 .createdAt(meal.getCreatedAt())
-                .updatedAt(meal.getUpdatedAt())
                 .lat(meal.getLat())
                 .lng(meal.getLng())
                 .fileInfos(meal.getFileInfos())
@@ -178,7 +174,8 @@ public class MealService {
     private void saveFile(MultipartFile file, Meal meal) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-            file.transferTo(new File("c:/files/" + filename));
+//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
