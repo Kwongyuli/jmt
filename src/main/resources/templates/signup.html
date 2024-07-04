@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        .hide {
+            display: none;
+        }
+
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="post" action="/jmt/signup">
+        <label for="name">이름 : </label>
+        <input type="text" id="name" name="name" th:field="${user.name}"> <br>
+        <div class="name_sMessage hide">사용할 수 있는 이름입니다.</div>
+        <div class="name_fMessage1 hide">이름은 3~8자여야 합니다.</div>
+        <div class="name_fMessage2 hide">이미 사용 중인 이름입니다.</div>
+
+        <label for="userId">아이디 : </label>
+        <input type="text" id="userId" name="userId" th:field="${user.userId}"> <br>
+        <div class="id_sMessage hide">사용할 수 있는 아이디입니다.</div>
+        <div class="id_fMessage1 hide">아이디는 4~12글자이어야 합니다.</div>
+        <div class="id_fMessage2 hide">영어 소문자와 숫자만 가능합니다.</div>
+        <div class="id_fMessage3 hide">이미 사용 중인 아이디입니다.</div>
+
+        <label for="pw">비밀번호 : </label>
+        <input type="password" name="pw" id="pw1" th:field="${user.pw}"> <br>
+        <div class="pw_fMessage1 hide">비밀번호는 특수문자 1개 이상 포함하며, 10~20자여야 합니다.</div>
+        <label for="pw">비밀번호 확인 : </label>
+        <input type="password" id="pw2"> <br>
+        <div class="pw_fMessage2 hide">비밀번호가 일치하지 않습니다.</div>
+
+        <label for="email">이메일 : </label>
+        <input type="text" name="email" id="email" th:field="${user.email}"> <br>
+        <div class="email_fMessage hide">이메일 형식이 올바르지 않습니다.</div>
+
+        <button type="submit" id="signupBtn" class="disabled" disabled>Sign Up</button>
+    </form>
+
+    <script>
+        let username = document.querySelector('#name');
+        let name_sMessages = document.querySelector('.name_sMessage');
+        let name_fMessage1 = document.querySelector('.name_fMessage1');
+        let name_fMessage2 = document.querySelector('.name_fMessage2');
+
+        let userId = document.querySelector('#userId');
+        let id_sMessage = document.querySelector('.id_sMessage');
+        let id_fMessage1 = document.querySelector('.id_fMessage1');
+        let id_fMessage2 = document.querySelector('.id_fMessage2');
+        let id_fMessage3 = document.querySelector('.id_fMessage3');
+
+        let password = document.querySelector('#pw1');
+        let password_check = document.querySelector('#pw2');
+        let pw_fMessage1 = document.querySelector('.pw_fMessage1');
+        let pw_fMessage2 = document.querySelector('.pw_fMessage2');
+
+        let email = document.querySelector('#email');
+        let email_fMessage = document.querySelector('.email_fMessage');
+
+        let signupBtn = document.querySelector('#signupBtn');
+
+        let isNameValid = false;
+        let isUserIdValid = false;
+
+        function idLength(value) {
+            return value.length >= 4 && value.length <= 12;
+        }
+
+        function onlyNumberAndEnglish(str) {
+            return /^[a-z0-9]{4,12}$/.test(str);
+        }
+
+        function strongPassword(str) {
+            return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#!%?])[A-Za-z\d@#!%?]{10,20}$/.test(str);
+        }
+
+        function isMatch(password, password_check) {
+            return password === password_check;
+        }
+
+        function emailCheck(str) {
+            return /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/.test(str);
+        }
+
+        function checkValidity() {
+            if (isNameValid && isUserIdValid &&
+                strongPassword(password.value) && isMatch(password.value, password_check.value) && emailCheck(email.value)) {
+                signupBtn.disabled = false;
+                signupBtn.classList.remove('disabled');
+            } else {
+                signupBtn.disabled = true;
+                signupBtn.classList.add('disabled');
+            }
+        }
+
+        username.addEventListener('input', function () {
+            if (username.value.length < 3 || username.value.length > 8) {
+                name_fMessage1.classList.remove('hide');
+                name_fMessage2.classList.add('hide');
+                name_sMessages.classList.add('hide');
+                isNameValid = false;
+            } else {
+                fetch('/jmt/checkName', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: username.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        name_fMessage2.classList.remove('hide');
+                        name_fMessage1.classList.add('hide');
+                        name_sMessages.classList.add('hide');
+                        isNameValid = false;
+                    } else {
+                        name_fMessage2.classList.add('hide');
+                        name_fMessage1.classList.add('hide');
+                        name_sMessages.classList.remove('hide');
+                        isNameValid = true;
+                    }
+                    checkValidity();
+                });
+            }
+            checkValidity();
+        });
+
+        userId.addEventListener('input', function () {
+            if (userId.value.length === 0) {
+                id_sMessage.classList.add('hide');
+                id_fMessage1.classList.remove('hide');
+                id_fMessage2.classList.remove('hide');
+                id_fMessage3.classList.add('hide');
+                isUserIdValid = false;
+            } else if (!idLength(userId.value)) {
+                id_sMessage.classList.add('hide');
+                id_fMessage1.classList.remove('hide');
+                id_fMessage2.classList.add('hide');
+                id_fMessage3.classList.add('hide');
+                isUserIdValid = false;
+            } else if (!onlyNumberAndEnglish(userId.value)) {
+                id_sMessage.classList.add('hide');
+                id_fMessage1.classList.add('hide');
+                id_fMessage2.classList.remove('hide');
+                id_fMessage3.classList.add('hide');
+                isUserIdValid = false;
+            } else {
+                fetch('/jmt/checkUserId', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        id_sMessage.classList.add('hide');
+                        id_fMessage1.classList.add('hide');
+                        id_fMessage2.classList.add('hide');
+                        id_fMessage3.classList.remove('hide');
+                        isUserIdValid = false;
+                    } else {
+                        id_sMessage.classList.remove('hide');
+                        id_fMessage1.classList.add('hide');
+                        id_fMessage2.classList.add('hide');
+                        id_fMessage3.classList.add('hide');
+                        isUserIdValid = true;
+                    }
+                    checkValidity();
+                });
+            }
+            checkValidity();
+        });
+
+        password.addEventListener('input', function () {
+            if (password.value.length === 0) {
+                pw_fMessage1.classList.add('hide');
+            } else if (strongPassword(password.value)) {
+                pw_fMessage1.classList.add('hide');
+            } else {
+                pw_fMessage1.classList.remove('hide');
+            }
+            checkValidity();
+        });
+
+        password_check.addEventListener('input', function () {
+            if (password_check.value.length === 0) {
+                pw_fMessage2.classList.add('hide');
+            } else if (isMatch(password.value, password_check.value)) {
+                pw_fMessage2.classList.add('hide');
+            } else {
+                pw_fMessage2.classList.remove('hide');
+            }
+            checkValidity();
+        });
+
+        email.addEventListener('input', function () {
+            if (email.value.length === 0) {
+                email_fMessage.classList.add('hide');
+            } else if (emailCheck(email.value)) {
+                email_fMessage.classList.add('hide');
+            } else {
+                email_fMessage.classList.remove('hide');
+            }
+            checkValidity();
+        });
+
+    </script>
+</body>
+
+</html>
