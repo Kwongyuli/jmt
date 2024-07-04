@@ -1,6 +1,19 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
 </head>
+
+<style>
+    li#sidebar>a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw !important;
+    }
+</style>
 
 <body>
     <div class="btn"></div>
@@ -8,15 +21,15 @@
 
     <div id="menu">
         <ul class="nav">
-            <li><a href="/meallist">식사</a></li>
-            <li><a href="/dessertlist">디저트</a></li>
-            <li><a>마이페이지</a>
+            <li id="sidebar"><a href="/meals/list">식사</a></li>
+            <li id="sidebar"><a href="/dessert/list">디저트</a></li>
+            <li id="sidebar"><a>마이페이지</a>
                 <ul class="sub_mobile">
-                    <li><a href="/mypage">- 회원정보</a></li>
-                    <li><a href="/mylist">- 작성한글</a></li>
+                    <li id="sidebar"><a href="/mypage">- 회원정보</a></li>
+                    <li id="sidebar"><a href="/mylist">- 작성한글</a></li>
                 </ul>
             </li>
-            <li><a href="/question/list">Q&A</a></li>
+            <li id="sidebar"><a href="/question/list">Q&A</a></li>
         </ul>
         <div onclick="history.back();" class="close"></div>
     </div>
