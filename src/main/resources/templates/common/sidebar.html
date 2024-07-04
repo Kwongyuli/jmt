@@ -1,0 +1,195 @@
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    li#sidebar>a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw !important;
+    }
+</style>
+
+<body>
+    <div class="btn"></div>
+    <div onclick="history.back();" class="page_cover"></div>
+
+    <div id="menu">
+        <ul class="nav">
+            <li id="sidebar"><a href="/meals/list">식사</a></li>
+            <li id="sidebar"><a href="/dessert/list">디저트</a></li>
+            <li id="sidebar"><a>마이페이지</a>
+                <ul class="sub_mobile">
+                    <li id="sidebar"><a href="/mypage">- 회원정보</a></li>
+                    <li id="sidebar"><a href="/mylist">- 작성한글</a></li>
+                </ul>
+            </li>
+            <li id="sidebar"><a href="/question/list">Q&A</a></li>
+        </ul>
+        <div onclick="history.back();" class="close"></div>
+    </div>
+</body>
+
+<style>
+    html.open {
+        overflow: hidden;
+    }
+
+    #menu.open {
+        left: 0px;
+    }
+
+    .page_cover.open {
+        display: block;
+    }
+
+    .btn {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 1;
+        background-image: url("http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/menu.png");
+        background-size: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+    }
+
+    .close {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        background-image: url("http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/close.png");
+        background-size: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+    }
+
+    #menu {
+        width: 150px;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: -202px;
+        z-index: 10;
+        border: 1px solid #c9c9c9;
+        background-color: white;
+        text-align: center;
+        font-weight: bold;
+        transition: All 0.2s ease;
+        -webkit-transition: All 0.2s ease;
+        -moz-transition: All 0.2s ease;
+        -o-transition: All 0.2s ease;
+        padding-top: 50px;
+        padding-left: 0px;
+        padding-right: 40px;
+    }
+
+    #menu a {
+        padding: 0;
+        text-decoration: none;
+        font-size: 18px;
+        color: #25a4cd;
+        display: block;
+        transition: 0.3s;
+    }
+
+    #menu.open {
+        left: 0px;
+    }
+
+    .page_cover.open {
+        display: block;
+    }
+
+    .page_cover {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 4;
+        display: none;
+    }
+
+    #menu ul {
+        width: 190px;
+        margin: 0;
+        padding: 0;
+    }
+
+    #menu ul.nav li {
+        position: relative;
+        float: left;
+        width: 100%;
+        list-style-type: none;
+        font-size: 18px;
+    }
+
+    #menu ul.nav li a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        line-height: 50px;
+        text-indent: 20px;
+        text-align: left;
+        /* color: #25a4cd; */
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    #menu ul.nav li a:hover {
+        /* background: #eee; */
+        background: beige;
+    }
+
+    #menu ul.nav li .sub_mobile a {
+        position: relative;
+        float: left;
+        display: block;
+        width: 100%;
+        z-index: 999;
+        background: rgb(244, 244, 227);
+    }
+
+    #menu ul.nav li .sub_mobile a:hover {
+        /* background: #787878; */
+        background: beige;
+        /* color: #fff; */
+        z-index: 999;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $(".btn").click(function () {
+            $("#menu,.page_cover,html").addClass("open");
+            window.location.hash = "#open";
+        })
+    })
+
+    window.onhashchange = function () {
+        if (location.hash != "#open") {
+            $("#menu,.page_cover,html").removeClass("open");
+        }
+    };
+
+    $(document).ready(function () {
+        $("#menu ul.sub_mobile").hide();
+        $("#menu ul.nav li").click(function () {
+            $("ul", this).slideToggle("fast");
+        })
+    })
+</script>
