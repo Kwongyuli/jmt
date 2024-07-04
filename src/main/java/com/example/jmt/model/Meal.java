@@ -20,6 +20,7 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 25) // 제목의 글자수 제한 설정
     public String title;
     public String content;
 
