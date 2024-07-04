@@ -1,4 +1,7 @@
 Q&A 리스트 페이지 입니다.
+<head>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
 
 <body>
   <div class="container my-3">
@@ -20,11 +23,11 @@ Q&A 리스트 페이지 입니다.
         </tr>
       </thead>
       <tbody>
-        <tr th:each="question : ${list}" th:attr="id=${question.id}">
-
+        <tr th:each="question : ${question}" th:attr="id=${question.id}">
+          <!-- 글 번호 -->
           <td th:text="${question.id}"></td>
 
-          <!-- td에 a태그에 thymeleaf 작성 -->
+          <!-- 제목 -->
           <td>
             <a th:href="@{|/question/${question.id}|}" th:text="${question.title}"></a>
           </td>
@@ -35,8 +38,8 @@ Q&A 리스트 페이지 입니다.
           <td>닉네임</td>
           <!-- <td th:text="${question.userId}"></td> -->
 
-          <td>작성일시</td>
-          <!-- <td th:text="${question.userCreateDate}"></td> -->
+          <!-- 작성일시 -->
+          <td th:text="${#temporals.format(question.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
 
           <td>
             답변이 확인 되었으면 작동하게 하는 checkbox
@@ -44,4 +47,34 @@ Q&A 리스트 페이지 입니다.
         </tr>
     </table>
 
+    <!-- 페이징 -->
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+          <a class="page-link" th:href="@{|/question/list?page=${currentPage - 1}|}">이전</a>
+      </li>
+  
+      <li class="page-item"
+          th:each="page : ${#numbers.sequence(startPage, endPage)}">
+          <a class="page-link" th:href="@{|/question/list?page=${page}|}"
+             th:text="${page}"></a>
+      </li>
+  
+      <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+          <a class="page-link" th:href="@{|/question/list?page=${currentPage + 1}|}">다음</a>
+      </li>
+  
+      <!-- 검색 -->
+      <form th:action="@{/question/list}" method="get">
+          <input type="text" name="search" th:value="${search}" placeholder="Search..."/>
+          <button type="submit">Search</button>
+      </form>
+  </ul>
+
 </body>
+
+<script>
+  function search() {
+      const search = document.querySelector('[name=search]');
+      location = `/question/list?search=${search.value}`;
+  }
+</script>
