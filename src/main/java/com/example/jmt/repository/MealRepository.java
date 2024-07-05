@@ -14,4 +14,7 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
             String title, String content, Pageable pageable);
             
     List<Meal> findByUser(User user);
+
+    long countByTitleContainingOrContentContaining(String search, String search1);
+
 }

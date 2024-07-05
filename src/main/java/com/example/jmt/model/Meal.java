@@ -22,11 +22,12 @@ public class Meal {
 
     @Column(length = 25) // 제목의 글자수 제한 설정
     public String title;
+
+    @Lob
     public String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
-
 
     private double lat; // 위도
     private double lng; // 경도

@@ -56,8 +56,9 @@
             this.lat = lat;
             this.lng = lng;
             this.comments = comments;
-            this.viewCount=viewCount;
+            this.viewCount = viewCount;
             this.upvotes = upvotes;
             this.downvotes = downvotes;
+
         }
     }

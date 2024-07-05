@@ -1,5 +1,6 @@
 package com.example.jmt.pub.model;
 
+import com.example.jmt.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,13 +29,15 @@ public class CommentPub {
     private Pub pub;
 
     @ManyToOne
-    User user;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder
-    public CommentPub(Long id, String comment, LocalDateTime createdAt, Pub pub) {
+    public CommentPub(Long id, String comment, LocalDateTime createdAt, Pub pub, User user) {
         this.id = id;
         this.comment = comment;
         this.createdAt = createdAt;
         this.pub = pub;
+        this.user = user;
     }
 }

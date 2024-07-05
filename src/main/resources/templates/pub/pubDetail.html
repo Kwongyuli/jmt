@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -24,27 +23,23 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function() {
-            // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
             const lat = /*[[${pub.lat}]]*/ 33.450701;
             const lng = /*[[${pub.lng}]]*/ 126.570667;
 
-            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            var mapContainer = document.getElementById('map'),
                 mapOption = {
-                    center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-                    level: 3 // 지도의 확대 레벨
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 3
                 };
 
-            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-            // 마커가 표시될 위치입니다
-            var markerPosition  = new kakao.maps.LatLng(lat, lng);
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
 
-            // 마커를 생성합니다
             var marker = new kakao.maps.Marker({
                 position: markerPosition
             });
 
-            // 마커가 지도 위에 표시되도록 설정합니다
             marker.setMap(map);
         });
 
@@ -57,6 +52,7 @@
                     var response = JSON.parse(xhr.responseText);
                     document.getElementById('upvotes').innerText = response.upvotes;
                     document.getElementById('downvotes').innerText = response.downvotes;
+                    alert(response.message);
                 }
             };
             xhr.send();
@@ -73,6 +69,44 @@
             var url = '/pubs/' + pubId + '/downvote';
             sendVote(url);
         }
+        function addComment(event) {
+            event.preventDefault();
+            const pubId = document.querySelector('#pubId').value;
+            const commentText = document.querySelector('#comment').value;
+
+            fetch('/pubs/' + pubId + '/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    comment: commentText
+                })
+            })
+                .then(response => {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            alert(data.message);
+                            if (response.status === 403) {
+                                window.location.href = '/jmt/signin'; // 로그인 페이지로 리다이렉트
+                            }
+                            throw new Error(data.message);
+                        }
+                        return data;
+                    });
+                })
+                .then(data => {
+                    alert(data.message);
+                    const commentsList = document.querySelector('ul');
+                    const newComment = document.createElement('li');
+                    newComment.textContent = commentText;
+                    commentsList.appendChild(newComment);
+                    document.querySelector('#comment').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
         /*]]>*/
     </script>
     <p>위도: <span th:text="${pub.lat}"></span></p>
@@ -82,20 +116,17 @@
     <p>비추천: <span id="downvotes" th:text="${downvotes}">0</span></p>
 
     <div>
-        <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
         <div th:each="fileInfo : ${pub.fileInfos}">
             <img th:src="@{|/download?fileId=${fileInfo.id}|}" style="max-width: 100px; max-height: 100px;">
         </div>
     </div>
 </div>
 
-<!--추천 비추천-->
 <div>
     <button type="button" onclick="upvote()">추천</button>
     <button type="button" onclick="downvote()">비추천</button>
 </div>
 
-<!-- 댓글 목록 -->
 <h2>댓글</h2>
 <ul>
     <li th:each="comment : ${comments}">
@@ -106,9 +137,9 @@
     </li>
 </ul>
 
-<!-- 댓글 작성 폼 -->
-<form th:action="@{/pubs/{id}/comment(id=${pub.id})}" method="post">
-    <textarea name="comment" rows="4" cols="50"></textarea>
+<form th:action="@{/pubs/{id}/comment(id=${pub.id})}" method="post" onsubmit="addComment(event)">
+    <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+    <input type="hidden" id="pubId" th:value="${pub.id}">
     <button type="submit">댓글 추가</button>
 </form>
 
