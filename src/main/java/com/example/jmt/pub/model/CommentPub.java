@@ -1,6 +1,5 @@
 package com.example.jmt.pub.model;
 
-import com.example.jmt.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -40,8 +40,8 @@ public class MealService {
     // 이미지파일 저장 레포지토리
     private final FileInfoRepository fileInfoRepository;
 
-//  글 저장 메서드 _ 엔티티로 넘기기
-    public Meal write(MealCreate mealCreate,MultipartFile[] files) throws IOException {
+    // 글 저장 메서드 _ 엔티티로 넘기기
+    public Meal write(MealCreate mealCreate, MultipartFile[] files) throws IOException {
 
         Meal meal = Meal.builder()
                 .title(mealCreate.getTitle())
@@ -49,11 +49,8 @@ public class MealService {
                 .lat(mealCreate.getLat())
                 .lng(mealCreate.getLng())
                 .createdAt(mealCreate.getCreatedAt())
-<<<<<<< HEAD
                 .user(mealCreate.getUser())
-=======
                 .viewCount(0) // 처음 글 작성시 조회수 0 으로 초기화
->>>>>>> 2e0f75e9e65c377803d50920dbf168555be32b1b
                 .build();
 
         Meal savedMeal = mealRepository.save(meal);
@@ -123,7 +120,8 @@ public class MealService {
         Pageable sortedPageable = pageable;
 
         if ("viewCount".equals(sort)) {
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(Sort.Order.desc("viewCount")));
         }
 
         Page<Meal> meals;
@@ -161,9 +159,9 @@ public class MealService {
         int end = Math.min((start + sortedPageable.getPageSize()), mealResponses.size());
 
         return mealResponses.subList(start, end);
-//        return mealRepository.findAll().stream()
-//                .map(MealResponse::new)
-//                .collect(Collectors.toList());
+        // return mealRepository.findAll().stream()
+        // .map(MealResponse::new)
+        // .collect(Collectors.toList());
     }
 
     // 글 수정
@@ -183,11 +181,10 @@ public class MealService {
             }
         }
 
-
         Meal updatedMeal = mealRepository.save(meal);
 
         return MealResponse.builder()
-                
+
                 .id(updatedMeal.getId())
                 .title(updatedMeal.getTitle())
                 .content(updatedMeal.getContent())
@@ -232,7 +229,8 @@ public class MealService {
     private void saveFile(MultipartFile file, Meal meal) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+            // File file = new
+            // File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
             file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
@@ -265,6 +263,8 @@ public class MealService {
                         .comments(meal.getCommentMeals())
                         .build())
                 .collect(Collectors.toList());
+    }
+
     public long getTotalCount(String search) {
         if (search == null || search.isEmpty()) {
             return mealRepository.count(); // 검색어 없으면 전체 게시글 수 반환

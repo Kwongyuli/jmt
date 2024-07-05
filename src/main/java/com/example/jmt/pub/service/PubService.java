@@ -1,6 +1,6 @@
 package com.example.jmt.pub.service;
 
-import com.example.jmt.entity.User;
+import com.example.jmt.model.User;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.model.VotePub;
 import com.example.jmt.pub.repository.PubRepository;

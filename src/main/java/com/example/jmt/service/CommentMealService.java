@@ -1,6 +1,5 @@
 package com.example.jmt.service;
 
-import com.example.jmt.desert.model.CommentDesert;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
 import com.example.jmt.repository.CommentMealRepository;

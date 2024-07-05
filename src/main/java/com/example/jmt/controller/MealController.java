@@ -6,11 +6,8 @@ import com.example.jmt.desert.request.DesertUpdate;
 import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
-<<<<<<< HEAD
 import com.example.jmt.model.User;
-=======
 import com.example.jmt.pub.response.PubResponse;
->>>>>>> 2e0f75e9e65c377803d50920dbf168555be32b1b
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
 import com.example.jmt.request.MealCreate;
@@ -54,14 +51,9 @@ public class MealController {
     // 게시글 목록
     @GetMapping("/list")
     public String getMeals(Model model,
-<<<<<<< HEAD
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "search", required = false) String search) {
-=======
                            @RequestParam(value = "page", defaultValue = "1") int page,
                            @RequestParam(value = "search", required = false) String search,
                            @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
->>>>>>> 2e0f75e9e65c377803d50920dbf168555be32b1b
 
         Pageable pageable = PageRequest.of(page - 1, 10);
         List<MealResponse> meals = mealService.getList(pageable, search, sort);

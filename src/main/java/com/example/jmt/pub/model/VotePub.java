@@ -1,6 +1,6 @@
 package com.example.jmt.pub.model;
 
-import com.example.jmt.entity.User;
+import com.example.jmt.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
