@@ -34,6 +34,8 @@
 
         private int commentCount; // 댓글 개수 필드
 
+        private String username;
+
         public MealResponse(Meal meal) {
             this.id = meal.getId();
             this.title = meal.getTitle();
@@ -49,7 +51,7 @@
         @Builder
         public MealResponse(Long id, String title, String content, List<FileInfo> fileInfos
                 , LocalDateTime createdAt, double lat, double lng
-                ,List<CommentMeal> comments, int viewCount, long upvotes, long downvotes,int commentCount) {
+                ,List<CommentMeal> comments, int viewCount, long upvotes, long downvotes,int commentCount, String username) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -62,6 +64,6 @@
             this.upvotes = upvotes;
             this.downvotes = downvotes;
             this.commentCount = commentCount;
-
+            this.username = username;
         }
     }

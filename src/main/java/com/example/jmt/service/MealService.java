@@ -182,6 +182,7 @@ public class MealService {
                             .fileInfos(meal.getFileInfos())
                             .comments(meal.getCommentMeals())
                             .commentCount(meal.getCommentMeals().size()) // 댓글 개수 설정
+                            .username(meal.getUser().getName())
                             .build();
                 })
                 .collect(Collectors.toList());
