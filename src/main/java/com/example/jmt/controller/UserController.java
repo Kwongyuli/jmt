@@ -47,7 +47,7 @@ public class UserController {
     @Autowired
     private Mailer mailer;
 
-    private static final String EMAIL_SUBJECT = "비밀번호 재설정 인증 코드";
+    private static final String EMAIL_SUBJECT = "ㅈㅁㅌ 비밀번호 재설정 인증 코드";
 
     @GetMapping("/jmt/signin")
     public String signin() {
@@ -225,7 +225,15 @@ public class UserController {
             session.setAttribute("verificationCode", verificationCode);
             session.setAttribute("resetEmail", user.getEmail());
     
-            String emailContent = "비밀번호를 재설정하려면 다음 인증 코드를 입력하세요: " + verificationCode;
+            String emailContent = "<html>"
+                + "<body>"
+                + "<h2>비밀번호 재설정</h2>"
+                + "<p>비밀번호를 재설정하려면 다음 인증 코드를 입력하세요:</p>"
+                + "<br>"
+                + "<h2 style='color:blue;'>" + verificationCode + "</h2>"
+                + "</body>"
+                + "</html>";
+
             mailer.sendMail(user.getEmail(), EMAIL_SUBJECT, emailContent, new SMTPAuthenticator());
     
             response.put("success", true);
@@ -280,6 +288,15 @@ public class UserController {
     @GetMapping("/jmt/mylist")
     public String mylist() {
         return "mylist";
+    }
+
+    @GetMapping("/jmt/checkLoginStatus")
+    @ResponseBody
+    public Map<String, Boolean> checkLoginStatus() {
+        Map<String, Boolean> response = new HashMap<>();
+        Object user = session.getAttribute("user_info");
+        response.put("loggedIn", user != null);
+        return response;
     }
 
 }
