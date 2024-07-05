@@ -42,6 +42,7 @@ public class DesertController {
     private final CommentDesertService commentDesertService;
     private final DesertRepository desertRepository;
     private final FileInfoService fileInfoService;
+    private final HttpSession session;
 
     // 게시글 목록
     @GetMapping("/list")
@@ -58,15 +59,6 @@ public class DesertController {
 
         int startPage = Math.max(1, (page - 1) / 10 * 10 + 1);
         int endPage = Math.min(startPage + 9, totalPages);
-
-        // int startPage = (page - 1) / 10 * 10 + 1;
-        // int endPage = startPage + 9;
-        //// int total = (int) desertRepository.count();
-        // int total = (int) desertService.getTotalCount(search); // 전체 페이지 수
-        //
-        // if (endPage > total) {
-        // endPage = total;
-        // }
 
         model.addAttribute("deserts", deserts);
         model.addAttribute("startPage", startPage);
@@ -149,11 +141,12 @@ public class DesertController {
 
     @GetMapping("/{id}/edit")
     public String editDesertForm(@PathVariable Long id, Model model, HttpSession session) {
+        User user = getCurrentUser();
         User author = (User) session.getAttribute("user_info");
         Desert desert = desertService.getDesertById(id);
 
         if (author != null && author.equals(desert.getUser())) {
-            DesertUpdate desertUpdate = desertService.getDesertUpdate(id);
+            DesertUpdate desertUpdate = desertService.getDesertUpdate(id,user);
             desertUpdate.setId(id);
             model.addAttribute("desertUpdate", desertUpdate);
             return "desert/desertEditForm";
@@ -206,35 +199,32 @@ public class DesertController {
 
     @PostMapping("/{id}/upvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> upvoteDesert(@PathVariable Long id, HttpSession session) {
-        User loggedInUser = (User) session.getAttribute("user_info");
-        if (loggedInUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Object>> upvoteDesert(@PathVariable Long id) {
 
-        desertService.upvote(id);
+        User user = getCurrentUser();
+        String message = desertService.upvote(id, user);
         long upvotes = desertService.getUpvotes(id);
         long downvotes = desertService.getDownvotes(id);
-        Map<String, Long> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("upvotes", upvotes);
         response.put("downvotes", downvotes);
+        response.put("message", message);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/downvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> downvoteDesert(@PathVariable Long id, HttpSession session) {
-        User loggedInUser = (User) session.getAttribute("user_info");
-        if (loggedInUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Object>> downvoteDesert(@PathVariable Long id) {
 
-        desertService.downvote(id);
+        User user = getCurrentUser();
+
+        String message = desertService.downvote(id, user);
         long upvotes = desertService.getUpvotes(id);
         long downvotes = desertService.getDownvotes(id);
-        Map<String, Long> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("upvotes", upvotes);
         response.put("downvotes", downvotes);
+        response.put("message", message);
         return ResponseEntity.ok(response);
     }
 
@@ -259,4 +249,11 @@ public class DesertController {
         return "/desert/myDesertList";
     }
 
+    private User getCurrentUser() {
+        User user = (User) session.getAttribute("user_info");
+        if (user == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return user;
+    }
 }

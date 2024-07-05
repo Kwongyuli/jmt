@@ -6,6 +6,8 @@ import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.Meal;
 import com.example.jmt.model.User;
 import com.example.jmt.model.Vote;
+import com.example.jmt.pub.model.Pub;
+import com.example.jmt.pub.model.VotePub;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
 import com.example.jmt.repository.UserRepository;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,25 +67,56 @@ public class MealService {
         return savedMeal;
     }
 
-    // 추천/비추천 메서드
-    public void upvote(Long mealId) {
-        Meal meal = mealRepository.findById(mealId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        Vote vote = Vote.builder()
-                .meal(meal)
-                .upvote(true)
-                .build();
-        voteRepository.save(vote);
+    // 추천 메서드
+    public String upvote(Long mealId, User user) {
+        Optional<Vote> existingVote = Optional.ofNullable(voteRepository.findByMealIdAndUserId(mealId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (existingVote.get().isUpvote()) {
+                voteRepository.delete(existingVote.get());
+                return "추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(true);
+                voteRepository.save(existingVote.get());
+                return "비추천을 추천으로 변경했습니다.";
+            }
+        } else {
+            Meal meal = mealRepository.findById(mealId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            Vote vote = Vote.builder()
+                    .meal(meal)
+                    .user(user)
+                    .upvote(true)
+                    .build();
+            voteRepository.save(vote);
+            return "추천했습니다.";
+        }
     }
 
-    public void downvote(Long mealId) {
-        Meal meal = mealRepository.findById(mealId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        Vote vote = Vote.builder()
-                .meal(meal)
-                .upvote(false)
-                .build();
-        voteRepository.save(vote);
+    // 비추천 메서드
+    public String downvote(Long mealId, User user) {
+        Optional<Vote> existingVote = Optional.ofNullable(voteRepository.findByMealIdAndUserId(mealId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (!existingVote.get().isUpvote()) {
+                voteRepository.delete(existingVote.get());
+                return "비추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(false);
+                voteRepository.save(existingVote.get());
+                return "추천을 비추천으로 변경했습니다.";
+            }
+        } else {
+            Meal meal = mealRepository.findById(mealId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            Vote vote = Vote.builder()
+                    .meal(meal)
+                    .user(user)
+                    .upvote(false)
+                    .build();
+            voteRepository.save(vote);
+            return "비추천했습니다.";
+        }
     }
 
     public long getUpvotes(Long mealId) {
@@ -147,6 +181,7 @@ public class MealService {
                             .downvotes(downvotes)
                             .fileInfos(meal.getFileInfos())
                             .comments(meal.getCommentMeals())
+                            .commentCount(meal.getCommentMeals().size()) // 댓글 개수 설정
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -231,7 +266,7 @@ public class MealService {
         try {
             // File file = new
             // File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
+            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }

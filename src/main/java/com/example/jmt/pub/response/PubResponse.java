@@ -30,6 +30,7 @@
 
         private long upvotes;
         private long downvotes;
+        private int commentCount; // 댓글 개수 필드 추가
 
 
         public PubResponse(Pub pub) {
@@ -42,12 +43,13 @@
             this.fileInfos = pub.getFileInfos();  // fileInfos 필드
             this.comments = pub.getCommentPubs();
             this.viewCount = pub.getViewCount();
+
         }
 
         @Builder
         public PubResponse(Long id, String title, String content, List<FileInfo> fileInfos
                 , LocalDateTime createdAt, double lat, double lng
-                , List<CommentPub> comments, int viewCount, long upvotes, long downvotes) {
+                , List<CommentPub> comments, int viewCount, long upvotes, long downvotes,int commentCount) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -59,5 +61,6 @@
             this.viewCount=viewCount;
             this.upvotes = upvotes;
             this.downvotes = downvotes;
+            this.commentCount = commentCount;
         }
     }

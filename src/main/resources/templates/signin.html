@@ -1,7 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <script>
+        window.onload = function() {
+            // Thymeleaf 변수를 사용하여 message를 가져옵니다
+            let message = /*[[${message}]]*/ 'null';
+            if (message !== 'null' && message !== '') {
+                alert(message);
+            }
+        };
+    </script>
+</head>
 <body>
-    <form method="post" action="/jmt/signin">
-        <input type="text" name="userId" placeholder="id">
-        <input type="password" name="pw" placeholder="password">
-        <button>Sign In</button>
-    </form>
+<form method="post" action="/jmt/signin">
+    <input type="text" name="userId" placeholder="id">
+    <input type="password" name="pw" placeholder="password">
+    <button>Sign In</button>
+</form>
 </body>
+</html>

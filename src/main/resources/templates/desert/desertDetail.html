@@ -58,33 +58,23 @@
                     var response = JSON.parse(xhr.responseText);
                     document.getElementById('upvotes').innerText = response.upvotes;
                     document.getElementById('downvotes').innerText = response.downvotes;
+                    alert(response.message);
                 }
             };
             xhr.send();
         }
-
-        // 추, 비추 로그인 확인 코드
         function upvote() {
-            var loggedInUser = [[${loggedInUser}]];
-            if (!loggedInUser) {
-                alert("로그인 후 이용해주세요.");
-                return;
-            }
-            var desertId = [[${desert.id}]];
+            var desertId = /*[[${desert.id}]]*/ 0;
             var url = '/deserts/' + desertId + '/upvote';
             sendVote(url);
         }
 
         function downvote() {
-            var loggedInUser = [[${loggedInUser}]];
-            if (!loggedInUser) {
-                alert("로그인 후 이용해주세요.");
-                return;
-            }
-            var desertId = [[${desert.id}]];
+            var desertId = /*[[${desert.id}]]*/ 0;
             var url = '/deserts/' + desertId + '/downvote';
             sendVote(url);
         }
+
         /*]]>*/
     </script>
     <p>위도: <span th:text="${desert.lat}"></span></p>

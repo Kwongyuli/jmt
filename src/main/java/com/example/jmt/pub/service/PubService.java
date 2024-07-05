@@ -178,6 +178,7 @@ public class PubService {
                             .downvotes(downvotes)
                             .fileInfos(pub.getFileInfos())
                             .comments(pub.getCommentPubs())
+                            .commentCount(pub.getCommentPubs().size())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -233,12 +234,13 @@ public class PubService {
         Pub pub = pubRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
-        if (!pub.getUser().equals(user)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
-        }
+//        if (!pub.getUser().equals(user)) {
+//            throw new IllegalArgumentException("수정 권한이 없습니다.");
+//        }
 
         return PubUpdate.builder()
                 .id(pub.getId()) // pubUpdate 객체에 id 값 설정
+                .userId(pub.getUser().getId())
                 .title(pub.getTitle())
                 .content(pub.getContent())
                 .createdAt(pub.getCreatedAt())
@@ -274,7 +276,7 @@ public class PubService {
         String filename = file.getOriginalFilename();
         try {
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
+            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -310,5 +312,7 @@ public class PubService {
                         .build())
                 .collect(Collectors.toList());
     }
-
+    public Pub getPubById(Long id) {
+        return pubRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+    }
 }
