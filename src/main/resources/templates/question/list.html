@@ -1,4 +1,5 @@
 Q&A 리스트 페이지 입니다.
+
 <head>
   <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
@@ -49,31 +50,35 @@ Q&A 리스트 페이지 입니다.
 
     <!-- 페이징 -->
     <ul class="pagination">
+      <!-- 이전 버튼 -->
       <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-          <a class="page-link" th:href="@{|/question/list?page=${currentPage - 1}|}">이전</a>
+        <a class="page-link" th:href="@{|/question/list?page=${currentPage - 1}|}">이전</a>
       </li>
-  
+
+      <!-- 페이지 번호 -->
       <li class="page-item"
-          th:each="page : ${#numbers.sequence(startPage, endPage)}">
-          <a class="page-link" th:href="@{|/question/list?page=${page}|}"
-             th:text="${page}"></a>
+        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
+        <a class="page-link" th:href="@{|/question/list?page=${page}|}" th:text="${page}"></a>
       </li>
-  
+
+      <!-- 다음 버튼 -->
       <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
-          <a class="page-link" th:href="@{|/question/list?page=${currentPage + 1}|}">다음</a>
+        <a class="page-link" th:href="@{|/question/list?page=${currentPage + 1}|}">다음</a>
       </li>
-  
+
+
       <!-- 검색 -->
       <form th:action="@{/question/list}" method="get">
-          <input type="text" name="search" th:value="${search}" placeholder="Search..."/>
-          <button type="submit">Search</button>
+        <input type="text" name="search" th:value="${search}" placeholder="Search..." />
+        <button type="submit">Search</button>
       </form>
-  </ul>
+      
+    </ul>
 </body>
 
 <script>
   function search() {
-      const search = document.querySelector('[name=search]');
-      location = `/question/list?search=${search.value}`;
+    const search = document.querySelector('[name=search]');
+    location = `/question/list?search=${search.value}`;
   }
 </script>

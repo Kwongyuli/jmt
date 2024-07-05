@@ -83,7 +83,6 @@
         border-radius: 0.8vw;
         width: 5vw;
         height: 3vw;
-        /* background-color: white; */
     }
 
     table {
@@ -127,10 +126,11 @@
                     <thead>
                         <tr>
                             <th style="width:8%">글번호</th>
-                            <th style="width:56%">제목</th>
+                            <th style="width:52%">제목</th>
                             <th style="width:14%">작성일</th>
                             <th style="width:14%">글쓴이</th>
-                            <th style="width:8%">조회수</th>
+                            <th style="width:6%">조회수</th>
+                            <th style="width:6%">추천수</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,16 +140,19 @@
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
                             <td th:text="${meal.username}"></td>
                             <td>조회</td>
+                            <td>추천</td>
                         </tr>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                                         <a class="page-link"
                                             th:href="@{|/meals/list?page=${currentPage - 1}|}">이전</a>
                                     </li>
 
-                                    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                    <li class="page-item"
+                                        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
+
                                         <a class="page-link" th:href="@{|/meals/list?page=${page}|}"
                                             th:text="${page}"></a>
                                     </li>

@@ -1,45 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>글 작성</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>Pub Form</title>
     <style>
-        #map {
-            width: 80%;
-            height: 350px;
-        }
+        /* 지도 검색 목록 */
         #menu_wrap {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 300px;
-            max-height: 400px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            box-shadow: 0px 0px 5px #aaa;
-            z-index: 10;
-            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
         }
+
+        ul#placesList {
+            margin: 0;
+            padding-left: 2.5vw !important;
+            padding-right: 1.5vw !important;
+        }
+
         .item {
             cursor: pointer;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid gray;
         }
+
         .item:hover {
             background-color: #f0f0f0;
         }
+
         #pagination {
-            margin: 10px auto;
+            margin-top: 1vw;
+            margin-bottom: 1vw;
             text-align: center;
         }
+
         #pagination a {
             display: inline-block;
-            margin: 0 5px;
-            padding: 5px 10px;
+            margin: 0 0.5vw;
+            padding: 0 1vw;
             background: #fff;
             border: 1px solid #ddd;
             cursor: pointer;
+            text-decoration: none;
         }
+
         #pagination a.on {
             background: #eee;
             border: 1px solid #999;
@@ -100,28 +107,28 @@
 
                 bounds.extend(placePosition);
 
-                (function(marker, title, place) {
-                    kakao.maps.event.addListener(marker, 'mouseover', function() {
+                (function (marker, title, place) {
+                    kakao.maps.event.addListener(marker, 'mouseover', function () {
                         displayInfowindow(marker, title);
                     });
 
-                    kakao.maps.event.addListener(marker, 'mouseout', function() {
+                    kakao.maps.event.addListener(marker, 'mouseout', function () {
                         infowindow.close();
                     });
 
-                    kakao.maps.event.addListener(marker, 'click', function() {
+                    kakao.maps.event.addListener(marker, 'click', function () {
                         selectLocation(place);
                     });
 
-                    itemEl.onmouseover = function() {
+                    itemEl.onmouseover = function () {
                         displayInfowindow(marker, title);
                     };
 
-                    itemEl.onmouseout = function() {
+                    itemEl.onmouseout = function () {
                         infowindow.close();
                     };
 
-                    itemEl.onclick = function() {
+                    itemEl.onclick = function () {
                         selectLocation(place);
                     };
                 })(marker, places[i].place_name, places[i]);
@@ -135,19 +142,19 @@
 
         function getListItem(index, places) {
             var el = document.createElement('li'),
-                itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
                     '<div class="info">' +
-                    '   <h5>' + places.place_name + '</h5>';
+                    '  <span class="placename">' + places.place_name + '</span>';
+
+            itemStr += '  <span class="tel">' + places.phone + '</span>' +
+                '</div>';
 
             if (places.road_address_name) {
                 itemStr += '    <span>' + places.road_address_name + '</span>' +
-                    '   <span class="jibun gray">' +  places.address_name  + '</span>';
+                    '   <span class="jibun gray">' + places.address_name + '</span>';
             } else {
-                itemStr += '    <span>' +  places.address_name  + '</span>';
+                itemStr += '    <span>' + places.address_name + '</span>';
             }
-
-            itemStr += '  <span class="tel">' + places.phone  + '</span>' +
-                '</div>';
 
             el.innerHTML = itemStr;
             el.className = 'item';
@@ -199,8 +206,8 @@
                 if (i === pagination.current) {
                     el.className = 'on';
                 } else {
-                    el.onclick = (function(i) {
-                        return function() {
+                    el.onclick = (function (i) {
+                        return function () {
                             pagination.gotoPage(i);
                         }
                     })(i);
@@ -243,48 +250,236 @@
         });
     </script>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#head {
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        height: 4vw;
+        margin-bottom: 2vw;
+        padding-left: 1.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.7vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+
+    div.contitle,
+    div.concontent,
+    div.consearch {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5vw;
+        margin-bottom: 1vw;
+    }
+
+    div.confile {
+        margin-top: 0.5vw;
+        margin-bottom: 1.5vw;
+    }
+
+    input#title {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 67vw;
+        height: 2.6vw;
+        padding-left: 0.7vw;
+    }
+
+    textarea#content {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 67vw;
+        height: 25vw;
+        padding-left: 0.7vw;
+        resize: none;
+    }
+
+    div#search {
+        width: 50%;
+    }
+
+    input#keyword {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 80%;
+        height: 100%;
+        padding-left: 0.7vw;
+    }
+
+    button#search {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 15%;
+        height: 100%;
+    }
+
+    table {
+        width: 100%;
+        height: 25vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+    }
+
+    td {
+        width: 50%;
+        height: 100%;
+        border-radius: 0.8vw;
+    }
+
+    #hiddenlat,
+    #hiddenlng {
+        display: none;
+    }
+
+    input[type=file] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+    }
+
+    input[type=file]::file-selector-button {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 30%;
+        height: 100%;
+        margin-right: 1vw;
+    }
+
+    button#save {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
 <body>
+    <div th:replace="common/header"></div>
 
-<h1>글 작성</h1>
-<form id="writeForm" th:action="@{/pubs/write}" th:object="${pubCreate}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-    <div>
-        <label for="title">제목</label>
-        <input type="text" id="title" th:field="*{title}">
-        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">제목 오류</div>
-    </div>
-    <div>
-        <label for="content">내용</label>
-        <textarea id="content" th:field="*{content}"></textarea>
-        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">내용 오류</div>
-    </div>
-    <div>
-        <label for="keyword">위치 검색</label>
-        <input type="text" id="keyword" placeholder="Search for a location" />
-        <button type="button" onclick="searchPlaces()">검색</button>
-    </div>
-    <div id="menu_wrap">
-        <ul id="placesList"></ul>
-        <div id="pagination"></div>
-    </div>
-    <div id="map"></div>
-    <div><label for="lat">위도</label>
-        <input type="text" id="lat" th:field="*{lat}" readonly>
-    </div>
-    <div>
-        <label for="lng">경도</label>
-        <input type="text" id="lng" th:field="*{lng}" readonly>
+    <div class="container">
+        <div class="main">
+            <div id="head">
+                <div>술집 리뷰 작성</div>
+            </div>
+
+            <div id="con">
+                <form id="writeForm" th:action="@{/pubs/write}" th:object="${pubCreate}" method="post"
+                    enctype="multipart/form-data" onsubmit="return validateForm()">
+
+                    <label for="title">제목 :</label>
+                    <div class="contitle">
+                        <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요.(최대 25자)">
+                        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">제목 오류</div>
+                    </div>
+
+                    <label for="content">내용 :</label>
+                    <div class="concontent">
+                        <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요."></textarea>
+                        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">내용 오류</div>
+                    </div>
+
+                    <label for="keyword">위치 검색 :</label>
+                    <div id="search">
+                        <input type="text" id="keyword" placeholder="Search for a location" />
+                        <button type="button" onclick="searchPlaces()" id="search">
+                            <div>검색</div>
+                        </button>
+                    </div>
+                    <div class="consearch">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div id="menu_wrap">
+                                        <ul id="placesList"></ul>
+                                        <div id="pagination"></div>
+                                    </div>
+                                </td>
+                                <td id="map"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="hiddenlat">
+                        <label for="lat">위도</label>
+                        <input type="text" id="lat" th:field="*{lat}" readonly>
+                    </div>
+                    <div id="hiddenlng">
+                        <label for="lng">경도</label>
+                        <input type="text" id="lng" th:field="*{lng}" readonly>
+                    </div>
+
+                    <label for="files">사진 :</label>
+                    <div class="confile">
+                        <input type="file" id="files" name="files" multiple>
+                    </div>
+
+                    <div class="consave">
+                        <button type="submit" id="save">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <div>
-        <label for="files">파일 업로드</label>
-        <input type="file" id="files" name="files" multiple>
-    </div>
-
-    <div>
-        <button type="submit">저장</button>
-    </div>
-
-</form>
+    <div class="footer"></div>
+</body>
 
 <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7&libraries=services"></script>
 
@@ -297,14 +492,14 @@
 
     var map = new kakao.maps.Map(mapContainer, mapOption);
     var ps = new kakao.maps.services.Places();
-    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+    var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
     var marker = new kakao.maps.Marker({
         position: map.getCenter()
     });
     marker.setMap(map);
 
-    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
         var latlng = mouseEvent.latLng;
         document.getElementById('lat').value = latlng.getLat();
         document.getElementById('lng').value = latlng.getLng();
@@ -312,10 +507,9 @@
         marker.setPosition(latlng);
     });
 
-    document.getElementById('writeForm').addEventListener('submit', function(event) {
+    document.getElementById('writeForm').addEventListener('submit', function (event) {
         // form submit 시 추가 검증 또는 이벤트 처리
     });
 </script>
 
-</body>
 </html>

@@ -265,9 +265,8 @@ public class MealService {
     private void saveFile(MultipartFile file, Meal meal) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-            // File file = new
-            // File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+            file.transferTo(new File("c://files/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
