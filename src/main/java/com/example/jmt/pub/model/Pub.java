@@ -1,7 +1,10 @@
 package com.example.jmt.pub.model;
 
 
+import com.example.jmt.entity.User;
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,6 +26,8 @@ public class Pub {
 
     @Column(length = 25) // 제목의 글자수 제한 설정
     public String title;
+
+    @Lob
     public String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -44,13 +49,18 @@ public class Pub {
     @OneToMany(mappedBy = "pub", cascade = CascadeType.REMOVE)
     private List<CommentPub> commentPubs;
 
+    @ManyToOne(optional = false)  // 필수 필드로 설정
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Pub(String title, String content, LocalDateTime createdAt, double lat, double lng, int viewCount) {
+    public Pub(String title, String content, LocalDateTime createdAt, double lat, double lng, int viewCount, User user) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.lat = lat;
         this.lng = lng;
         this.viewCount = viewCount;
+        this.user = user;
     }
 }

@@ -3,6 +3,7 @@ package com.example.jmt.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
@@ -19,5 +20,8 @@ public class QFileInfo {
 
     @ManyToOne
     Question question;
+
+    @ManyToOne
+    User user;
 }
 

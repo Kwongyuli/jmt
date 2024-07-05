@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.ToString;
@@ -39,4 +41,7 @@ public class Question {
     // 답변
     @OneToMany(mappedBy = "question", orphanRemoval = true, cascade = CascadeType.REMOVE)
     List<Answer> answers = new ArrayList<>();
+
+    @ManyToOne
+    User user;
 }

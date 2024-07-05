@@ -63,6 +63,22 @@ public class QnAController {
     //     return "answer/edit";
     // }
 
+    // 답변에 대한 추천 및 비추천 기능
+//    // 추천 및 비추천 기능
+//    @GetMapping("/question/vote/{id}")
+//    public String questionVote(@PathVariable("id") long id,
+//                               @RequestParam("vote") boolean upvote) {
+//        Optional<Question> questionOpt = questionRepository.findById(id);
+//        if (questionOpt.isPresent()) {
+//            Question question = questionOpt.get();
+//
+//            Vote vote = new Vote();
+//            vote.setQuestion(question);
+//            vote.setUpvote(upvote);
+//            voteRepository.save(vote);
+//        }
+//        return "redirect:/question/" + id;
+//    }
     // 답변 수정하고 질문 상세페이지로 가기위해 qId받아오기
     // @PostMapping("/answer/edit/{id}")
     // public String answerEdit(@PathVariable("id") long id, @RequestParam("qId") long qId, @RequestParam("text") String text){

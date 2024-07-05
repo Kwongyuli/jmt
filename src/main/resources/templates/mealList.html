@@ -107,6 +107,14 @@
             <div id="head">
                 <div>식사 리스트</div>
             </div>
+
+            <div>
+                <button onclick="location.href='?sort=viewCount'">조회수 많은 순</button>
+                <button onclick="location.href='?sort=upvotes'">추천수순 정렬</button>
+                <button onclick="location.href='?sort='">원래대로</button>
+            </div>
+
+
             <div id="con">
                 <div class="search">
                     <form th:action="@{/meals/list}" method="get" class="search">
@@ -124,6 +132,7 @@
                             <th style="width:14%">작성일</th>
                             <th style="width:14%">글쓴이</th>
                             <th style="width:8%">조회수</th>
+                            <th style="width:14%">추천수</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,8 +140,9 @@
                             <td th:text="${meal.id}"></td>
                             <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="@{|${meal.title} [댓]|}"></a></td>
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
-                            <td>이예림ㅇㅇㅇㅇㅇ</td>
-                            <td>조회</td>
+                            <td th:text="${user.name}"></td>
+                            <td th:text="${meal.viewCount}"></td>
+                            <td th:text="${meal.upvotes}"></td>
                         </tr>
                         <tr>
                             <td colspan="5">

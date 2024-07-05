@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>나의 Desert 글 목록</title>
+</head>
+
+<body>
+    <h1>나의 Desert 글 목록</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th>추천수</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="desert : ${deserts}">
+                <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title}"></a></td>
+                <td th:text="${desert.content}"></td>
+                <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+                <td th:text="${desert.viewCount}"></td>
+                <td th:text="${desert.upvotes}"></td>
+                <td><a th:href="@{/deserts/{id}/edit(id=${desert.id})}">수정</a></td>
+                <td>
+                    <form th:action="@{/deserts/{id}/delete(id=${desert.id})}" method="post">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/deserts/write" id="write-desert-btn">Desert 글 작성</a>
+    <a href="/deserts/list" id="list-desert-btn">Desert 글 리스트</a>
+
+</body>
+
+</html>

@@ -33,4 +33,7 @@ public class FileInfo {
     @JoinColumn(name = "pub_id")
     private Pub pub;
 
+    @ManyToOne
+    User user;
+
 }

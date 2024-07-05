@@ -1,5 +1,6 @@
 package com.example.jmt.pub.model;
 
+import com.example.jmt.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
+import com.example.jmt.model.User;
 
 @Data
 @Entity
@@ -25,11 +28,16 @@ public class CommentPub {
     @JoinColumn(name = "pub_id")
     private Pub pub;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public CommentPub(Long id, String comment, LocalDateTime createdAt, Pub pub) {
+    public CommentPub(Long id, String comment, LocalDateTime createdAt, Pub pub, User user) {
         this.id = id;
         this.comment = comment;
         this.createdAt = createdAt;
         this.pub = pub;
+        this.user = user;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.jmt.desert.request;
 
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,10 +22,12 @@ public class DesertUpdate {
     private double lng; // 경도
     private List<FileInfo> fileInfos; // fileInfos 필드 추가
 
+    private User user;
+
 
     @Builder
     public DesertUpdate(Long id, String title, String content, LocalDateTime createdAt,
-                        LocalDateTime updatedAt, double lat, double lng, List<FileInfo> fileInfos) {
+                        LocalDateTime updatedAt, double lat, double lng, List<FileInfo> fileInfos, User user) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -32,5 +36,6 @@ public class DesertUpdate {
         this.lat = lat;
         this.lng = lng;
         this.fileInfos = fileInfos;
+        this.user = user;
     }
 }

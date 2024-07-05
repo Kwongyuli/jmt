@@ -1,5 +1,6 @@
 package com.example.jmt.pub.service;
 
+import com.example.jmt.entity.User;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.model.VotePub;
 import com.example.jmt.pub.repository.PubRepository;
@@ -7,7 +8,10 @@ import com.example.jmt.pub.repository.VotePubRepository;
 import com.example.jmt.pub.request.PubCreate;
 import com.example.jmt.pub.request.PubUpdate;
 import com.example.jmt.pub.response.PubResponse;
+import com.example.jmt.desert.model.Desert;
+import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +42,7 @@ public class PubService {
     private final FileInfoRepository fileInfoRepository;
 
     //  글 저장 메서드 _ 엔티티로 넘기기
-    public Pub write(PubCreate pubCreate, MultipartFile[] files) throws IOException {
+    public Pub write(PubCreate pubCreate, MultipartFile[] files, User user) throws IOException {
 
         Pub pub = Pub.builder()
                 .title(pubCreate.getTitle())
@@ -46,6 +51,7 @@ public class PubService {
                 .lng(pubCreate.getLng())
                 .createdAt(pubCreate.getCreatedAt())
                 .viewCount(0) // 처음 글 작성시 조회수 0 으로 초기화
+                .user(user)
                 .build();
 
         Pub savedPub = pubRepository.save(pub);
@@ -59,25 +65,56 @@ public class PubService {
         return savedPub;
     }
 
-    // 추천/비추천 메서드
-    public void upvote(Long pubId) {
-        Pub pub = pubRepository.findById(pubId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        VotePub vote = VotePub.builder()
-                .pub(pub)
-                .upvote(true)
-                .build();
-        votePubRepository.save(vote);
+    // 추천 메서드
+    public String upvote(Long pubId, User user) {
+        Optional<VotePub> existingVote = Optional.ofNullable(votePubRepository.findByPubIdAndUserId(pubId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (existingVote.get().isUpvote()) {
+                votePubRepository.delete(existingVote.get());
+                return "추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(true);
+                votePubRepository.save(existingVote.get());
+                return "비추천을 추천으로 변경했습니다.";
+            }
+        } else {
+            Pub pub = pubRepository.findById(pubId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            VotePub vote = VotePub.builder()
+                    .pub(pub)
+                    .user(user)
+                    .upvote(true)
+                    .build();
+            votePubRepository.save(vote);
+            return "추천했습니다.";
+        }
     }
 
-    public void downvote(Long pubId) {
-        Pub pub = pubRepository.findById(pubId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        VotePub votePub = VotePub.builder()
-                .pub(pub)
-                .upvote(false)
-                .build();
-        votePubRepository.save(votePub);
+    // 비추천 메서드
+    public String downvote(Long pubId, User user) {
+        Optional<VotePub> existingVote = Optional.ofNullable(votePubRepository.findByPubIdAndUserId(pubId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (!existingVote.get().isUpvote()) {
+                votePubRepository.delete(existingVote.get());
+                return "비추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(false);
+                votePubRepository.save(existingVote.get());
+                return "추천을 비추천으로 변경했습니다.";
+            }
+        } else {
+            Pub pub = pubRepository.findById(pubId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            VotePub votePub = VotePub.builder()
+                    .pub(pub)
+                    .user(user)
+                    .upvote(false)
+                    .build();
+            votePubRepository.save(votePub);
+            return "비추천했습니다.";
+        }
     }
 
     public long getUpvotes(Long pubId) {
@@ -157,15 +194,19 @@ public class PubService {
 
 
     // 글 수정
-    public PubResponse update(Long id, PubUpdate pubUpdate, MultipartFile[] files) throws IOException {
+    public PubResponse update(Long id, PubUpdate pubUpdate, MultipartFile[] files,User user) throws IOException {
         Pub pub = pubRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
+        if (!pub.getUser().equals(user)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
         pub.setTitle(pubUpdate.getTitle());
         pub.setContent(pubUpdate.getContent());
         pub.setLat(pubUpdate.getLat());
         pub.setLng(pubUpdate.getLng());
         pub.setCreatedAt(LocalDateTime.now());
+//        pub.setUser(user);
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
@@ -187,8 +228,15 @@ public class PubService {
     }
 
     // PubUpdate 객체 생성 메서드
-    public PubUpdate getPubUpdate(Long id) {
-        PubResponse pub = get(id);
+    public PubUpdate getPubUpdate(Long id, User user) {
+
+        Pub pub = pubRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        if (!pub.getUser().equals(user)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
         return PubUpdate.builder()
                 .id(pub.getId()) // pubUpdate 객체에 id 값 설정
                 .title(pub.getTitle())
@@ -201,9 +249,13 @@ public class PubService {
     }
 
     // 글 삭제
-    public void delete(Long id) {
+    public void delete(Long id, User user) {
         Pub pub = pubRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        if (!pub.getUser().equals(user)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
 
         pubRepository.delete(pub);
     }
@@ -222,7 +274,7 @@ public class PubService {
         String filename = file.getOriginalFilename();
         try {
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -239,6 +291,24 @@ public class PubService {
         } else {
             return pubRepository.countByTitleContainingOrContentContaining(search, search); // 검색 결과 게시글 수 반환
         }
+    }
+
+    // 사용자 Pub 글 목록
+    public List<PubResponse> getMyPubs(User user) {
+        List<Pub> pubList = pubRepository.findByUser(user);
+        return pubList.stream()
+                .map(pub -> PubResponse.builder()
+                        .id(pub.getId())
+                        .title(pub.getTitle())
+                        .content(pub.getContent())
+                        .createdAt(pub.getCreatedAt())
+                        .viewCount(pub.getViewCount())
+                        .upvotes(getUpvotes(pub.getId()))
+                        .downvotes(getDownvotes(pub.getId()))
+                        .fileInfos(pub.getFileInfos())
+                        .comments(pub.getCommentPubs())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
