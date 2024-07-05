@@ -30,9 +30,15 @@ public class Question {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
+    // 파일다운
     @OneToMany(mappedBy = "question")
     List<QFileInfo> qFileInfos = new ArrayList<>();
 
+    // 추천/비추천
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<VoteQuestion> voteQuestions;
+
+    // 답변
     @OneToMany(mappedBy = "question", orphanRemoval = true, cascade = CascadeType.REMOVE)
     List<Answer> answers = new ArrayList<>();
 

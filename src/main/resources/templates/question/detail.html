@@ -24,8 +24,10 @@
 
     <!--추천 비추천-->
     <div>
-        <button type="button" onclick="upvote()">추천</button>
-        <button type="button" onclick="downvote()">비추천</button>
+        <form id="voteForm" method="post">
+            <button type="button" id="upvotes" th:text="'추천👍 ' + ${upvotes}" onclick="upvote()"></button>
+            <button type="button" id="downvotes" th:text="'비추천👎 ' + ${downvotes}" onclick="downvote()"></button>
+        </form>
     </div>
 
     <!-- 목록 -->
@@ -46,34 +48,45 @@
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 
-    <!-- 답변 보이게하기 & 삭제 & 수정 -->
+    <!-- 답변 보이게하기 & 답변작성된 시간 (수정되면 수정된 시간으로 변경시킴 {고객의 소리에 대한 답변이여서}) & 삭제 & 수정 -->
     <div th:each="answer : ${question.answers}">
         <div th:text="${answer.text}"></div>
+        <div th:text="${#temporals.format(answer.createdAt, 'yyyy.MM.dd HH:mm')}"></div>
         <a class="nav-link delete-answer" href="#" th:attr="data-id=${answer.id},data-qid=${question.id}">답변 삭제</a>
-        <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a>
+        <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->
     </div>
+</body>
 
+<script>
+    // 질문 삭제
+    document.querySelector('#delete').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('삭제하시겠습니까?')) {
+            const num = e.target.getAttribute('num');
+            location = `/question/delete/${num}`;
+        }
+    });
 
-    <script>
-        // 질문 삭제
-        document.querySelector('#delete').addEventListener('click', (e) => {
+    // 답변 삭제
+    document.querySelectorAll('.delete-answer').forEach(button => {
+        button.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('삭제하시겠습니까?')) {
-                const num = e.target.getAttribute('num');
-                location = `/question/delete/${num}`;
+                const id = e.target.getAttribute('data-id');
+                const qId = e.target.getAttribute('data-qid');
+                location = `/answer/delete/${id}/${qId}`;
             }
         });
+    });
 
-        // 답변 삭제
-        document.querySelectorAll('.delete-answer').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (confirm('삭제하시겠습니까?')) {
-                    const id = e.target.getAttribute('data-id');
-                    const qId = e.target.getAttribute('data-qid');
-                    location = `/answer/delete/${id}/${qId}`;
-                }
-            });
-        });
-    </script>
-</body>
+    // 추천 비추천 
+    function upvote() {
+        document.getElementById("voteForm").action = '/question/' + [[${ question.id }]] + '/vote?vote=true';
+        document.getElementById("voteForm").submit();
+    }
+
+    function downvote() {
+        document.getElementById("voteForm").action = '/question/' + [[${ question.id }]] + '/vote?vote=false';
+        document.getElementById("voteForm").submit();
+    }
+</script>
