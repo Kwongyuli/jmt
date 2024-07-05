@@ -9,14 +9,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Vote {
+public class VoteQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "meal_id")
-    private Meal meal;
-    
+    @JoinColumn(name = "question_id")
+    Question question;
+
     private boolean upvote; // true이면 추천, false이면 비추천
 }

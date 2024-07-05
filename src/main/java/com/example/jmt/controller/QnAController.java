@@ -24,35 +24,55 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.jmt.model.Answer;
 import com.example.jmt.model.QFileInfo;
 import com.example.jmt.model.Question;
+import com.example.jmt.model.VoteQuestion;
 import com.example.jmt.repository.AnswerRepository;
 import com.example.jmt.repository.QFileInfoRepository;
 import com.example.jmt.repository.QuestionRepository;
+import com.example.jmt.repository.VoteQuestionRepository;
 
 @Controller
 public class QnAController {
     @Autowired QuestionRepository questionRepository;
     @Autowired QFileInfoRepository qFileInfoRepository;
     @Autowired AnswerRepository answerRepository;
+    @Autowired VoteQuestionRepository voteQuestionRepository;
+
+    // 추천/비추천 기능
+    @PostMapping("question/{id}/vote")
+    public String questionVote(@PathVariable("id") long id,
+                               @RequestParam("vote") boolean upvote) {
+        Optional<Question> questionOpt = questionRepository.findById(id);
+        if (questionOpt.isPresent()) {
+            Question question = questionOpt.get();
+
+            VoteQuestion voteQuestion = new VoteQuestion();
+            voteQuestion.setQuestion(question);
+            // vote.setUserId(userId);
+            voteQuestion.setUpvote(upvote);
+            voteQuestionRepository.save(voteQuestion);
+        }
+        return "redirect:/question/" + id;
+    }
 
     // 답변 수정
-    @GetMapping("/answer/edit/{id}")
-    public String answerEdit(Model model, @PathVariable("id") long id){
-        Optional<Answer> data = answerRepository.findById(id);
-        Answer answer = data.get();
-        model.addAttribute("answer", answer);
-        return "answer/edit";
-    }
+    // @GetMapping("/answer/edit/{id}")
+    // public String answerEdit(Model model, @PathVariable("id") long id){
+    //     Optional<Answer> data = answerRepository.findById(id);
+    //     Answer answer = data.get();
+    //     model.addAttribute("answer", answer);
+    //     return "answer/edit";
+    // }
 
     // 답변 수정하고 질문 상세페이지로 가기위해 qId받아오기
-    @PostMapping("/answer/edit/{id}")
-    public String answerEdit(@PathVariable("id") long id, @RequestParam("qId") long qId, @RequestParam("text") String text){
-        Optional<Answer> data = answerRepository.findById(id);
-        Answer answer = data.get();
-        answer.setText(text);
-        answer.setCreatedAt(LocalDateTime.now());
-        answerRepository.save(answer);
-        return "redirect:/question/" + qId;
-    }
+    // @PostMapping("/answer/edit/{id}")
+    // public String answerEdit(@PathVariable("id") long id, @RequestParam("qId") long qId, @RequestParam("text") String text){
+    //     Optional<Answer> data = answerRepository.findById(id);
+    //     Answer answer = data.get();
+    //     answer.setText(text);
+    //     answer.setCreatedAt(LocalDateTime.now());
+    //     answerRepository.save(answer);
+    //     return "redirect:/question/" + qId;
+    // }
 
     // 질문 수정
     @GetMapping("/question/edit/{id}")
@@ -75,6 +95,15 @@ public class QnAController {
     public String questionDetail(Model model, @PathVariable("id") long id){
         Optional<Question> data = questionRepository.findById(id);
         Question question = data.get();
+
+        // 추천기능
+        long upvotes = voteQuestionRepository.countByQuestionIdAndUpvote(id, true);
+        long downvotes = voteQuestionRepository.countByQuestionIdAndUpvote(id, false);
+
+        model.addAttribute("upvotes", upvotes);
+        model.addAttribute("downvotes", downvotes);
+        // 여기까지
+
         model.addAttribute("question", question);
         return "/question/detail";
     }
