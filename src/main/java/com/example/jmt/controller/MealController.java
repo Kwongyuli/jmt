@@ -2,6 +2,7 @@ package com.example.jmt.controller;
 
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
+import com.example.jmt.pub.response.PubResponse;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
 import com.example.jmt.request.MealCreate;
@@ -42,20 +43,18 @@ public class MealController {
     @GetMapping("/list")
     public String getMeals(Model model,
                            @RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "search", required = false) String search) {
+                           @RequestParam(value = "search", required = false) String search,
+                           @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
 
-        Sort sort = Sort.by(Sort.Order.desc("id"));
-        Pageable pageable = PageRequest.of(page - 1, 10, sort);
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        List<MealResponse> meals = mealService.getList(pageable, search, sort);
 
-        Page<Meal> mealPage = mealService.getMeals(pageable, search);
-        List<Meal> meals = mealPage.getContent();
 
-        int startPage = (page - 1) / 10 * 10 + 1;
-        int endPage = startPage + 9;
-        int total = mealPage.getTotalPages();
-        if (endPage > total) {
-            endPage = total;
-        }
+        long totalElements = mealService.getTotalCount(search); // 전체 글의 수
+        int totalPages = (int) Math.ceil((double) totalElements / 10); // 전체 페이지 수
+
+        int startPage = Math.max(1, (page - 1) / 10 * 10 + 1);
+        int endPage = Math.min(startPage + 9, totalPages);
 
         model.addAttribute("meals", meals);
         model.addAttribute("startPage", startPage);
@@ -63,6 +62,7 @@ public class MealController {
         model.addAttribute("currentPage", page);  // currentPage 변수 설정
 
         model.addAttribute("search", search);  // 검색
+        model.addAttribute("sort", sort);
 
         return "mealList";
     }

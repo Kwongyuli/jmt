@@ -9,16 +9,18 @@ import com.example.jmt.repository.VoteRepository;
 import com.example.jmt.request.MealCreate;
 import com.example.jmt.request.MealUpdate;
 import com.example.jmt.response.MealResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +45,7 @@ public class MealService {
                 .lat(mealCreate.getLat())
                 .lng(mealCreate.getLng())
                 .createdAt(mealCreate.getCreatedAt())
+                .viewCount(0) // 처음 글 작성시 조회수 0 으로 초기화
                 .build();
 
         Meal savedMeal = mealRepository.save(meal);
@@ -90,6 +93,10 @@ public class MealService {
         Meal meal = mealRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
+        // 조회수 증가 로직 추가
+        meal.setViewCount(meal.getViewCount() + 1);
+        mealRepository.save(meal);
+
         return MealResponse.builder()
                 .id(meal.getId())
                 .title(meal.getTitle())
@@ -99,14 +106,56 @@ public class MealService {
                 .createdAt(meal.getCreatedAt())
                 .fileInfos(meal.getFileInfos())
                 .comments(meal.getCommentMeals())
+                .viewCount(meal.getViewCount())
                 .build();
     }
 
     // 전체 게시글 조회
-    public List<MealResponse> getList() {
-        return mealRepository.findAll().stream()
-                .map(MealResponse::new)
+    public List<MealResponse> getList(Pageable pageable, String search, String sort) {
+        Pageable sortedPageable = pageable;
+
+        if ("viewCount".equals(sort)) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+        }
+
+        Page<Meal> meals;
+        if (search == null || search.isEmpty()) {
+            meals = mealRepository.findAll(sortedPageable);
+        } else {
+            meals = mealRepository.findByTitleContainingOrContentContaining(search, search, sortedPageable);
+        }
+
+        List<MealResponse> mealResponses = meals.stream()
+                .map(meal -> {
+                    long upvotes = getUpvotes(meal.getId());
+                    long downvotes = getDownvotes(meal.getId());
+                    return MealResponse.builder()
+                            .id(meal.getId())
+                            .title(meal.getTitle())
+                            .content(meal.getContent())
+                            .lat(meal.getLat())
+                            .lng(meal.getLng())
+                            .createdAt(meal.getCreatedAt())
+                            .viewCount(meal.getViewCount())
+                            .upvotes(upvotes)
+                            .downvotes(downvotes)
+                            .fileInfos(meal.getFileInfos())
+                            .comments(meal.getCommentMeals())
+                            .build();
+                })
                 .collect(Collectors.toList());
+
+        if ("upvotes".equals(sort)) {
+            mealResponses.sort(Comparator.comparingLong(MealResponse::getUpvotes).reversed());
+        }
+
+        int start = Math.min((int) sortedPageable.getOffset(), mealResponses.size());
+        int end = Math.min((start + sortedPageable.getPageSize()), mealResponses.size());
+
+        return mealResponses.subList(start, end);
+//        return mealRepository.findAll().stream()
+//                .map(MealResponse::new)
+//                .collect(Collectors.toList());
     }
 
     // 글 수정
@@ -185,5 +234,12 @@ public class MealService {
         fileInfo.setOriginalName(filename);
         fileInfo.setSaveName(filename);
         fileInfoRepository.save(fileInfo);
+    }
+    public long getTotalCount(String search) {
+        if (search == null || search.isEmpty()) {
+            return mealRepository.count(); // 검색어 없으면 전체 게시글 수 반환
+        } else {
+            return mealRepository.countByTitleContainingOrContentContaining(search, search); // 검색 결과 게시글 수 반환
+        }
     }
 }

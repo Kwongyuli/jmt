@@ -1,5 +1,6 @@
 package com.example.jmt.pub.service;
 
+import com.example.jmt.entity.User;
 import com.example.jmt.pub.model.CommentPub;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.repository.CommentPubRepository;
@@ -18,11 +19,12 @@ public class CommentPubService {
     private final PubRepository pubRepository;
 
     // 댓글 추가
-    public CommentPub addComment(Long pubId, String comment) {
+    public CommentPub addComment(Long pubId, String comment, User user) {
         Pub pub = pubRepository.findById(pubId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         CommentPub commentPub = CommentPub.builder()
                 .pub(pub)
+                .user(user)
                 .comment(comment)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -37,7 +39,15 @@ public class CommentPubService {
     }
 
     // 삭제
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, User user) {
+
+        CommentPub commentPub = commentPubRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        if (!commentPub.getUser().equals(user)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
         commentPubRepository.deleteById(commentId);
     }
 }

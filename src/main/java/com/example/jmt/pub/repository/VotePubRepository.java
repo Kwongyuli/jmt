@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VotePubRepository extends JpaRepository<VotePub, Long> {
     Long countByPubIdAndUpvote(Long pubId, boolean upvote);
+    VotePub findByPubIdAndUserId(Long pubId, Long userId); // 추가
 }

@@ -25,7 +25,10 @@
 
         private List<CommentMeal> comments; // 댓글
 
+        private int viewCount; // 조회수
+
         private long upvotes;
+        private long downvotes;
 
         public MealResponse(Meal meal) {
             this.id = meal.getId();
@@ -36,12 +39,13 @@
             this.createdAt = meal.getCreatedAt();
             this.fileInfos = meal.getFileInfos();  // fileInfos 필드
             this.comments = meal.getCommentMeals();
+            this.viewCount = meal.getViewCount();
         }
 
         @Builder
         public MealResponse(Long id, String title, String content, List<FileInfo> fileInfos
                 , LocalDateTime createdAt, double lat, double lng
-                ,List<CommentMeal> comments) {
+                ,List<CommentMeal> comments,int viewCount, long upvotes, long downvotes) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -50,6 +54,9 @@
             this.lat = lat;
             this.lng = lng;
             this.comments = comments;
+            this.viewCount = viewCount;
+            this.upvotes = upvotes;
+            this.downvotes = downvotes;
 
         }
     }
