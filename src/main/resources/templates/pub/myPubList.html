@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>나의 Pub 글 목록</title>
+</head>
+
+<body>
+    <h1>나의 Pub 글 목록</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th>추천수</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pub : ${pubs}">
+                <td><a th:href="@{/pubs/{id}(id=${pub.id})}" th:text="${pub.title}"></a></td>
+                <td th:text="${pub.content}"></td>
+                <td th:text="${#temporals.format(pub.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+                <td th:text="${pub.viewCount}"></td>
+                <td th:text="${pub.upvotes}"></td>
+                <td><a th:href="@{/pubs/{id}/edit(id=${pub.id})}">수정</a></td>
+                <td>
+                    <form th:action="@{/pubs/{id}/delete(id=${pub.id})}" method="post">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/pubs/write" id="write-desert-btn">Pub 글 작성</a>
+    <a href="/pubs/list" id="list-desert-btn">Pub 글 리스트</a>
+
+</body>
+
+</html>

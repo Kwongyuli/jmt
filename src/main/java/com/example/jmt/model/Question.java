@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.ToString;
@@ -28,9 +30,18 @@ public class Question {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
+    // 파일다운
     @OneToMany(mappedBy = "question")
     List<QFileInfo> qFileInfos = new ArrayList<>();
 
+    // 추천/비추천
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<VoteQuestion> voteQuestions;
+
+    // 답변
     @OneToMany(mappedBy = "question", orphanRemoval = true, cascade = CascadeType.REMOVE)
     List<Answer> answers = new ArrayList<>();
+
+    @ManyToOne
+    User user;
 }

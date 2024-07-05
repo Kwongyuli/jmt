@@ -276,6 +276,19 @@
     }
 </style>
 
+<div th:if="${not #strings.isEmpty(errorMessage)}">
+    <script th:inline="javascript">
+        alert(/*[[${errorMessage}]]*/ '기본 에러 메시지');
+        window.location.href = window.location.href; // 페이지 새로고침
+    </script>
+</div>
+
+<div th:if="${not #strings.isEmpty(message)}">
+    <script th:inline="javascript">
+        alert(/*[[${message}]]*/ '기본 메시지');
+    </script>
+</div>
+
 <body>
     <div th:replace="common/header"></div>
 
@@ -361,6 +374,133 @@
                     </table>
                 </div>
             </div>
+
+<div>
+    <!-- <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            const lat = /*[[${pub.lat}]]*/ 33.450701;
+            const lng = /*[[${pub.lng}]]*/ 126.570667;
+
+            var mapContainer = document.getElementById('map'),
+                mapOption = {
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 3
+                };
+
+            var map = new kakao.maps.Map(mapContainer, mapOption);
+
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
+
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+
+            marker.setMap(map);
+        });
+
+        function sendVote(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('upvotes').innerText = response.upvotes;
+                    document.getElementById('downvotes').innerText = response.downvotes;
+                    alert(response.message);
+                }
+            };
+            xhr.send();
+        }
+
+        function upvote() {
+            var pubId = /*[[${pub.id}]]*/ 0;
+            var url = '/pubs/' + pubId + '/upvote';
+            sendVote(url);
+        }
+
+        function downvote() {
+            var pubId = /*[[${pub.id}]]*/ 0;
+            var url = '/pubs/' + pubId + '/downvote';
+            sendVote(url);
+        }
+
+        function addComment(event) {
+            event.preventDefault();
+            const pubId = document.querySelector('#pubId').value;
+            const commentText = document.querySelector('#comment').value;
+
+            fetch('/pubs/' + pubId + '/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    comment: commentText
+                })
+            })
+                .then(response => {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            alert(data.message);
+                            if (response.status === 403) {
+                                window.location.href = '/jmt/signin'; // 로그인 페이지로 리다이렉트
+                            }
+                            throw new Error(data.message);
+                        }
+                        return data;
+                    });
+                })
+                .then(data => {
+                    alert(data.message);
+                    const commentsList = document.querySelector('ul');
+                    const newComment = document.createElement('li');
+                    newComment.innerHTML = `<p>${commentText}</p><span>${data.username}</span>
+                                            <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
+                                                <button type="submit">삭제</button>
+                                            </form>`;
+                    commentsList.appendChild(newComment);
+                    document.querySelector('#comment').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function deleteComment(event, pubId, commentId) {
+            event.preventDefault();
+            if (confirm('삭제하시겠습니까?')) {
+                fetch(`/pubs/${pubId}/comment/${commentId}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            event.target.closest('li').remove();
+                        } else {
+                            return response.json().then(data => {
+                                alert(data.message);
+                                throw new Error(data.message);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+
+        /*]]>*/
+    </script> -->
+
+
+    <div>
+        <div th:each="fileInfo : ${pub.fileInfos}">
+            <img th:src="@{|/download?fileId=${fileInfo.id}|}" style="max-width: 100px; max-height: 100px;">
         </div>
     </div>
 

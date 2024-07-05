@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Signin</title>
+    <title>Login</title>
+    <script>
+        window.onload = function() {
+            // Thymeleaf 변수를 사용하여 message를 가져옵니다
+            let message = /*[[${message}]]*/ 'null';
+            if (message !== 'null' && message !== '') {
+                alert(message);
+            }
+        };
+    </script>
 </head>
-
 <body>
-    <div th:replace="common/header"></div>
-
-    <div class="container">
-        <h1>로그인 페이지</h1>
-    </div>
-
-    <div class="footer"></div>
+<form method="post" action="/jmt/signin">
+    <input type="text" name="userId" placeholder="id">
+    <input type="password" name="pw" placeholder="password">
+    <button>Sign In</button>
+</form>
 </body>
-
 </html>

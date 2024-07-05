@@ -17,6 +17,9 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "meal_id")
     private Meal meal;
-
+    
     private boolean upvote; // true이면 추천, false이면 비추천
+
+    @ManyToOne
+    User user;
 }

@@ -1,5 +1,6 @@
 package com.example.jmt.pub.controller;
 
+import com.example.jmt.model.User;
 import com.example.jmt.pub.model.CommentPub;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.repository.PubRepository;
@@ -10,15 +11,18 @@ import com.example.jmt.pub.service.CommentPubService;
 import com.example.jmt.pub.service.PubService;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.service.FileInfoService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,13 +39,15 @@ public class PubController {
     private final CommentPubService commentPubService;
     private final PubRepository pubRepository;
     private final FileInfoService fileInfoService;
+    private final HttpSession session;
+
 
     // 게시글 목록
     @GetMapping("/list")
     public String getPubs(Model model,
-                             @RequestParam(value = "page", defaultValue = "1") int page,
-                             @RequestParam(value = "search", required = false) String search,
-                             @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
+                          @RequestParam(value = "page", defaultValue = "1") int page,
+                          @RequestParam(value = "search", required = false) String search,
+                          @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
 
 
         Pageable pageable = PageRequest.of(page - 1, 10);
@@ -52,15 +58,6 @@ public class PubController {
 
         int startPage = Math.max(1, (page - 1) / 10 * 10 + 1);
         int endPage = Math.min(startPage + 9, totalPages);
-
-//        int startPage = (page - 1) / 10 * 10 + 1;
-//        int endPage = startPage + 9;
-////        int total = (int) pubRepository.count();
-//        int total = (int) pubService.getTotalCount(search); // 전체 페이지 수
-//
-//        if (endPage > total) {
-//            endPage = total;
-//        }
 
         model.addAttribute("pubs", pubs);
         model.addAttribute("startPage", startPage);
@@ -76,8 +73,13 @@ public class PubController {
 
     // 글 상세페이지
     @GetMapping("/{id}")
-    public String getPub(@PathVariable Long id, Model model) {
+    public String getPub(@PathVariable Long id, Model model,  RedirectAttributes redirectAttributes) {
         PubResponse pub = pubService.get(id);
+
+        if (pub == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "해당 글을 찾을 수 없습니다.");
+            return "redirect:/pubs/list"; // 목록 페이지로 리디렉션
+        }
 
         List<CommentPub> comments = commentPubService.getCommentsByPub(id);
 
@@ -97,83 +99,133 @@ public class PubController {
 
     // 글 작성
     @PostMapping("/write")
-    public String createPub(@Valid @ModelAttribute PubCreate pubCreate, @RequestParam("files") MultipartFile[] files) throws IOException {
-        Pub savedPub = pubService.write(pubCreate, files);
+    public String createPub(@Valid @ModelAttribute PubCreate pubCreate,
+                            @RequestParam("files") MultipartFile[] files) throws IOException {
+
+        User user = getCurrentUser();
+
+        Pub savedPub = pubService.write(pubCreate, files, user);
         return "redirect:/pubs/" + savedPub.getId();
     }
 
 
-    //댓글 쓰기 메서드
+    // 댓글 쓰기 메서드
     @PostMapping("/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestParam("comment") String comment) {
-        commentPubService.addComment(id, comment);
-        return "redirect:/pubs/" + id;
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> addComment(@PathVariable Long id, @RequestParam("comment") String comment) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            User user = getCurrentUser();
+            CommentPub commentPub = commentPubService.addComment(id, comment, user);
+            response.put("message", "댓글이 추가되었습니다.");
+            response.put("username", user.getName());
+            response.put("commentId", String.valueOf(commentPub.getId())); // commentId 추가
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            response.put("message", "로그인해주세요.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     // 댓글 삭제
     @PostMapping("/{id}/comment/{commentId}/delete")
     public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
-        commentPubService.deleteComment(commentId);
+
+        User user = getCurrentUser();
+
+        commentPubService.deleteComment(commentId, user);
         return "redirect:/pubs/" + id;
     }
 
     @GetMapping("/{id}/edit")
-    public String editPubForm(@PathVariable Long id, Model model) {
-        PubUpdate pubUpdate = pubService.getPubUpdate(id);
-        pubUpdate.setId(id); // pubUpdate 객체에 id 값 설정
-        model.addAttribute("pubUpdate", pubUpdate);
-        return "pub/pubEditForm";
+    public String editPubForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            User user = getCurrentUser();
+            PubUpdate pubUpdate = pubService.getPubUpdate(id, user);
+
+            if (!user.getId().equals(pubUpdate.getUserId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "해당 글 작성자가 아닙니다.");
+                return "redirect:/pubs/" + id;
+            }
+
+            model.addAttribute("pubUpdate", pubUpdate);
+            return "pub/pubEditForm";
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "로그인해주세요.");
+            return "redirect:/jmt/signin";
+        }
     }
 
     // 글 수정
     @PostMapping("/{id}")
     public String updatePub(@PathVariable Long id, @ModelAttribute PubUpdate pubUpdate, @RequestParam("files") MultipartFile[] files) throws IOException {
-        pubService.update(id, pubUpdate, files);
+        User user = getCurrentUser();
+        pubService.update(id, pubUpdate, files, user);
         return "redirect:/pubs/" + id;
     }
 
     // 글 삭제
+//    @PostMapping("/{id}/delete")
+//    public String deletePub(@PathVariable Long id) {
+//
+//        User user = getCurrentUser();
+//
+//        pubService.delete(id, user);
+//        return "redirect:/pubs/list";
+//    }
+
     @PostMapping("/{id}/delete")
-    public String deletePub(@PathVariable Long id) {
-        pubService.delete(id);
-        return "redirect:/pubs/list";
+    public String deletePub(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            User user = getCurrentUser();
+            Pub pub = pubService.getPubById(id);
+
+            if (!user.getId().equals(pub.getUser().getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "해당 글 작성자가 아닙니다.");
+                return "redirect:/pubs/" + id;
+            }
+
+            pubService.delete(id, user);
+            redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
+            return "redirect:/pubs/list";
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "로그인해주세요.");
+            return "redirect:/jmt/signin";
+        }
     }
 
-//    // 추천/비추천 컨트롤러
-//    @PostMapping("/{id}/upvote")
-//    public String upvotePub(@PathVariable Long id) {
-//        pubService.upvote(id);
-//        return "redirect:/pubs/" + id;
-//    }
-//
-//    @PostMapping("/{id}/downvote")
-//    public String downvotePub(@PathVariable Long id) {
-//        pubService.downvote(id);
-//        return "redirect:/pubs/" + id;
-//    }
-@PostMapping("/{id}/upvote")
-@ResponseBody
-public ResponseEntity<Map<String, Long>> upvotePub(@PathVariable Long id) {
-    pubService.upvote(id);
-    long upvotes = pubService.getUpvotes(id);
-    long downvotes = pubService.getDownvotes(id);
-    Map<String, Long> response = new HashMap<>();
-    response.put("upvotes", upvotes);
-    response.put("downvotes", downvotes);
-    return ResponseEntity.ok(response);
-}
+    @PostMapping("/{id}/upvote")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> upvotePub(@PathVariable Long id) {
+
+        User user = getCurrentUser();
+        String message = pubService.upvote(id, user);
+        long upvotes = pubService.getUpvotes(id);
+        long downvotes = pubService.getDownvotes(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("upvotes", upvotes);
+        response.put("downvotes", downvotes);
+        response.put("message", message);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/{id}/downvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> downvotePub(@PathVariable Long id) {
-        pubService.downvote(id);
+    public ResponseEntity<Map<String, Object>> downvotePub(@PathVariable Long id) {
+        User user = getCurrentUser();
+        String message = pubService.downvote(id, user);
         long upvotes = pubService.getUpvotes(id);
         long downvotes = pubService.getDownvotes(id);
-        Map<String, Long> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("upvotes", upvotes);
         response.put("downvotes", downvotes);
+        response.put("message", message);
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<?> deleteFile(@RequestParam Integer fileId) {
@@ -181,4 +233,25 @@ public ResponseEntity<Map<String, Long>> upvotePub(@PathVariable Long id) {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/myPubList")
+    public String getMyPubs(Model model, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("user_info");
+
+        if (loggedInUser == null) {
+            return "redirect:/jmt/signin";
+        }
+
+        List<PubResponse> myPubs = pubService.getMyPubs(loggedInUser);
+
+        model.addAttribute("pubs", myPubs);
+        return "/pub/myPubList";
+    }
+
+    private User getCurrentUser() {
+        User user = (User) session.getAttribute("user_info");
+        if (user == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return user;
+    }
 }

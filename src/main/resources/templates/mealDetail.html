@@ -316,7 +316,7 @@
                 <div class="recommend">
                     <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
                     <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
-                        onclick="downvote()"></button>
+                        onclick="downvote()">비추천</button>
                 </div>
 
                 <div class="button">
@@ -365,6 +365,83 @@
     </div>
 
     <div class="footer"></div>
+
+    <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
+            const lat = /*[[${meal.lat}]]*/ 33.450701;
+            const lng = /*[[${meal.lng}]]*/ 126.570667;
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                    level: 3 // 지도의 확대 레벨
+                };
+            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+            // 마커가 표시될 위치입니다
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
+            // 마커를 생성합니다
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+            // 마커가 지도 위에 표시되도록 설정합니다
+            marker.setMap(map);
+        });
+
+        function sendVote(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
+                    document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+                    alert(response.message);
+                }
+            };
+            xhr.send();
+        }
+
+        function upvote() {
+            var mealId = /*[[${meal.id}]]*/ 0;
+            var url = '/meals/' + mealId + '/upvote';
+            sendVote(url);
+        }
+
+        function downvote() {
+            var mealId = /*[[${meal.id}]]*/ 0;
+            var url = '/meals/' + mealId + '/downvote';
+            sendVote(url);
+        }
+
+
+        // 댓글 삭제
+        function deleteComment(commentId) {
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                window.location.href = '/login';
+                return;
+            }
+
+            var mealId = /*[[${meal.id}]]*/ 0;
+            var url = '/meals/' + mealId + '/comment/' + commentId + '/delete';
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    window.location.reload();
+                }
+            };
+            xhr.send();
+        }
+
+        /*]]>*/
+    </script>
+
 </body>
 
 <script>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find User ID</title>
+    <style>
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>아이디 찾기</h1>
+    <form id="findUserIdForm" method="post" action="/jmt/findUserId">
+        <label for="name">이름 : </label>
+        <input type="text" id="name" name="name"> <br>
+
+        <label for="email">이메일 : </label>
+        <input type="email" id="email" name="email"> <br>
+
+        <div class="resultMessage" style="display: none;">아이디를 찾을 수 없습니다.</div>
+
+        <button type="submit" id="findUserIdBtn" class="disabled" disabled>아이디 찾기</button>
+    </form>
+
+    <script>
+        let nameInput = document.querySelector('#name');
+        let emailInput = document.querySelector('#email');
+        let resultMessage = document.querySelector('.resultMessage');
+        let findUserIdBtn = document.querySelector('#findUserIdBtn');
+
+        function checkFormValidity() {
+            const nameValid = nameInput.value.length > 0;
+            const emailValid = emailInput.value.length > 0 && emailInput.validity.valid;
+
+            if (nameValid && emailValid) {
+                findUserIdBtn.disabled = false;
+                findUserIdBtn.classList.remove('disabled');
+            } else {
+                findUserIdBtn.disabled = true;
+                findUserIdBtn.classList.add('disabled');
+            }
+        }
+
+        nameInput.addEventListener('input', checkFormValidity);
+        emailInput.addEventListener('input', checkFormValidity);
+
+        document.querySelector('#findUserIdForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            fetch('/jmt/findUserId', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    alert('아이디: ' + data.userId);
+                    resultMessage.style.display = 'none';
+                } else {
+                    resultMessage.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

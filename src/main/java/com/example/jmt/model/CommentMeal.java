@@ -29,4 +29,7 @@ public class CommentMeal {
         this.createdAt = createdAt;
         this.meal = meal;
     }
+
+    @ManyToOne
+    User user;
 }

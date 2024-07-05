@@ -1,28 +1,46 @@
 <style>
-    #img{width: 200px;}
+    #img {
+        width: 200px;
+    }
 </style>
 
 질문 상세 페이지 입니다.
+
 <body>
-    몇번째 글 <br>  <br> 작성자 <br> <br>
-    
-    <h2>제목: </h2>
-    <div th:text="${question.title}"></div>
+    몇번째 글 <br> <br> 작성자 <br> <br>
+
+    <!-- 제목 -->
+    <div class="mb-3">
+        <label for="title">제목:</label>
+        <input type="text" class="form-control" id="title" name="title" th:value="${question.title}">
+    </div>
     <h5>내용: </h5>
+    <!-- 내용 -->
     <div th:text="${question.content}"></div>
+    <!-- 사진 -->
     <div>
-        <img id="img" th:each="fileInfo : ${question.qFileInfos}"
-            th:src="@{|/down?fileId=${fileInfo.id}|}">
+        <img id="img" th:each="fileInfo : ${question.qFileInfos}" th:src="@{|/down?fileId=${fileInfo.id}|}">
     </div>
 
+    <!--추천 비추천-->
+    <div>
+        <form id="voteForm" method="post">
+            <button type="button" id="upvotes" th:text="'추천👍 ' + ${upvotes}" onclick="upvote()"></button>
+            <button type="button" id="downvotes" th:text="'비추천👎 ' + ${downvotes}" onclick="downvote()"></button>
+        </form>
+    </div>
+
+    <!-- 목록 -->
     <a class="nav-link" th:href="@{|/question/list|}" id="list">목록</a>
-    
+
     <br>
-    
+
+    <!-- 질문 수정 -->
     <a class="nav-link" th:href="@{|/question/edit/${question.id}|}" id="edit">수정</a>
 
     <br>
 
+    <!-- 질문 삭제 -->
     <a class="nav-link" href="#" id="delete" th:num="${question.id}">삭제</a>
 
     <form th:action="@{|/question/${question.id}|}" method="post" class="my-3">
@@ -30,31 +48,45 @@
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 
+    <!-- 답변 보이게하기 & 답변작성된 시간 (수정되면 수정된 시간으로 변경시킴 {고객의 소리에 대한 답변이여서}) & 삭제 & 수정 -->
     <div th:each="answer : ${question.answers}">
         <div th:text="${answer.text}"></div>
+        <div th:text="${#temporals.format(answer.createdAt, 'yyyy.MM.dd HH:mm')}"></div>
         <a class="nav-link delete-answer" href="#" th:attr="data-id=${answer.id},data-qid=${question.id}">답변 삭제</a>
-        <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a>
+        <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->
     </div>
-    
+</body>
 
-    <script>
-        document.querySelector('#delete').addEventListener('click', (e) => {
+<script>
+    // 질문 삭제
+    document.querySelector('#delete').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('삭제하시겠습니까?')) {
+            const num = e.target.getAttribute('num');
+            location = `/question/delete/${num}`;
+        }
+    });
+
+    // 답변 삭제
+    document.querySelectorAll('.delete-answer').forEach(button => {
+        button.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('삭제하시겠습니까?')) {
-                const num = e.target.getAttribute('num');
-                location = `/question/delete/${num}`;
+                const id = e.target.getAttribute('data-id');
+                const qId = e.target.getAttribute('data-qid');
+                location = `/answer/delete/${id}/${qId}`;
             }
         });
+    });
 
-        document.querySelectorAll('.delete-answer').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (confirm('삭제하시겠습니까?')) {
-                    const id = e.target.getAttribute('data-id');
-                    const qId = e.target.getAttribute('data-qid');
-                    location = `/answer/delete/${id}/${qId}`;
-                }
-            });
-        });
-    </script>
-</body>
+    // 추천 비추천 
+    function upvote() {
+        document.getElementById("voteForm").action = '/question/' + [[${ question.id }]] + '/vote?vote=true';
+        document.getElementById("voteForm").submit();
+    }
+
+    function downvote() {
+        document.getElementById("voteForm").action = '/question/' + [[${ question.id }]] + '/vote?vote=false';
+        document.getElementById("voteForm").submit();
+    }
+</script>

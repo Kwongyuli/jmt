@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,34 +24,71 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.jmt.model.Answer;
 import com.example.jmt.model.QFileInfo;
 import com.example.jmt.model.Question;
+import com.example.jmt.model.VoteQuestion;
 import com.example.jmt.repository.AnswerRepository;
 import com.example.jmt.repository.QFileInfoRepository;
 import com.example.jmt.repository.QuestionRepository;
+import com.example.jmt.repository.VoteQuestionRepository;
 
 @Controller
 public class QnAController {
     @Autowired QuestionRepository questionRepository;
     @Autowired QFileInfoRepository qFileInfoRepository;
     @Autowired AnswerRepository answerRepository;
+    @Autowired VoteQuestionRepository voteQuestionRepository;
+
+    // 추천/비추천 기능
+    @PostMapping("question/{id}/vote")
+    public String questionVote(@PathVariable("id") long id,
+                               @RequestParam("vote") boolean upvote) {
+        Optional<Question> questionOpt = questionRepository.findById(id);
+        if (questionOpt.isPresent()) {
+            Question question = questionOpt.get();
+
+            VoteQuestion voteQuestion = new VoteQuestion();
+            voteQuestion.setQuestion(question);
+            // vote.setUserId(userId);
+            voteQuestion.setUpvote(upvote);
+            voteQuestionRepository.save(voteQuestion);
+        }
+        return "redirect:/question/" + id;
+    }
 
     // 답변 수정
-    @GetMapping("/answer/edit/{id}")
-    public String answerEdit(Model model, @PathVariable("id") long id){
-        Optional<Answer> data = answerRepository.findById(id);
-        Answer answer = data.get();
-        model.addAttribute("answer", answer);
-        return "answer/edit";
-    }
+    // @GetMapping("/answer/edit/{id}")
+    // public String answerEdit(Model model, @PathVariable("id") long id){
+    //     Optional<Answer> data = answerRepository.findById(id);
+    //     Answer answer = data.get();
+    //     model.addAttribute("answer", answer);
+    //     return "answer/edit";
+    // }
 
-    @PostMapping("/answer/edit/{id}")
-    public String answerEdit(@PathVariable("id") long id, @RequestParam("qId") long qId, @RequestParam("text") String text){
-        Optional<Answer> data = answerRepository.findById(id);
-        Answer answer = data.get();
-        answer.setText(text);
-        answer.setCreatedAt(LocalDateTime.now());
-        answerRepository.save(answer);
-        return "redirect:/question/" + qId;
-    }
+    // 답변에 대한 추천 및 비추천 기능
+//    // 추천 및 비추천 기능
+//    @GetMapping("/question/vote/{id}")
+//    public String questionVote(@PathVariable("id") long id,
+//                               @RequestParam("vote") boolean upvote) {
+//        Optional<Question> questionOpt = questionRepository.findById(id);
+//        if (questionOpt.isPresent()) {
+//            Question question = questionOpt.get();
+//
+//            Vote vote = new Vote();
+//            vote.setQuestion(question);
+//            vote.setUpvote(upvote);
+//            voteRepository.save(vote);
+//        }
+//        return "redirect:/question/" + id;
+//    }
+    // 답변 수정하고 질문 상세페이지로 가기위해 qId받아오기
+    // @PostMapping("/answer/edit/{id}")
+    // public String answerEdit(@PathVariable("id") long id, @RequestParam("qId") long qId, @RequestParam("text") String text){
+    //     Optional<Answer> data = answerRepository.findById(id);
+    //     Answer answer = data.get();
+    //     answer.setText(text);
+    //     answer.setCreatedAt(LocalDateTime.now());
+    //     answerRepository.save(answer);
+    //     return "redirect:/question/" + qId;
+    // }
 
     // 질문 수정
     @GetMapping("/question/edit/{id}")
@@ -69,6 +111,15 @@ public class QnAController {
     public String questionDetail(Model model, @PathVariable("id") long id){
         Optional<Question> data = questionRepository.findById(id);
         Question question = data.get();
+
+        // 추천기능
+        long upvotes = voteQuestionRepository.countByQuestionIdAndUpvote(id, true);
+        long downvotes = voteQuestionRepository.countByQuestionIdAndUpvote(id, false);
+
+        model.addAttribute("upvotes", upvotes);
+        model.addAttribute("downvotes", downvotes);
+        // 여기까지
+
         model.addAttribute("question", question);
         return "/question/detail";
     }
@@ -95,7 +146,7 @@ public class QnAController {
 
     @PostMapping("/question/form")
     public String questionForm(@ModelAttribute Question question,
-    @RequestParam("file") MultipartFile qFile){
+                               @RequestParam("file") MultipartFile qFile){
 
         String fileName = qFile.getOriginalFilename();
 
@@ -115,11 +166,14 @@ public class QnAController {
         fileInfo.setOriginalName(fileName);
         fileInfo.setSaveName(fileName);
         qFileInfoRepository.save(fileInfo);
-        
-        return "redirect:/question/list";
+
+        // 글 작성 후 상세 page로 가게 하기
+        Long id = question.getId();
+
+        return "redirect:/question/" + id;
     }
 
-    // 질문 삭제 
+    // 질문 삭제 (파일도 삭제 해줘야해서)
     @GetMapping("/question/delete/{id}")
 	public String questionDelete(@PathVariable("id") long id) {
         Question question = new Question();
@@ -144,9 +198,37 @@ public class QnAController {
 
     // QnA 리스트
     @GetMapping("/question/list")
-    public String questionList(Model model){
-        List<Question> list = questionRepository.findAll();         
-        model.addAttribute("list", list);
+    public String questionList(Model model, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "search", required = false) String search){
+
+        Sort sort = Sort.by(Order.desc("id")); 
+        Pageable pageable = PageRequest.of(page - 1, 10, sort);
+
+        Page<Question> questionPage = null;
+        List<Question> question = null;
+
+        if(search == null){
+			questionPage = questionRepository.findAll(pageable);
+		} else{
+			questionPage = questionRepository.findByTitleContainingOrContentContaining(search, search, pageable);
+		}
+
+		question = questionPage.getContent();
+
+        int startPage = (page - 1) / 10 * 10 + 1;
+        int endPage = startPage + 9;
+		int totalPage = questionPage.getTotalPages();
+		if(endPage > totalPage){
+			endPage = totalPage;
+		}
+        
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("question", question);
+        model.addAttribute("currentPage", page);  // currentPage 변수 설정
+
+        model.addAttribute("search", search);  // 검색
+
         return "/question/list";
     }
 }

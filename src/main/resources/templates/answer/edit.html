@@ -1,18 +1,17 @@
 답변 수정 페이지 입니다.
 
 <body>
-    <div class="container mt-5">
-        <div class="row">
-          <form method="post" th:action="@{|/answer/edit/${answer.id}?qId=${answer.question.id}|}">
-            <div class="mb-3">
-              <label for="content">내용:</label>
-              <textarea class="form-control" rows="5" name="text" 
-                    id="content">[[ ${answer.text} ]]</textarea>
-            </div>
-            <div class="d-grid gap-2">
-              <button class="btn btn-primary" id="complete">수정완료</button>
-            </div>
-          </form>
+  <div class="container mt-5">
+    <div class="row">
+      <form method="post" th:action="@{|/answer/edit/${answer.id}?qId=${answer.question.id}|}">
+        <div class="mb-3">
+          <label for="content">내용:</label>
+          <textarea class="form-control" rows="5" name="text" id="content">[[ ${answer.text} ]]</textarea>
         </div>
-      </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" id="complete">수정완료</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>

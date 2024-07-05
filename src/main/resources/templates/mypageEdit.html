@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <style>
+        #editForm {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Page</h1>
+    <div id="userInfo">
+        <p>ID: <span th:text="${user.userId}"></span></p>
+        <p>Name: <span th:text="${user.name}"></span></p>
+    </div>
+    <form id="editForm" th:action="@{/jmt/mypageEdit}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{userId}">
+        <label for="name">이름:</label>
+        <input type="text" id="name" th:field="*{name}">
+        <label for="currentPw">현재 비밀번호:</label>
+        <input type="password" id="currentPw">
+        <label for="newPw">새로운 비밀번호:</label>
+        <input type="password" id="newPw" th:field="*{pw}">
+        <label for="name">이메일:</label>
+        <input type="text" id="email" th:field="*{email}">
+        <button type="submit" id="saveButton">저장</button>
+    </form>
+
+    <button id="editButton">수정</button>
+    <button id="deleteButton">회원탈퇴</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var editForm = document.getElementById('editForm');
+            var editButton = document.getElementById('editButton');
+            var userInfo = document.getElementById('userInfo');
+
+            editButton.addEventListener('click', function () {
+                userInfo.style.display = 'none';
+                editForm.style.display = 'block';
+                editButton.style.display = 'none';
+                deleteButton.style.display = 'none';
+            });
+        });
+
+        saveButton.addEventListener('click', function () {
+            var currentPassword = currentPw.value;
+            if (currentPassword.trim() !== '') {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/jmt/checkCurrentPassword', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response.correct) {
+                                editForm.submit();
+                            } else {
+                                alert('현재 비밀번호가 일치하지 않습니다.');
+                            }
+                        } else {
+                            alert('서버 오류: ' + xhr.status);
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify({ currentPassword: currentPassword }));
+            } else {
+                alert('현재 비밀번호를 입력하세요.');
+            }
+        });
+
+        deleteButton.addEventListener('click', function () {
+            var confirmDelete = confirm("정말 회원탈퇴를 하시겠습니까?");
+            if (confirmDelete) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/jmt/deleteAccount', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            alert('회원탈퇴가 완료되었습니다.');
+                            window.location.href = '/jmt/signin';
+                        } else {
+                            alert('회원탈퇴에 실패하였습니다.');
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        });
+    </script>
+</body>
+
+</html>
