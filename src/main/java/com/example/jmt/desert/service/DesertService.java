@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,25 +57,56 @@ public class DesertService {
         return savedDesert;
     }
 
-    // 추천/비추천 메서드
-    public void upvote(Long desertId) {
-        Desert desert = desertRepository.findById(desertId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        VoteDesert vote = VoteDesert.builder()
-                .desert(desert)
-                .upvote(true)
-                .build();
-        voteDesertRepository.save(vote);
+    // 추천 메서드
+    public String upvote(Long desertId, User user) {
+        Optional<VoteDesert> existingVote = Optional.ofNullable(voteDesertRepository.findByDesertIdAndUserId(desertId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (existingVote.get().isUpvote()) {
+                voteDesertRepository.delete(existingVote.get());
+                return "추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(true);
+                voteDesertRepository.save(existingVote.get());
+                return "비추천을 추천으로 변경했습니다.";
+            }
+        } else {
+            Desert desert = desertRepository.findById(desertId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            VoteDesert vote = VoteDesert.builder()
+                    .desert(desert)
+                    .user(user)
+                    .upvote(true)
+                    .build();
+            voteDesertRepository.save(vote);
+            return "추천했습니다.";
+        }
     }
 
-    public void downvote(Long desertId) {
-        Desert desert = desertRepository.findById(desertId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        VoteDesert voteDesert = VoteDesert.builder()
-                .desert(desert)
-                .upvote(false)
-                .build();
-        voteDesertRepository.save(voteDesert);
+    // 비추천 메서드
+    public String downvote(Long desertId, User user) {
+        Optional<VoteDesert> existingVote = Optional.ofNullable(voteDesertRepository.findByDesertIdAndUserId(desertId, user.getId()));
+
+        if (existingVote.isPresent()) {
+            if (!existingVote.get().isUpvote()) {
+                voteDesertRepository.delete(existingVote.get());
+                return "비추천을 취소했습니다.";
+            } else {
+                existingVote.get().setUpvote(false);
+                voteDesertRepository.save(existingVote.get());
+                return "추천을 비추천으로 변경했습니다.";
+            }
+        } else {
+            Desert desert = desertRepository.findById(desertId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+            VoteDesert voteDesert = VoteDesert.builder()
+                    .desert(desert)
+                    .user(user)
+                    .upvote(false)
+                    .build();
+            voteDesertRepository.save(voteDesert);
+            return "비추천했습니다.";
+        }
     }
 
     public long getUpvotes(Long desertId) {
@@ -139,6 +171,7 @@ public class DesertService {
                             .downvotes(downvotes)
                             .fileInfos(desert.getFileInfos())
                             .comments(desert.getCommentDeserts())
+                            .commentCount(desert.getCommentDeserts().size()) // 댓글 개수 설정
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -183,10 +216,14 @@ public class DesertService {
     }
 
     // DesertUpdate 객체 생성 메서드
-    public DesertUpdate getDesertUpdate(Long id) {
-        DesertResponse desert = get(id);
+    public DesertUpdate getDesertUpdate(Long id,User user) {
+
+        Desert desert = desertRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
         return DesertUpdate.builder()
                 .id(desert.getId()) // desertUpdate 객체에 id 값 설정
+                .userId(desert.getUser().getId())
                 .title(desert.getTitle())
                 .content(desert.getContent())
                 .createdAt(desert.getCreatedAt())
@@ -217,7 +254,7 @@ public class DesertService {
     private void saveFile(MultipartFile file, Desert desert) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
+            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }

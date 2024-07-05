@@ -11,7 +11,6 @@ import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
-// 내부에서 쓰기 위함 (내부 관계자용)
 @Component
 public class Mailer {
     public void sendMail(

@@ -21,7 +21,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns(
                         "/meals/write", "/meals/*/edit", "/meals/*/delete",
-                        "/deserts/write", "/deserts/*/edit", "/deserts/*/delete"
+                        "/deserts/write", "/deserts/*/edit", "/deserts/*/delete",
+                        "/pubs/write", "/pubs/*/edit", "/pubs/*/delete",
+                        "/question/form", "/question/edit/*", "/question/delete/*"
                 );
     }
 }

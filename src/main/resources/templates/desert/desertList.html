@@ -28,7 +28,7 @@
     </thead>
     <tbody>
     <tr th:each="desert : ${deserts}">
-        <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title}"></a></td>
+        <td><a th:href="@{/deserts/{id}(id=${desert.id})}"  th:text="${desert.title} + ' [' + ${desert.commentCount} + ']'"></a></td>
         <td th:text="${desert.content}"></td>
         <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
         <td th:text="${desert.lat}"></td>

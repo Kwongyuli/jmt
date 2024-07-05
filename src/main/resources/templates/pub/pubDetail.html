@@ -11,12 +11,24 @@
 </head>
 <body>
 <h1>맛집(술) 글 상세페이지</h1>
+
+<div th:if="${not #strings.isEmpty(errorMessage)}">
+    <script th:inline="javascript">
+        alert(/*[[${errorMessage}]]*/ '기본 에러 메시지');
+        window.location.href = window.location.href; // 페이지 새로고침
+    </script>
+</div>
+
+<div th:if="${not #strings.isEmpty(message)}">
+    <script th:inline="javascript">
+        alert(/*[[${message}]]*/ '기본 메시지');
+    </script>
+</div>
+
 <div>
     <h2 th:text="${pub.title}">제목</h2>
     <p>작성일: <span th:text="${pub.createdAt}"></span></p>
-
     <p th:text="${pub.content}">내용</p>
-
     <div id="map"></div>
 
     <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
@@ -69,6 +81,7 @@
             var url = '/pubs/' + pubId + '/downvote';
             sendVote(url);
         }
+
         function addComment(event) {
             event.preventDefault();
             const pubId = document.querySelector('#pubId').value;
@@ -99,7 +112,10 @@
                     alert(data.message);
                     const commentsList = document.querySelector('ul');
                     const newComment = document.createElement('li');
-                    newComment.textContent = commentText;
+                    newComment.innerHTML = `<p>${commentText}</p><span>${data.username}</span>
+                                            <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
+                                                <button type="submit">삭제</button>
+                                            </form>`;
                     commentsList.appendChild(newComment);
                     document.querySelector('#comment').value = '';
                 })
@@ -107,6 +123,32 @@
                     console.error('Error:', error);
                 });
         }
+
+        function deleteComment(event, pubId, commentId) {
+            event.preventDefault();
+            if (confirm('삭제하시겠습니까?')) {
+                fetch(`/pubs/${pubId}/comment/${commentId}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            event.target.closest('li').remove();
+                        } else {
+                            return response.json().then(data => {
+                                alert(data.message);
+                                throw new Error(data.message);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+
         /*]]>*/
     </script>
     <p>위도: <span th:text="${pub.lat}"></span></p>
@@ -143,10 +185,16 @@
     <button type="submit">댓글 추가</button>
 </form>
 
-<a th:href="@{/pubs/{id}/edit(id=${pub.id})}">수정</a>
-<form th:action="@{/pubs/{id}/delete(id=${pub.id})}" method="post">
-    <button type="submit">삭제</button>
-</form>
+
+<div>
+    <form th:action="@{/pubs/{id}/delete(id=${pub.id})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+        <button type="submit">글 삭제</button>
+    </form>
+    <form th:action="@{/pubs/{id}/edit(id=${pub.id})}" method="get">
+        <button type="submit">글 수정</button>
+    </form>
+</div>
+
 <a th:href="@{/pubs/list}">목록으로 돌아가기</a>
 </body>
 </html>
