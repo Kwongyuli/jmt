@@ -70,14 +70,129 @@
         }
     </style>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        padding-top: 1vw;
+        padding-bottom: 1vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 2;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: beige;
+    }
+
+    .sidebar {
+        /* position: relative;
+        flex: 1; */
+        height: 100%;
+    }
+
+    div.span>span {
+        position: relative;
+        /* flex: 1; */
+        top: 0.1vw;
+        display: inline-block;
+        animation: bounce .3s ease infinite alternate;
+        font-family: 'Titan One', cursive;
+        font-size: 1.8vw;
+    }
+
+    @keyframes bounce {
+        100% {
+            top: -5px;
+        }
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .jmt-container {
+        /* flex: 1; */
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        /* margin-left: 0.8vw;
+        margin-right: 0.8vw; */
+    }
+
+    button.jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 4.3vw;
+        text-align: center;
+        background-color: beige;
+        /* display: inline-block; */
+        border: none;
+        height: 100%;
+        margin-left: 0.8vw;
+        margin-right: 0.8vw;
+    }
+
+    .user {
+        /* flex: 1; */
+        /* display: flex;
+        justify-content: flex-end; */
+    }
+
+    .sidebar>a,
+    .user>a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        text-decoration: none;
+        color: black;
+        margin: 0 1vw;
+    }
+</style>
+
 <body>
     <div class="header">
         <div class="sidebar">
-            <div th:replace="common/sidebar"></div>
+            <!-- <div th:replace="common/sidebar"></div> -->
+            <a href="/jmt/signin">메뉴</a>
         </div>
+
+        <div class="span">
+            <span id="a">🍙</span>
+            <span id="b">🍕</span>
+            <span id="c">🍩</span>
+            <span id="d">🍦</span>
+            <span id="e">🍺</span>
+            <span id="f">🍭</span>
+            <span id="g">🌮</span>
+            <span id="h">🍟</span>
+            <span id="i">🍱</span>
+        </div>
+
         <div class="jmt-container">
             <button type="button" class="jmt">ㅈㅁㅌ</button>
         </div>
+
+        <div class="span">
+            <span id="a">🍙</span>
+            <span id="b">🍕</span>
+            <span id="c">🍩</span>
+            <span id="d">🍦</span>
+            <span id="e">🍺</span>
+            <span id="f">🍭</span>
+            <span id="g">🌮</span>
+            <span id="h">🍟</span>
+            <span id="i">🍱</span>
+        </div>
+
         <div class="user">
             <a href="/jmt/signin" id="auth-link">로그인</a>
             <a href="/jmt/signup" id="signup-link">회원가입</a>

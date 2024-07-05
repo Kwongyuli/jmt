@@ -29,7 +29,7 @@ public class QDownloadController {
         String saveName = fileInfo.getSaveName(); //진짜 파일
 
         // 파일 경로 맞춰서 수정
-        File file = new File("/Users/leo/Desktop/study/files/" + saveName );
+        File file = new File("c://files/" + saveName );
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         return ResponseEntity.ok()
                 .header("content-disposition",

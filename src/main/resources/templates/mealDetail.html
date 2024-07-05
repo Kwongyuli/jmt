@@ -8,117 +8,358 @@
 
     <meta charset="UTF-8">
     <title>Meal Detail</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: beige;
-        }
-
-        .container {
-            font-family: "Dongle", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-            font-size: 2vw;
-            height: 100vh;
-            margin-top: 17vh;
-            margin-left: 15vw;
-            margin-right: 15vw;
-        }
-
-        .main {
-            width: 100%;
-            padding-top: 2vw;
-        }
-
-        div#head {
-            text-align: center;
-            border: 0.15vw solid black;
-            border-radius: 1vw;
-            background-color: white;
-            height: 4vw;
-            margin-bottom: 2vw;
-            padding-left: 1.5vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.7vw;
-        }
-
-        div#con {
-            border: 0.15vw solid black;
-            border-radius: 1vw;
-            background-color: white;
-            padding: 1vw;
-        }
-
-        #map {
-            width: 85%;
-            height: 350px;
-        }
-    </style>
 </head>
 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+
+    div.contitle {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        border-bottom: 0.15vw solid black;
+    }
+
+    div.image {
+        display: flex;
+        justify-content: center;
+        margin-top: 1vw;
+    }
+
+    div.concontent {
+        width: 100%;
+        margin-bottom: 1vw;
+    }
+
+    div.map {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 20vw;
+        margin-top: 1vw;
+        margin-bottom: 1vw;
+    }
+
+    div#map {
+        width: 60%;
+        height: 100%;
+    }
+
+    div.recommend {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    button#upvotes,
+    button#downvotes {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.5vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 12%;
+        height: 100%;
+        margin: 0 0.5vw;
+    }
+
+    div.button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1vw;
+        margin-bottom: 1vw;
+        border-bottom: 0.15vw solid black;
+    }
+
+    button.list {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 12%;
+        height: 100%;
+    }
+
+    button.edit,
+    button#delete {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 8vw;
+        height: 100%;
+    }
+
+    form#delete {
+        display: inline-block;
+    }
+
+    div.comment-write {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5vw;
+        margin-bottom: 1vw;
+    }
+
+    div.comment-write>form {
+        width: 100%;
+        text-align: center;
+    }
+
+    textarea[name=comment] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 98%;
+        height: 10vw;
+        padding-left: 0.7vw;
+        resize: none;
+    }
+
+    div.comment-button {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 0.15vw solid black;
+        padding-bottom: 0.5vw;
+        margin-top: -0.8vw;
+    }
+
+    button.save {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 10%;
+        height: 100%;
+    }
+
+    div.concomment {
+        margin-top: 1vw;
+    }
+
+    table {
+        width: 100%;
+        border: 0.15vw solid black;
+        border-collapse: collapse;
+        margin-bottom: 1vw;
+    }
+
+    tr.user {
+        border-bottom: 0.15vw dashed gray;
+    }
+
+    tr.content {
+        border-bottom: 0.15vw solid black;
+    }
+
+    td.user {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1vw;
+    }
+
+    td.content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1vw;
+        padding-right: 1vw;
+    }
+
+    button.delete {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        width: 100%;
+        padding: 0 0.8vw;
+    }
+</style>
+
+<style>
+    .slider__wrap {
+        width: 100%;
+        height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1vw;
+        margin-bottom: 1vw;
+    }
+
+    /*이미지가 보이는 영역*/
+    .slider__img {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /*전체 이미지를 감싸고 있는 부모 : 움직이는 영역*/
+    .slider__inner {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: all 400ms;
+    }
+
+    /*개별적인 이미지*/
+    .slider {
+        position: relative;
+        min-width: 100%;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    .slider__inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .slider__btn a {
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background-color: lightgray;
+        line-height: 50px;
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 50%;
+        padding-left: 1vw;
+        padding-right: 1vw;
+        color: black;
+        text-decoration: none;
+    }
+</style>
 
 <body>
     <div th:replace="common/header"></div>
 
     <div class="container">
         <div class="main">
-            <div id="head">
-                <div>식사 상세 페이지</div>
-            </div>
             <div id="con">
 
-                <div>
-                    <h2 th:text="${meal.title}">제목</h2>
-                    <p>작성일: <span th:text="${meal.createdAt}"></span></p>
+                <div class="contitle">
+                    <span class="title" th:text="${meal.title}"></span>
+                    <span class="user" th:text="@{|이예림 ${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}|}"></span>
+                </div>
 
-                    <p th:text="${meal.content}">내용</p>
-
-                    <div id="map"></div>
-
-                    <div>
-                        <!-- 이미지 보이게 하기 each로 반복문, 타임리프에서는 th 다음으로 보기 -->
-                        <div th:each="fileInfo : ${meal.fileInfos}">
-                            <img th:src="@{|/download?fileId=${fileInfo.id}|}"
-                                style="max-width: 100px; max-height: 100px;">
+                <div class="slider__wrap">
+                    <div class="slider__btn">
+                        <a href="#" class="prev" title="이전이미지"><</a>
+                    </div>
+                    <div class="slider__img">
+                        <div class="slider__inner">
+                            <div th:class="@{|slider s${fileInfoStat.count}|}" th:each="fileInfo : ${meal.fileInfos}">
+                                <img th:src="@{|/download?fileId=${fileInfo.id}|}" alt="">
+                            </div>
                         </div>
+                    </div>
+                    <div class="slider__btn">
+                        <a href="#" class="next" title="다음이미지">></a>
                     </div>
                 </div>
 
+                <div class="concontent">
+                    <span th:text="${meal.content}"></span>
+                </div>
+
+                <div class="map">
+                    <div id="map"></div>
+                </div>
+
                 <!--추천 비추천-->
-                <div>
-                    <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()">추천</button>
+                <div class="recommend">
+                    <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
                     <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
                         onclick="downvote()">비추천</button>
                 </div>
 
-                <!-- 댓글 목록 -->
-                <h2>댓글</h2>
-                <ul>
-                    <li th:each="comment : ${comments}">
-                        <p th:text="${comment.comment}"></p>
-                        <form
-                            th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}"
-                            method="post">
-                            <button type="submit">삭제</button>
+                <div class="button">
+                    <button class="list">목록</button>
+                    <div class="user-button">
+                        <button class="edit">수정</button>
+                        <form id="delete" th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
+                            <button id="delete" type="submit">
+                                <div>삭제</div>
+                            </button>
                         </form>
-                    </li>
-                </ul>
+                    </div>
+                </div>
 
-                <!-- 댓글 작성 폼 -->
-                <form th:action="@{/meals/{id}/comment(id=${meal.id})}" method="post">
-                    <textarea name="comment" rows="4" cols="50"></textarea>
-                    <button type="submit">댓글 추가</button>
-                </form>
+                <div class="comment-write">
+                    <form th:action="@{/meals/{id}/comment(id=${meal.id})}" method="post">
+                        <textarea name="comment" placeholder="댓글을 작성해주세요."></textarea>
+                        <div class="comment-button">
+                            <span>바른말 고운말</span>
+                            <button type="submit" class="save">작성</button>
+                        </div>
+                    </form>
+                </div>
 
-                <a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a>
-                <form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
-                    <button type="submit">삭제</button>
-                </form>
-                <a th:href="@{/meals/list}">목록으로 돌아가기</a>
-
+                <div class="concomment">
+                    <table th:each="comment : ${comments}">
+                        <tr class="user">
+                            <td class="user">
+                                <span th:text="@{|이예림 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <form
+                                    th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}"
+                                    method="post">
+                                    <button type="submit" class="delete">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="content">
+                            <td class="content">
+                                <span th:text="${comment.comment}"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -202,5 +443,111 @@
     </script>
 
 </body>
+
+<script>
+    const list = document.querySelector('.list');
+    list.addEventListener('click', () => {
+        location = '/meals/list';
+    });
+
+    const mealId = [[${ meal.id }]];
+    const edit = document.querySelector('.edit');
+    edit.addEventListener('click', () => {
+        location = `/meals/${mealId}/edit`;
+    });
+</script>
+
+<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
+        const lat = /*[[${meal.lat}]]*/ 33.450701;
+        const lng = /*[[${meal.lng}]]*/ 126.570667;
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+                center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        // 마커가 표시될 위치입니다
+        var markerPosition = new kakao.maps.LatLng(lat, lng);
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
+    });
+
+    function sendVote(url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
+                document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+            }
+        };
+        xhr.send();
+    }
+
+    function upvote() {
+        var mealId = /*[[${meal.id}]]*/ 0;
+        var url = '/meals/' + mealId + '/upvote';
+        sendVote(url);
+    }
+
+    function downvote() {
+        var mealId = /*[[${meal.id}]]*/ 0;
+        var url = '/meals/' + mealId + '/downvote';
+        sendVote(url);
+    }
+</script>
+
+<script>
+    //선택자
+    const sliderWrap = document.querySelector(".slider__wrap")
+    const sliderImg = sliderWrap.querySelector(".slider__img") //보여지는 영역
+    const sliderInner = sliderWrap.querySelector(".slider__inner")  //움직이는 영역
+    const slider = sliderWrap.querySelectorAll(".slider")     //개별 영역
+    const sliderBtn = sliderWrap.querySelectorAll(".slider__btn a")
+
+    let currentIndex = 0;   //현재보이는 이미지
+    let sliderCount = slider.length;  //이미지 갯수
+    let sliderWidth = slider[0].offsetWidth;  //이미지 가로값
+    let sliderInterval = 1000; //이미지 변경 시간
+
+    function gotoSlider(num) {
+        sliderInner.style.transition = "all 400ms"
+        sliderInner.style.transform = "translateX(" + -sliderWidth * num + "px)"
+        currentIndex = num;
+    }
+
+    //버튼을 클릭했을 때
+    sliderBtn.forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+            let prevIndex = (currentIndex + sliderCount - 1) % sliderCount
+            let nextIndex = (currentIndex + 1) % sliderCount
+
+            if (btn.classList.contains("prev")) {
+                gotoSlider(prevIndex)
+            } else {
+                gotoSlider(nextIndex)
+            }
+        })
+    })
+
+    // 창 크기가 변경될 때 슬라이더 너비 업데이트
+    window.addEventListener('resize', () => {
+        sliderWidth = sliderImg.offsetWidth;
+        sliderInner.style.transform = "translateX(" + -sliderWidth * currentIndex + "px)";
+    });
+
+    // 초기 슬라이더 너비 설정
+    sliderWidth = sliderImg.offsetWidth;
+</script>
 
 </html>

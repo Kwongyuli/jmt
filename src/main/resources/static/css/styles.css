@@ -2,6 +2,8 @@
     display: flex;
     justify-content: center;
     padding-left: 0;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
     list-style: none;
     border-radius: 0.25rem;
 }
@@ -13,8 +15,9 @@
 .page-item.disabled .page-link {
     pointer-events: none;
     cursor: not-allowed;
+    color: gray;
     background-color: #e9ecef;
-    border-color: #dee2e6;
+    border-color: black;
 }
 
 .page-item.active .page-link {
@@ -27,12 +30,12 @@
 .page-link {
     position: relative;
     display: block;
-    color: #007bff;
+    color: black;
     text-decoration: none;
     background-color: #fff;
-    border: 1px solid #dee2e6;
-    padding: 0.5rem 0.75rem;
+    border: 0.15vw solid black;
+        border-radius: 0.8vw;
+    padding: 0 1vw;
     margin-left: -1px;
-    line-height: 1.25;
-    border-radius: 0.25rem;
+    /* line-height: 1.25; */
 }
