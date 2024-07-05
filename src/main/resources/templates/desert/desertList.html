@@ -1,76 +1,192 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>맛집(디저트) 글 리스트</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>Dessert List</title>
     <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#head {
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        height: 4vw;
+        margin-bottom: 2vw;
+        padding-left: 1.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.7vw;
+    }
+
+    div.search {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1vw;
+    }
+
+    form.search {
+        display: flex;
+        align-items: center;
+    }
+
+    input[name=search] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 25vw;
+        height: 2.6vw;
+        margin-right: 0.5vw;
+        padding-left: 0.7vw;
+    }
+
+    button#write,
+    button#search,
+    button#sort {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 5vw;
+        height: 3vw;
+    }
+
+    table {
+        width: 100%;
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+    }
+
+    div.write {
+        margin-top: 0.8vw;
+    }
+</style>
+
 <body>
-<h1>맛집(디저트) 글 리스트</h1>
+    <div th:replace="common/header"></div>
 
-<div>
-    <button onclick="location.href='?sort=viewCount'">조회수 많은 순</button>
-    <button onclick="location.href='?sort=upvotes'">추천수순 정렬</button>
-    <button onclick="location.href='?sort='">원래대로</button>
+    <div class="container">
+        <div class="main">
+            <div id="head">
+                <div>디저트 리스트</div>
+            </div>
+            <div id="con">
+                <div class="search">
+                    <div>
+                        <form th:action="@{/deserts/list}" method="get" class="search">
+                            <input type="text" name="search" th:value="${search}" placeholder="검색어를 입력하세요." />
+                            <button type="submit" id="search">
+                                <div>검색</div>
+                            </button>
+                        </form>
+                    </div>
+                    <div>
+                        <button id="sort" onclick="location.href='?sort=viewCount'">조회순</button>
+                        <button id="sort" onclick="location.href='?sort=upvotes'">추천순</button>
+                        <button id="sort" onclick="location.href='?sort='">초기화</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:8%">글번호</th>
+                            <th style="width:52%">제목</th>
+                            <th style="width:14%">작성일</th>
+                            <th style="width:14%">글쓴이</th>
+                            <th style="width:6%">조회수</th>
+                            <th style="width:6%">추천수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="desert : ${deserts}">
+                            <td th:text="${desert.id}"></td>
+                            <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="@{|${desert.title} [댓]|}"></a>
+                            </td>
+                            <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd')}"></td>
+                            <td>이예림ㅇㅇㅇㅇㅇ</td>
+                            <td th:text="${desert.viewCount}"></td>
+                            <td th:text="${desert.upvotes}"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <ul class="pagination">
+                                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{|/deserts/list?page=${currentPage - 1}&search=${search}&sort=${sort}|}">이전</a>
+                                    </li>
 
-</div>
+                                    <li class="page-item"
+                                        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
+                                        <a class="page-link"
+                                            th:href="@{|/deserts/list?page=${page}&search=${search}&sort=${sort}|}"
+                                            th:text="${page}"></a>
+                                    </li>
 
-<table>
-    <thead>
-    <tr>
-        <th>제목</th>
-        <th>내용</th>
-        <th>작성일</th>
-        <th>위도</th>
-        <th>경도</th>
-        <th>조회수</th>
-        <th>추천수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="desert : ${deserts}">
-        <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title}"></a></td>
-        <td th:text="${desert.content}"></td>
-        <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-        <td th:text="${desert.lat}"></td>
-        <td th:text="${desert.lng}"></td>
-        <td th:text="${desert.viewCount}"></td>
-        <td th:text="${desert.upvotes}"></td>
-    </tr>
-    </tbody>
-</table>
+                                    <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{|/deserts/list?page=${currentPage + 1}&search=${search}&sort=${sort}|}">다음</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="write">
+                    <form th:action="@{/deserts/write}" method="get">
+                        <button type="submit" id="write">
+                            <div>작성</div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer"></div>
+</body>
 
 <script>
     function search() {
         const search = document.querySelector('[name=search]');
         location = `/deserts/list?search=${search.value}`;
     }
-
-    document.querySelector('#write-btn').addEventListener('click', () => {
-        location = '/deserts/write';
-    });
 </script>
 
-<ul class="pagination">
-    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-        <a class="page-link" th:href="@{|/deserts/list?page=${currentPage - 1}&search=${search}&sort=${sort}|}">Previous</a>
-    </li>
-
-    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
-        <a class="page-link" th:href="@{|/deserts/list?page=${page}&search=${search}&sort=${sort}|}" th:text="${page}"></a>
-    </li>
-
-    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-        <a class="page-link" th:href="@{|/deserts/list?page=${currentPage + 1}&search=${search}&sort=${sort}|}">Next</a>
-    </li>
-</ul>
-
-
-<form th:action="@{/deserts/list}" method="get">
-    <input type="text" name="search" th:value="${search}" placeholder="Search..."/>
-    <button type="submit">Search</button>
-</form>
-
-<a href="/deserts/write" id="write-btn">글작성</a>
-
-</body>
 </html>

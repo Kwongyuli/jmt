@@ -9,29 +9,22 @@
     <meta charset="UTF-8">
     <title>Meal Edit Form</title>
     <style>
-        #map {
-            width: 80%;
-            height: 350px;
+        /* 지도 검색 목록 */
+        #menu_wrap {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
         }
 
-        #menu_wrap {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 300px;
-            max-height: 400px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            box-shadow: 0px 0px 5px #aaa;
-            z-index: 10;
-            overflow-y: auto;
+        ul#placesList {
+            margin: 0;
+            padding-left: 2.5vw !important;
+            padding-right: 1.5vw !important;
         }
 
         .item {
             cursor: pointer;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid gray;
         }
 
         .item:hover {
@@ -39,17 +32,19 @@
         }
 
         #pagination {
-            margin: 10px auto;
+            margin-top: 1vw;
+            margin-bottom: 1vw;
             text-align: center;
         }
 
         #pagination a {
             display: inline-block;
-            margin: 0 5px;
-            padding: 5px 10px;
+            margin: 0 0.5vw;
+            padding: 0 1vw;
             background: #fff;
             border: 1px solid #ddd;
             cursor: pointer;
+            text-decoration: none;
         }
 
         #pagination a.on {
@@ -104,17 +99,128 @@
         padding: 1vw;
     }
 
-    #title {
-        width: 100%;
+    div.contitle,
+    div.concontent,
+    div.consearch {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5vw;
+        margin-bottom: 1vw;
     }
 
-    #content {
-        width: 100%;
+    div.confile {
+        margin-top: 0.5vw;
+        margin-bottom: 1.5vw;
+    }
+
+    input#title {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 67vw;
+        height: 2.6vw;
+        padding-left: 0.7vw;
+    }
+
+    textarea#content {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 67vw;
+        height: 25vw;
+        padding-left: 0.7vw;
+        resize: none;
+    }
+
+    div#search {
+        width: 50%;
+    }
+
+    input#keyword {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 80%;
+        height: 100%;
+        padding-left: 0.7vw;
+    }
+
+    button#search {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 15%;
+        height: 100%;
+    }
+
+    table {
+        width: 67vw;
+        height: 25vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+    }
+
+    td {
+        width: 50%;
+        height: 100%;
+        border-radius: 0.8vw;
     }
 
     #hiddenlat,
     #hiddenlng {
         display: none;
+    }
+
+    input[type=file] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+    }
+
+    input[type=file]::file-selector-button {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 30%;
+        height: 100%;
+        margin-right: 1vw;
+    }
+
+    button#delete {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.5vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 6%;
+    }
+
+    button#save {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 100%;
+        height: 100%;
     }
 </style>
 
@@ -130,22 +236,39 @@
             <div id="con">
                 <form id="editForm" th:action="@{/meals/{id}(id=${mealUpdate.id})}" th:object="${mealUpdate}"
                     method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+
+                    <label for="title">제목 :</label>
                     <div class="contitle">
-                        <label for="title">제목</label>
                         <input type="text" id="title" th:field="*{title}">
                         <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">제목 오류</div>
                     </div>
 
+                    <label for="content">내용 :</label>
                     <div class="concontent">
-                        <label for="content">내용</label>
                         <textarea id="content" th:field="*{content}"></textarea>
                         <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">내용 오류</div>
                     </div>
 
-                    <div class="consearch">
-                        <label for="keyword">위치 검색</label>
+                    <label for="keyword">위치 검색 :</label>
+                    <div id="search">
                         <input type="text" id="keyword" placeholder="Search for a location">
-                        <button type="button" onclick="searchPlaces()">검색</button>
+                        <button type="button" onclick="searchPlaces()" id="search">
+                            <div>검색</div>
+                        </button>
+                    </div>
+
+                    <div class="consearch">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div id="menu_wrap">
+                                        <ul id="placesList"></ul>
+                                        <div id="pagination"></div>
+                                    </div>
+                                </td>
+                                <td id="map"></td>
+                            </tr>
+                        </table>
                     </div>
 
                     <div id="hiddenlat">
@@ -157,29 +280,21 @@
                         <input type="text" id="lng" th:field="*{lng}" readonly>
                     </div>
 
-                    <div id="menu_wrap">
-                        <ul id="placesList"></ul>
-                        <div id="pagination"></div>
-                    </div>
-                    <div class="conmap" id="map"></div>
-
-                    <div>
-                        <label>현재 업로드된 파일</label>
-                        <ul>
-                            <li th:each="fileInfo : ${mealUpdate.fileInfos}" th:id="'file-' + ${fileInfo.id}">
-                                <span th:text="${fileInfo.originalName}">파일명</span>
-                                <button type="button" th:onclick="'deleteFile(' + ${fileInfo.id} + ')'">삭제</button>
-                            </li>
-                        </ul>
-                    </div>
-
+                    <label for="files">사진 :</label>
                     <div class="confile">
-                        <label for="files">새 파일 업로드</label>
                         <input type="file" id="files" name="files" multiple class="form-control">
+                        <div>
+                            <div th:each="fileInfo : ${mealUpdate.fileInfos}" th:id="'file-' + ${fileInfo.id}">
+                                <span th:text="@{|- ${fileInfo.originalName}|}"></span>
+                                <button type="button" th:onclick="'deleteFile(' + ${fileInfo.id} + ')'" id="delete">
+                                    <div>삭제</div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="consave">
-                        <button type="submit">저장</button>
+                        <button type="submit" id="save">저장</button>
                     </div>
                 </form>
             </div>
@@ -287,7 +402,10 @@
         var el = document.createElement('li'),
             itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
                 '<div class="info">' +
-                '   <h5>' + places.place_name + '</h5>';
+                '  <span class="placename">' + places.place_name + '</span>';
+
+        itemStr += '  <span class="tel">' + places.phone + '</span>' +
+            '</div>';
 
         if (places.road_address_name) {
             itemStr += '    <span>' + places.road_address_name + '</span>' +
@@ -295,9 +413,6 @@
         } else {
             itemStr += '    <span>' + places.address_name + '</span>';
         }
-
-        itemStr += '  <span class="tel">' + places.phone + '</span>' +
-            '</div>';
 
         el.innerHTML = itemStr;
         el.className = 'item';

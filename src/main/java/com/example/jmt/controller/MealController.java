@@ -60,6 +60,7 @@ public class MealController {
         model.addAttribute("meals", meals);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPage", total);
         model.addAttribute("currentPage", page);  // currentPage 변수 설정
 
         model.addAttribute("search", search);  // 검색

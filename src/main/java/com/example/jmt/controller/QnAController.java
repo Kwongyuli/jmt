@@ -101,7 +101,7 @@ public class QnAController {
 
         try {
 			// * 파일이 저장 될 위치 각자 지정 해주기 QDownload Controller에서도 
-			qFile.transferTo(new File("/Users/leo/Desktop/study/files/" + fileName));
+			qFile.transferTo(new File("c://files/" + fileName));
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

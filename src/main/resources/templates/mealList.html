@@ -83,7 +83,6 @@
         border-radius: 0.8vw;
         width: 5vw;
         height: 3vw;
-        /* background-color: white; */
     }
 
     table {
@@ -109,21 +108,29 @@
             </div>
             <div id="con">
                 <div class="search">
-                    <form th:action="@{/meals/list}" method="get" class="search">
-                        <input type="text" name="search" th:value="${search}" placeholder="검색어를 입력하세요." />
-                        <button type="submit" id="search">
-                            <div>검색</div>
-                        </button>
-                    </form>
+                    <div>
+                        <form th:action="@{/meals/list}" method="get" class="search">
+                            <input type="text" name="search" th:value="${search}" placeholder="검색어를 입력하세요." />
+                            <button type="submit" id="search">
+                                <div>검색</div>
+                            </button>
+                        </form>
+                    </div>
+                    <div>
+                        <button id="sort" onclick="location.href='?sort=viewCount'">조회순</button>
+                        <button id="sort" onclick="location.href='?sort=upvotes'">추천순</button>
+                        <button id="sort" onclick="location.href='?sort='">초기화</button>
+                    </div>
                 </div>
                 <table>
                     <thead>
                         <tr>
                             <th style="width:8%">글번호</th>
-                            <th style="width:56%">제목</th>
+                            <th style="width:52%">제목</th>
                             <th style="width:14%">작성일</th>
                             <th style="width:14%">글쓴이</th>
-                            <th style="width:8%">조회수</th>
+                            <th style="width:6%">조회수</th>
+                            <th style="width:6%">추천수</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,23 +139,28 @@
                             <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="@{|${meal.title} [댓]|}"></a></td>
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
                             <td>이예림ㅇㅇㅇㅇㅇ</td>
+                            <!-- <td th:text="${desert.viewCount}"></td>
+                            <td th:text="${desert.upvotes}"></td> -->
                             <td>조회</td>
+                            <td>추천</td>
                         </tr>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                                         <a class="page-link"
-                                            th:href="@{|/meals/list?page=${currentPage - 1}|}">Previous</a>
+                                            th:href="@{|/meals/list?page=${currentPage - 1}|}">이전</a>
                                     </li>
 
-                                    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                    <li class="page-item"
+                                        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
+
                                         <a class="page-link" th:href="@{|/meals/list?page=${page}|}"
                                             th:text="${page}"></a>
                                     </li>
 
                                     <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
-                                        <a class="page-link" th:href="@{|/meals/list?page=${currentPage + 1}|}">Next</a>
+                                        <a class="page-link" th:href="@{|/meals/list?page=${currentPage + 1}|}">다음</a>
                                     </li>
                                 </ul>
                             </td>
