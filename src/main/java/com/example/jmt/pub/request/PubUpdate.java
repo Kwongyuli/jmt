@@ -11,6 +11,7 @@ import java.util.List;
 public class PubUpdate {
 
     private Long id; // id 필드 추가
+    private Long userId; // 작성자 ID 필드 추가
 
     private String title;
     private String content;
@@ -22,9 +23,10 @@ public class PubUpdate {
 
 
     @Builder
-    public PubUpdate(Long id, String title, String content, LocalDateTime createdAt,
+    public PubUpdate(Long id, Long userId, String title, String content, LocalDateTime createdAt,
                      LocalDateTime updatedAt, double lat, double lng, List<FileInfo> fileInfos) {
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

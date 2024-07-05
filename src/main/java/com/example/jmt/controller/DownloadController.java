@@ -30,7 +30,7 @@ public class DownloadController {
         String saveName = fileInfo.getSaveName();
 
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-        File file = new File("C://Users//user//Desktop//저장/"+saveName);
+        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/"+saveName);
 
         InputStreamResource resource =
                 new InputStreamResource(new FileInputStream(file));

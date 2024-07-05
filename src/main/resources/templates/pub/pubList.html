@@ -27,7 +27,7 @@
     </thead>
     <tbody>
     <tr th:each="pub : ${pubs}">
-        <td><a th:href="@{/pubs/{id}(id=${pub.id})}" th:text="${pub.title}"></a></td>
+        <td><a th:href="@{/pubs/{id}(id=${pub.id})}" th:text="${pub.title}+ ' [' + ${pub.commentCount} + ']'"></a></td>
         <td th:text="${pub.content}"></td>
         <td th:text="${#temporals.format(pub.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
         <td th:text="${pub.lat}"></td>

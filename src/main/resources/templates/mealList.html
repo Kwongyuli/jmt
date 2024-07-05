@@ -136,7 +136,7 @@
                     <tbody>
                         <tr th:each="meal : ${meals}">
                             <td th:text="${meal.id}"></td>
-                            <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="@{|${meal.title} [댓]|}"></a></td>
+                            <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title} + ' [' + ${meal.commentCount} + ']'"></a></td>
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
                             <td>이예림ㅇㅇㅇㅇㅇ</td>
                             <td>조회</td>

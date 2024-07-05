@@ -1,13 +1,8 @@
 package com.example.jmt.controller;
 
-import com.example.jmt.desert.model.CommentDesert;
-import com.example.jmt.desert.model.Desert;
-import com.example.jmt.desert.request.DesertUpdate;
-import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
 import com.example.jmt.model.User;
-import com.example.jmt.pub.response.PubResponse;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
 import com.example.jmt.request.MealCreate;
@@ -16,14 +11,11 @@ import com.example.jmt.response.MealResponse;
 import com.example.jmt.service.CommentMealService;
 import com.example.jmt.service.FileInfoService;
 import com.example.jmt.service.MealService;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,7 +27,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,6 +38,7 @@ public class MealController {
     private final CommentMealService commentMealService;
     private final MealRepository mealRepository;
     private final FileInfoService fileInfoService;
+    private final HttpSession session;
 
     // 게시글 목록
     @GetMapping("/list")
@@ -206,35 +198,33 @@ public class MealController {
 
     @PostMapping("/{id}/upvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> upvoteMeal(@PathVariable Long id, HttpSession session) {
-        String loggedInUser = (String) session.getAttribute("user_info");
-        if (loggedInUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Object>> upvoteMeal(@PathVariable Long id) {
 
-        mealService.upvote(id);
+        User user = getCurrentUser();
+
+        String message = mealService.upvote(id, user);
         long upvotes = mealService.getUpvotes(id);
         long downvotes = mealService.getDownvotes(id);
-        Map<String, Long> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("upvotes", upvotes);
         response.put("downvotes", downvotes);
+        response.put("message", message);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/downvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> downvoteMeal(@PathVariable Long id, HttpSession session) {
-        String loggedInUser = (String) session.getAttribute("user_info");
-        if (loggedInUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Object>> downvoteMeal(@PathVariable Long id) {
 
-        mealService.downvote(id);
+        User user = getCurrentUser();
+
+        String message = mealService.downvote(id, user);
         long upvotes = mealService.getUpvotes(id);
         long downvotes = mealService.getDownvotes(id);
-        Map<String, Long> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("upvotes", upvotes);
         response.put("downvotes", downvotes);
+        response.put("message", message);
         return ResponseEntity.ok(response);
     }
 
@@ -257,5 +247,11 @@ public class MealController {
         model.addAttribute("meals", myMeals);
         return "myMealList";
     }
-
+    private User getCurrentUser() {
+        User user = (User) session.getAttribute("user_info");
+        if (user == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return user;
+    }
 }

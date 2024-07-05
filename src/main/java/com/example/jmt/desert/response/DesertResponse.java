@@ -31,6 +31,7 @@
 
         private long upvotes;
         private long downvotes;
+        private int commentCount; // 댓글 개수 필드 추가
 
 
         public DesertResponse(Desert desert) {
@@ -48,7 +49,8 @@
         @Builder
         public DesertResponse(Long id, String title, String content, List<FileInfo> fileInfos
                 , LocalDateTime createdAt, double lat, double lng
-                , List<CommentDesert> comments,  int viewCount, long upvotes, long downvotes) {
+                , List<CommentDesert> comments,  int viewCount, long upvotes, long downvotes,int commentCount
+                              ) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -60,5 +62,6 @@
             this.viewCount=viewCount;
             this.upvotes = upvotes;
             this.downvotes = downvotes;
+            this.commentCount = commentCount;
         }
     }
