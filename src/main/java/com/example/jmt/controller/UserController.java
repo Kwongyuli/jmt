@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.jmt.dto.UserDto;
-import com.example.jmt.entity.User;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.UserRepository;
 import com.example.jmt.service.UserService;
 import com.example.jmt.util.Mailer;
@@ -275,6 +275,11 @@ public class UserController {
             model.addAttribute("error", errorMessage);
             return "resetPasswordForm"; 
         }
+    }
+
+    @GetMapping("/jmt/mylist")
+    public String mylist() {
+        return "mylist";
     }
 
 }

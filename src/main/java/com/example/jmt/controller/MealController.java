@@ -1,7 +1,12 @@
 package com.example.jmt.controller;
 
+import com.example.jmt.desert.model.CommentDesert;
+import com.example.jmt.desert.model.Desert;
+import com.example.jmt.desert.request.DesertUpdate;
+import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
 import com.example.jmt.request.MealCreate;
@@ -10,12 +15,15 @@ import com.example.jmt.response.MealResponse;
 import com.example.jmt.service.CommentMealService;
 import com.example.jmt.service.FileInfoService;
 import com.example.jmt.service.MealService;
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +34,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,8 +50,8 @@ public class MealController {
     // 게시글 목록
     @GetMapping("/list")
     public String getMeals(Model model,
-                           @RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "search", required = false) String search) {
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "search", required = false) String search) {
 
         Sort sort = Sort.by(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page - 1, 10, sort);
@@ -60,13 +69,12 @@ public class MealController {
         model.addAttribute("meals", meals);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("currentPage", page);  // currentPage 변수 설정
+        model.addAttribute("currentPage", page); // currentPage 변수 설정
 
-        model.addAttribute("search", search);  // 검색
+        model.addAttribute("search", search); // 검색
 
         return "mealList";
     }
-
 
     // 글 상세페이지
     @GetMapping("/{id}")
@@ -91,75 +99,136 @@ public class MealController {
 
     // 글 작성
     @PostMapping("/write")
-    public String createMeal(@Valid @ModelAttribute MealCreate mealCreate, @RequestParam("files") MultipartFile[] files) throws IOException {
+    public String createMeal(@Valid @ModelAttribute MealCreate mealCreate, @RequestParam("files") MultipartFile[] files,
+            HttpSession session)
+            throws IOException {
+        User author = (User) session.getAttribute("user_info");
+
+        if (author == null) {
+            return "redirect:/jmt/signin";
+        }
+
+        mealCreate.setUser(author);
+
         Meal savedMeal = mealService.write(mealCreate, files);
         return "redirect:/meals/" + savedMeal.getId();
     }
 
-
-    //댓글 쓰기 메서드
+    // 댓글 쓰기 메서드
     @PostMapping("/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestParam("comment") String comment) {
+    public String addComment(@PathVariable Long id, @RequestParam("comment") String comment, HttpSession session) {
+
+        User user = (User) session.getAttribute("user_info");
+
+        if (user == null) {
+            return "redirect:/jmt/signin";
+        }
+
         commentMealService.addComment(id, comment);
         return "redirect:/meals/" + id;
     }
 
     // 댓글 삭제
     @PostMapping("/{id}/comment/{commentId}/delete")
-    public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
+    public String deleteComment(@PathVariable Long id, @PathVariable Long commentId, HttpSession session) {
+        User user = (User) session.getAttribute("user_info");
+        CommentMeal comment = commentMealService.getCommentById(commentId);
+
+        if (user == null) {
+            return "redirect:/jmt/signin";
+        }
+
+        if (user.equals(comment.getUser())) {
+            commentMealService.deleteComment(commentId);
+        }
+
         commentMealService.deleteComment(commentId);
         return "redirect:/meals/" + id;
     }
 
     @GetMapping("/{id}/edit")
-    public String editMealForm(@PathVariable Long id, Model model) {
-        MealUpdate mealUpdate = mealService.getMealUpdate(id);
-        mealUpdate.setId(id); // mealUpdate 객체에 id 값 설정
-        model.addAttribute("mealUpdate", mealUpdate);
-        return "mealEditForm";
+    public String editMealForm(@PathVariable Long id, Model model, HttpSession session) {
+        User author = (User) session.getAttribute("user_info");
+        Meal meal = mealService.getMealById(id);
+
+        if (author != null && author.equals(meal.getUser())) {
+            MealUpdate mealUpdate = mealService.getMealUpdate(id);
+            mealUpdate.setId(id);
+            model.addAttribute("mealUpdate", mealUpdate);
+            return "mealEditForm";
+        } else {
+            return "redirect:/jmt/signin";
+        }
     }
 
     // 글 수정
     @PostMapping("/{id}")
-    public String updateMeal(@PathVariable Long id, @ModelAttribute MealUpdate mealUpdate, @RequestParam("files") MultipartFile[] files) throws IOException {
-        mealService.update(id, mealUpdate, files);
-        return "redirect:/meals/" + id;
+    public String updateMeal(@PathVariable Long id, @ModelAttribute MealUpdate mealUpdate,
+            @RequestParam("files") MultipartFile[] files, HttpSession session) throws IOException {
+        
+        User user = (User) session.getAttribute("user_info");
+        Meal meal = mealService.getMealById(id);
+
+        if (user != null && user.equals(meal.getUser())) {
+            mealService.update(id, mealUpdate, files);
+            return "redirect:/meals/" + id;
+        } else {
+            return "redirect:/jmt/signin";
+        }
     }
 
     // 글 삭제
     @PostMapping("/{id}/delete")
-    public String deleteMeal(@PathVariable Long id) {
-        mealService.delete(id);
-        return "redirect:/meals/list";
+    public String deleteMeal(@PathVariable Long id, HttpSession session) {
+        User user = (User) session.getAttribute("user_info");
+        Meal meal = mealService.getMealById(id);
+
+        if (user != null && user.equals(meal.getUser())) {
+            mealService.delete(id);
+            return "redirect:/meals/list";
+        } else {
+            return "redirect:/jmt/signin";
+        }
     }
 
-//    // 추천/비추천 컨트롤러
-//    @PostMapping("/{id}/upvote")
-//    public String upvoteMeal(@PathVariable Long id) {
-//        mealService.upvote(id);
-//        return "redirect:/meals/" + id;
-//    }
-//
-//    @PostMapping("/{id}/downvote")
-//    public String downvoteMeal(@PathVariable Long id) {
-//        mealService.downvote(id);
-//        return "redirect:/meals/" + id;
-//    }
-@PostMapping("/{id}/upvote")
-@ResponseBody
-public ResponseEntity<Map<String, Long>> upvoteMeal(@PathVariable Long id) {
-    mealService.upvote(id);
-    long upvotes = mealService.getUpvotes(id);
-    long downvotes = mealService.getDownvotes(id);
-    Map<String, Long> response = new HashMap<>();
-    response.put("upvotes", upvotes);
-    response.put("downvotes", downvotes);
-    return ResponseEntity.ok(response);
-}
+    // // 추천/비추천 컨트롤러
+    // @PostMapping("/{id}/upvote")
+    // public String upvoteMeal(@PathVariable Long id) {
+    // mealService.upvote(id);
+    // return "redirect:/meals/" + id;
+    // }
+    //
+    // @PostMapping("/{id}/downvote")
+    // public String downvoteMeal(@PathVariable Long id) {
+    // mealService.downvote(id);
+    // return "redirect:/meals/" + id;
+    // }
+
+    @PostMapping("/{id}/upvote")
+    @ResponseBody
+    public ResponseEntity<Map<String, Long>> upvoteMeal(@PathVariable Long id, HttpSession session) {
+        String loggedInUser = (String) session.getAttribute("user_info");
+        if (loggedInUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        mealService.upvote(id);
+        long upvotes = mealService.getUpvotes(id);
+        long downvotes = mealService.getDownvotes(id);
+        Map<String, Long> response = new HashMap<>();
+        response.put("upvotes", upvotes);
+        response.put("downvotes", downvotes);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/{id}/downvote")
     @ResponseBody
-    public ResponseEntity<Map<String, Long>> downvoteMeal(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Long>> downvoteMeal(@PathVariable Long id, HttpSession session) {
+        String loggedInUser = (String) session.getAttribute("user_info");
+        if (loggedInUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         mealService.downvote(id);
         long upvotes = mealService.getUpvotes(id);
         long downvotes = mealService.getDownvotes(id);
@@ -168,11 +237,25 @@ public ResponseEntity<Map<String, Long>> upvoteMeal(@PathVariable Long id) {
         response.put("downvotes", downvotes);
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<?> deleteFile(@RequestParam Integer fileId) {
         fileInfoService.deleteFile(fileId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/myMealList")
+    public String getMyDeserts(Model model, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("user_info");
+        if (loggedInUser == null) {
+            return "redirect:/jmt/signin";
+        }
+
+        List<MealResponse> myMeals = mealService.getMyMeals(loggedInUser);
+
+        model.addAttribute("meals", myMeals);
+        return "myMealList";
     }
 
 }

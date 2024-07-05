@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import com.example.jmt.model.User;
+
 @Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -24,6 +26,9 @@ public class CommentPub {
     @ManyToOne
     @JoinColumn(name = "pub_id")
     private Pub pub;
+
+    @ManyToOne
+    User user;
 
     @Builder
     public CommentPub(Long id, String comment, LocalDateTime createdAt, Pub pub) {

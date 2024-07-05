@@ -1,5 +1,7 @@
 package com.example.jmt.desert.model;
 
+import com.example.jmt.model.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +19,9 @@ public class VoteDesert {
     @ManyToOne
     @JoinColumn(name = "desert_id")
     private Desert desert;
+
+    @ManyToOne
+    User user;
 
     private boolean upvote; // true이면 추천, false이면 비추천
 }

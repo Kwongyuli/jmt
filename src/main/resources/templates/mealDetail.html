@@ -9,57 +9,55 @@
     <meta charset="UTF-8">
     <title>Meal Detail</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: beige;
+        }
+
+        .container {
+            font-family: "Dongle", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 2vw;
+            height: 100vh;
+            margin-top: 17vh;
+            margin-left: 15vw;
+            margin-right: 15vw;
+        }
+
+        .main {
+            width: 100%;
+            padding-top: 2vw;
+        }
+
+        div#head {
+            text-align: center;
+            border: 0.15vw solid black;
+            border-radius: 1vw;
+            background-color: white;
+            height: 4vw;
+            margin-bottom: 2vw;
+            padding-left: 1.5vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.7vw;
+        }
+
+        div#con {
+            border: 0.15vw solid black;
+            border-radius: 1vw;
+            background-color: white;
+            padding: 1vw;
+        }
+
         #map {
             width: 85%;
             height: 350px;
         }
     </style>
 </head>
-
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: beige;
-    }
-
-    .container {
-        font-family: "Dongle", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 2vw;
-        height: 100vh;
-        margin-top: 17vh;
-        margin-left: 15vw;
-        margin-right: 15vw;
-    }
-
-    .main {
-        width: 100%;
-        padding-top: 2vw;
-    }
-
-    div#head {
-        text-align: center;
-        border: 0.15vw solid black;
-        border-radius: 1vw;
-        background-color: white;
-        height: 4vw;
-        margin-bottom: 2vw;
-        padding-left: 1.5vw;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.7vw;
-    }
-
-    div#con {
-        border: 0.15vw solid black;
-        border-radius: 1vw;
-        background-color: white;
-        padding: 1vw;
-    }
-</style>
 
 <body>
     <div th:replace="common/header"></div>
@@ -74,7 +72,6 @@
                 <div>
                     <h2 th:text="${meal.title}">제목</h2>
                     <p>작성일: <span th:text="${meal.createdAt}"></span></p>
-                    <p>수정일: <span th:text="${meal.updatedAt}"></span></p>
 
                     <p th:text="${meal.content}">내용</p>
 
@@ -91,9 +88,9 @@
 
                 <!--추천 비추천-->
                 <div>
-                    <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
+                    <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()">추천</button>
                     <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
-                        onclick="downvote()"></button>
+                        onclick="downvote()">비추천</button>
                 </div>
 
                 <!-- 댓글 목록 -->
@@ -126,57 +123,91 @@
     </div>
 
     <div class="footer"></div>
-</body>
 
-<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function () {
-        // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
-        const lat = /*[[${meal.lat}]]*/ 33.450701;
-        const lng = /*[[${meal.lng}]]*/ 126.570667;
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
-                center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-                level: 3 // 지도의 확대 레벨
-            };
-        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(lat, lng);
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
+    <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            // Thymeleaf를 사용하여 서버 측에서 lat와 lng 값을 설정
+            const lat = /*[[${meal.lat}]]*/ 33.450701;
+            const lng = /*[[${meal.lng}]]*/ 126.570667;
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                    level: 3 // 지도의 확대 레벨
+                };
+            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+            // 마커가 표시될 위치입니다
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
+            // 마커를 생성합니다
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+            // 마커가 지도 위에 표시되도록 설정합니다
+            marker.setMap(map);
         });
-        // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
-    });
 
-    function sendVote(url) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
-                document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+        function sendVote(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
+                    document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+                }
+            };
+            xhr.send();
+        }
+
+        // 추, 비추 로그인 확인 코드
+        function upvote() {
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                return;
             }
-        };
-        xhr.send();
-    }
+            var mealId = [[${meal.id}]];
+            var url = '/meals/' + mealId + '/upvote';
+            sendVote(url);
+        }
 
-    function upvote() {
-        var mealId = /*[[${meal.id}]]*/ 0;
-        var url = '/meals/' + mealId + '/upvote';
-        sendVote(url);
-    }
+        function downvote() {
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                return;
+            }
+            var mealId = [[${meal.id}]];
+            var url = '/meals/' + mealId + '/downvote';
+            sendVote(url);
+        }
 
-    function downvote() {
-        var mealId = /*[[${meal.id}]]*/ 0;
-        var url = '/meals/' + mealId + '/downvote';
-        sendVote(url);
-    }
-    /*]]>*/
-</script>
+        // 댓글 삭제 
+        function deleteComment(commentId) {
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                window.location.href = '/login';
+                return;
+            }
+            
+            var mealId = [[${meal.id}]];
+            var url = '/meals/' + mealId + '/comment/' + commentId + '/delete';
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    window.location.reload(); 
+                }
+            };
+            xhr.send();
+        }
+        /*]]>*/
+    </script>
+
+</body>
 
 </html>

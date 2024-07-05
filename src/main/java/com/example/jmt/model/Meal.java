@@ -31,6 +31,8 @@ public class Meal {
     private double lat; // 위도
     private double lng; // 경도
 
+    private int viewCount; // 조회수
+
     //orphanRemoval = true, cascade = CascadeType.REMOVE -> 연관관계로 외부키 있으면 삭제를 도와준다.
     // toString 으로 stackOverFlow 발생해서 해당내역을 board 위에 어노테이션으로 exclude 시켜준다,
     @OneToMany(mappedBy = "meal",orphanRemoval = true, cascade = CascadeType.REMOVE)
@@ -43,12 +45,17 @@ public class Meal {
     private List<CommentMeal> commentMeals;
 
     @Builder
-    public Meal(String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, double lat, double lng) {
+    public Meal(String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, double lat, double lng, int viewCount, User user) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.lat = lat;
         this.lng = lng;
+        this.viewCount = viewCount;
+        this.user = user;
     }
+
+    @ManyToOne
+    User user;
 }

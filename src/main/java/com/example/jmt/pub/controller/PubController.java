@@ -1,5 +1,7 @@
 package com.example.jmt.pub.controller;
 
+import com.example.jmt.desert.response.DesertResponse;
+import com.example.jmt.model.User;
 import com.example.jmt.pub.model.CommentPub;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.repository.PubRepository;
@@ -10,6 +12,8 @@ import com.example.jmt.pub.service.CommentPubService;
 import com.example.jmt.pub.service.PubService;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.service.FileInfoService;
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -174,11 +178,26 @@ public ResponseEntity<Map<String, Long>> upvotePub(@PathVariable Long id) {
         response.put("downvotes", downvotes);
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<?> deleteFile(@RequestParam Integer fileId) {
         fileInfoService.deleteFile(fileId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/myPubList")
+    public String getMyPubs(Model model, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("user_info");
+        
+        if (loggedInUser == null) {
+            return "redirect:/jmt/signin";
+        }
+
+        List<PubResponse> myPubs = pubService.getMyPubs(loggedInUser);
+
+        model.addAttribute("pubs", myPubs);
+        return "/pub/myPubList"; 
     }
 
 }

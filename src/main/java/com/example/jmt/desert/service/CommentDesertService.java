@@ -36,6 +36,12 @@ public class CommentDesertService {
         return commentDesertRepository.findByDesert(desert);
     }
 
+    // 댓글 ID로 댓글 가져오기
+    public CommentDesert getCommentById(Long commentId) {
+        return commentDesertRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다. ID: " + commentId));
+    }
+
     // 삭제
     public void deleteComment(Long commentId) {
         commentDesertRepository.deleteById(commentId);

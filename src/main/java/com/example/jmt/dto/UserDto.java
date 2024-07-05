@@ -2,7 +2,7 @@ package com.example.jmt.dto;
 
 import java.io.Serializable;
 
-import com.example.jmt.entity.User;
+import com.example.jmt.model.User;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

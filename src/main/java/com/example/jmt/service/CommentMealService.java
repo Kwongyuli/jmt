@@ -1,5 +1,6 @@
 package com.example.jmt.service;
 
+import com.example.jmt.desert.model.CommentDesert;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
 import com.example.jmt.repository.CommentMealRepository;
@@ -34,6 +35,12 @@ public class CommentMealService {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         return commentMealRepository.findByMeal(meal);
+    }
+
+    // 댓글 ID로 댓글 가져오기
+    public CommentMeal getCommentById(Long commentId) {
+        return commentMealRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다. ID: " + commentId));
     }
 
     // 삭제

@@ -8,6 +8,7 @@ import com.example.jmt.desert.request.DesertCreate;
 import com.example.jmt.desert.request.DesertUpdate;
 import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,23 +30,19 @@ import java.util.stream.Collectors;
 public class DesertService {
 
     private final DesertRepository desertRepository;
-
-    // 추천/비추천기능
     private final VoteDesertRepository voteDesertRepository;
-
-    // 이미지파일 저장 레포지토리
     private final FileInfoRepository fileInfoRepository;
 
-    //  글 저장 메서드 _ 엔티티로 넘기기
+    // 글 저장 메서드
     public Desert write(DesertCreate desertCreate, MultipartFile[] files) throws IOException {
-
         Desert desert = Desert.builder()
                 .title(desertCreate.getTitle())
                 .content(desertCreate.getContent())
                 .lat(desertCreate.getLat())
                 .lng(desertCreate.getLng())
-                .createdAt(desertCreate.getCreatedAt())
-                .viewCount(0) // 처음 글 작성시 조회수 0 으로 초기화
+                .createdAt(LocalDateTime.now())
+                .viewCount(0)
+                .user(desertCreate.getUser())
                 .build();
 
         Desert savedDesert = desertRepository.save(desert);
@@ -115,7 +112,8 @@ public class DesertService {
         Pageable sortedPageable = pageable;
 
         if ("viewCount".equals(sort)) {
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(Sort.Order.desc("viewCount")));
         }
 
         Page<Desert> deserts;
@@ -155,7 +153,6 @@ public class DesertService {
         return desertResponses.subList(start, end);
     }
 
-
     // 글 수정
     public DesertResponse update(Long id, DesertUpdate desertUpdate, MultipartFile[] files) throws IOException {
         Desert desert = desertRepository.findById(id)
@@ -172,7 +169,6 @@ public class DesertService {
                 saveFile(file, desert);
             }
         }
-
 
         Desert updatedDesert = desertRepository.save(desert);
 
@@ -221,8 +217,7 @@ public class DesertService {
     private void saveFile(MultipartFile file, Desert desert) throws IOException {
         String filename = file.getOriginalFilename();
         try {
-//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -233,12 +228,35 @@ public class DesertService {
         fileInfo.setSaveName(filename);
         fileInfoRepository.save(fileInfo);
     }
+
     public long getTotalCount(String search) {
         if (search == null || search.isEmpty()) {
-            return desertRepository.count(); // 검색어 없으면 전체 게시글 수 반환
+            return desertRepository.count();
         } else {
-            return desertRepository.countByTitleContainingOrContentContaining(search, search); // 검색 결과 게시글 수 반환
+            return desertRepository.countByTitleContainingOrContentContaining(search, search);
         }
     }
 
+    public Desert getDesertById(Long id) {
+        return desertRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+    }
+
+    // 사용자 Desert 글 목록
+    public List<DesertResponse> getMyDeserts(User user) {
+        List<Desert> desertList = desertRepository.findByUser(user);
+        return desertList.stream()
+                .map(desert -> DesertResponse.builder()
+                        .id(desert.getId())
+                        .title(desert.getTitle())
+                        .content(desert.getContent())
+                        .createdAt(desert.getCreatedAt())
+                        .viewCount(desert.getViewCount())
+                        .upvotes(getUpvotes(desert.getId()))
+                        .downvotes(getDownvotes(desert.getId()))
+                        .fileInfos(desert.getFileInfos())
+                        .comments(desert.getCommentDeserts())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

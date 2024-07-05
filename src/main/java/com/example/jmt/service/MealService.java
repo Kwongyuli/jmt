@@ -1,10 +1,14 @@
 package com.example.jmt.service;
 
+import com.example.jmt.desert.model.Desert;
+import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.Meal;
+import com.example.jmt.model.User;
 import com.example.jmt.model.Vote;
 import com.example.jmt.repository.FileInfoRepository;
 import com.example.jmt.repository.MealRepository;
+import com.example.jmt.repository.UserRepository;
 import com.example.jmt.repository.VoteRepository;
 import com.example.jmt.request.MealCreate;
 import com.example.jmt.request.MealUpdate;
@@ -43,6 +47,7 @@ public class MealService {
                 .lat(mealCreate.getLat())
                 .lng(mealCreate.getLng())
                 .createdAt(mealCreate.getCreatedAt())
+                .user(mealCreate.getUser())
                 .build();
 
         Meal savedMeal = mealRepository.save(meal);
@@ -130,6 +135,7 @@ public class MealService {
         Meal updatedMeal = mealRepository.save(meal);
 
         return MealResponse.builder()
+                
                 .id(updatedMeal.getId())
                 .title(updatedMeal.getTitle())
                 .content(updatedMeal.getContent())
@@ -175,7 +181,7 @@ public class MealService {
         String filename = file.getOriginalFilename();
         try {
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,5 +191,27 @@ public class MealService {
         fileInfo.setOriginalName(filename);
         fileInfo.setSaveName(filename);
         fileInfoRepository.save(fileInfo);
+    }
+
+    public Meal getMealById(Long id) {
+        return mealRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+    }
+
+    public List<MealResponse> getMyMeals(User user) {
+        List<Meal> mealList = mealRepository.findByUser(user);
+        return mealList.stream()
+                .map(meal -> MealResponse.builder()
+                        .id(meal.getId())
+                        .title(meal.getTitle())
+                        .content(meal.getContent())
+                        .createdAt(meal.getCreatedAt())
+                        .viewCount(meal.getViewCount())
+                        .upvotes(getUpvotes(meal.getId()))
+                        .downvotes(getDownvotes(meal.getId()))
+                        .fileInfos(meal.getFileInfos())
+                        .comments(meal.getCommentMeals())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

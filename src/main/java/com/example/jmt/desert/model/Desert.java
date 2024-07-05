@@ -2,6 +2,8 @@ package com.example.jmt.desert.model;
 
 
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -44,13 +46,17 @@ public class Desert {
     @OneToMany(mappedBy = "desert", cascade = CascadeType.REMOVE)
     private List<CommentDesert> commentDeserts;
 
+    @ManyToOne
+    User user;
+
     @Builder
-    public Desert(String title, String content, LocalDateTime createdAt, double lat, double lng, int viewCount) {
+    public Desert(String title, String content, LocalDateTime createdAt, double lat, double lng, int viewCount, User user) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.lat = lat;
         this.lng = lng;
         this.viewCount = viewCount;
+        this.user = user;
     }
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>나의 Meal 글 목록</title>
+</head>
+
+<body>
+    <h1>나의 Meal 글 목록</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th>추천수</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="meal : ${meals}">
+                <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title}"></a></td>
+                <td th:text="${meal.content}"></td>
+                <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+                <td th:text="${meal.viewCount}"></td>
+                <td th:text="${meal.upvotes}"></td>
+                <td><a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a></td>
+                <td>
+                    <form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/meals/write" id="write-desert-btn">Meal 글 작성</a>
+    <a href="/meals/list" id="list-desert-btn">Meal 글 리스트</a>
+
+</body>
+
+</html>

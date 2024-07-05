@@ -63,14 +63,25 @@
             xhr.send();
         }
 
+        // 추, 비추 로그인 확인 코드
         function upvote() {
-            var desertId = /*[[${desert.id}]]*/ 0;
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                return;
+            }
+            var desertId = [[${desert.id}]];
             var url = '/deserts/' + desertId + '/upvote';
             sendVote(url);
         }
 
         function downvote() {
-            var desertId = /*[[${desert.id}]]*/ 0;
+            var loggedInUser = [[${loggedInUser}]];
+            if (!loggedInUser) {
+                alert("로그인 후 이용해주세요.");
+                return;
+            }
+            var desertId = [[${desert.id}]];
             var url = '/deserts/' + desertId + '/downvote';
             sendVote(url);
         }

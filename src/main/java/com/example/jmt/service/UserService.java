@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jmt.dto.UserDto;
-import com.example.jmt.entity.User;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.UserRepository;
 
 @Service

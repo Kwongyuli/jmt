@@ -2,6 +2,8 @@ package com.example.jmt.pub.model;
 
 
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,6 +45,9 @@ public class Pub {
 
     @OneToMany(mappedBy = "pub", cascade = CascadeType.REMOVE)
     private List<CommentPub> commentPubs;
+
+    @ManyToOne
+    User user;
 
     @Builder
     public Pub(String title, String content, LocalDateTime createdAt, double lat, double lng, int viewCount) {

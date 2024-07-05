@@ -7,7 +7,10 @@ import com.example.jmt.pub.repository.VotePubRepository;
 import com.example.jmt.pub.request.PubCreate;
 import com.example.jmt.pub.request.PubUpdate;
 import com.example.jmt.pub.response.PubResponse;
+import com.example.jmt.desert.model.Desert;
+import com.example.jmt.desert.response.DesertResponse;
 import com.example.jmt.model.FileInfo;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -222,7 +225,7 @@ public class PubService {
         String filename = file.getOriginalFilename();
         try {
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+            file.transferTo(new File("C://Users//user//Desktop//저장/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -239,6 +242,24 @@ public class PubService {
         } else {
             return pubRepository.countByTitleContainingOrContentContaining(search, search); // 검색 결과 게시글 수 반환
         }
+    }
+
+    // 사용자 Pub 글 목록
+    public List<PubResponse> getMyPubs(User user) {
+        List<Pub> pubList = pubRepository.findByUser(user);
+        return pubList.stream()
+                .map(pub -> PubResponse.builder()
+                        .id(pub.getId())
+                        .title(pub.getTitle())
+                        .content(pub.getContent())
+                        .createdAt(pub.getCreatedAt())
+                        .viewCount(pub.getViewCount())
+                        .upvotes(getUpvotes(pub.getId()))
+                        .downvotes(getDownvotes(pub.getId()))
+                        .fileInfos(pub.getFileInfos())
+                        .comments(pub.getCommentPubs())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
