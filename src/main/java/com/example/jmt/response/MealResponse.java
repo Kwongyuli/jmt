@@ -3,7 +3,9 @@
     import com.example.jmt.model.CommentMeal;
     import com.example.jmt.model.FileInfo;
     import com.example.jmt.model.Meal;
-    import lombok.Builder;
+import com.example.jmt.model.User;
+
+import lombok.Builder;
     import lombok.Getter;
 
     import java.time.LocalDateTime;

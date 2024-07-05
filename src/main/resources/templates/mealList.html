@@ -139,9 +139,6 @@
                             <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title} + ' [' + ${meal.commentCount} + ']'"></a></td>
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
                             <td th:text="${meal.username}"></td>
-                            <!-- <td th:text="${user.name}"></td> -->
-                            <!-- <td th:text="${desert.viewCount}"></td>
-                            <td th:text="${desert.upvotes}"></td> -->
                             <td>조회</td>
                             <td>추천</td>
                         </tr>
