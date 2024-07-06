@@ -201,7 +201,7 @@
             </div>
             <div id="con">
                 <div class="write">
-                    <form id="findUserIdForm" method="post" action="/jmt/findUserId">
+                    <form id="findUserIdForm">
                         <label for="name">이름 : </label>
                         <div class="conId">
                             <input type="text" id="name" name="name">
@@ -214,6 +214,7 @@
 
                         <div class="findID">
                             <button type="submit" id="findUserIdBtn" class="disabled" disabled>아이디 찾기</button>
+                        </div>
                     </form>
                     <a href="/jmt/signin">로그인</a>
                     <a href="/jmt/signup">회원가입</a>
@@ -235,7 +236,6 @@
 <script>
     let nameInput = document.querySelector('#name');
     let emailInput = document.querySelector('#email');
-    let resultMessage = document.querySelector('.resultMessage');
     let findUserIdBtn = document.querySelector('#findUserIdBtn');
 
     function checkFormValidity() {
@@ -264,15 +264,14 @@
             },
             body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.exists) {
-                    alert('아이디: ' + data.userId);
-                    resultMessage.style.display = 'none';
-                } else {
-                    resultMessage.style.display = 'block';
-                }
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                alert('아이디: ' + data.userId);
+            } else {
+                alert('회원 정보가 존재하지 않습니다.');
+            }
+        });
     });
 </script>
 
