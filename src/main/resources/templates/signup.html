@@ -28,6 +28,13 @@
         background-color: beige;
     }
 
+    .container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     p {
         font-size: 7.5vw;
         position: absolute;
@@ -88,16 +95,73 @@
 
     button.jmt {
         font-family: 'PartialSansKR-Regular';
-        font-size: 4.3vw;
+        font-size: 5vw;
         text-align: center;
         background-color: transparent;
         border: none;
         height: 100%;
+        margin-bottom: 0.8vw;
+    }
+
+    .main {
+        width: 100%;
+        margin-left: 28vw;
+        margin-right: 28vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+
+    div.write {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    label {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+    }
+
+    input {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 30vw;
+        height: 2vw;
+        padding-left: 0.7vw;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 100%;
+        height: 2.3vw;
+        margin-top: 1vw;
     }
 </style>
 
 <body>
     <div class="header"></div>
+
     <div class="container">
         <p id="a">🍙</p>
         <p id="b">🍕</p>
@@ -113,33 +177,43 @@
                 <button type="button" class="jmt">ㅈㅁㅌ</button>
             </div>
             <div id="con">
-                <form method="post" action="/jmt/signup">
-                    <label for="name">이름 : </label>
-                    <input type="text" id="name" name="name" th:field="${user.name}"> <br>
-                    <div class="name_sMessage hide">사용할 수 있는 이름입니다.</div>
-                    <div class="name_fMessage1 hide">이름은 3~8자여야 합니다.</div>
-                    <div class="name_fMessage2 hide">이미 사용 중인 이름입니다.</div>
+                <div class="write">
+                    <form method="post" action="/jmt/signup">
 
-                    <label for="userId">아이디 : </label>
-                    <input type="text" id="userId" name="userId" th:field="${user.userId}"> <br>
-                    <div class="id_sMessage hide">사용할 수 있는 아이디입니다.</div>
-                    <div class="id_fMessage1 hide">아이디는 4~12글자이어야 합니다.</div>
-                    <div class="id_fMessage2 hide">영어 소문자와 숫자만 가능합니다.</div>
-                    <div class="id_fMessage3 hide">이미 사용 중인 아이디입니다.</div>
+                        <label for="name">이름 :
+                            <span class="name_sMessage hide">사용할 수 있는 이름입니다.</span>
+                            <span class="name_fMessage1 hide">3~8자여야 합니다.</span>
+                            <span class="name_fMessage2 hide">이미 사용 중인 이름입니다.</span>
+                        </label> <br>
+                        <input type="text" id="name" name="name" th:field="${user.name}"> <br>
 
-                    <label for="pw">비밀번호 : </label>
-                    <input type="password" name="pw" id="pw1" th:field="${user.pw}"> <br>
-                    <div class="pw_fMessage1 hide">비밀번호는 특수문자 1개 이상 포함하며, 10~20자여야 합니다.</div>
-                    <label for="pw">비밀번호 확인 : </label>
-                    <input type="password" id="pw2"> <br>
-                    <div class="pw_fMessage2 hide">비밀번호가 일치하지 않습니다.</div>
+                        <label for="userId">아이디 :
+                            <span class="id_sMessage hide">사용할 수 있는 아이디입니다.</span>
+                            <span class="id_fMessage1 hide">4~12자여야 합니다.</span>
+                            <span class="id_fMessage2 hide">영어 소문자/숫자만 가능합니다.</span>
+                            <span class="id_fMessage3 hide">이미 사용 중인 아이디입니다.</span>
+                        </label> <br>
+                        <input type="text" id="userId" name="userId" th:field="${user.userId}"> <br>
 
-                    <label for="email">이메일 : </label>
-                    <input type="text" name="email" id="email" th:field="${user.email}"> <br>
-                    <div class="email_fMessage hide">이메일 형식이 올바르지 않습니다.</div>
+                        <label for="pw">비밀번호 :
+                            <span class="pw_fMessage1 hide">특수문자 1개 이상 포함, 10~20자여야 합니다.</span>
+                        </label> <br>
+                        <input type="password" name="pw" id="pw1" th:field="${user.pw}"> <br>
 
-                    <button type="submit" id="signupBtn" class="disabled" disabled>Sign Up</button>
-                </form>
+                        <label for="pw">비밀번호 확인 :
+                            <span class="pw_fMessage2 hide">비밀번호가 일치하지 않습니다.</span>
+                        </label> <br>
+                        <input type="password" id="pw2"> <br>
+
+                        <label for="email">이메일 : 
+                            <span class="email_fMessage hide">이메일 형식이 올바르지 않습니다.</span>
+                        </label> <br>
+                        <input type="text" name="email" id="email" th:field="${user.email}"> <br>
+
+                        <button type="submit" id="signupBtn" class="disabled" disabled>회원가입</button>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>

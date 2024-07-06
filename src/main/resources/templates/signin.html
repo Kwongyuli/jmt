@@ -102,23 +102,17 @@
         margin-bottom: 0.8vw;
     }
 
-    div.main {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+    .main {
+        width: 100%;
+        margin-left: 37vw;
+        margin-right: 37vw;
     }
 
     div#con {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 25vw;
-        height: 25vw;
         border: 0.15vw solid black;
         border-radius: 1vw;
         background-color: white;
+        padding: 1vw;
     }
 
     div.write {
@@ -144,7 +138,8 @@
         margin-bottom: 2vw;
     }
 
-    input[name=userId], input[name=pw] {
+    input[name=userId],
+    input[name=pw] {
         font-family: "Dongle", sans-serif;
         font-weight: 400;
         font-style: normal;
@@ -159,6 +154,7 @@
     div.login {
         text-align: center;
     }
+
     button {
         display: flex;
         justify-content: center;
@@ -203,26 +199,26 @@
             </div>
             <div id="con">
                 <div class="write">
-                <form method="post" action="/jmt/signin">
-                    <label for="title">아이디 :</label>
-                    <div class="conId">
-                        <input type="text" name="userId" placeholder="아이디를 입력하세요.">
-                    </div>
+                    <form method="post" action="/jmt/signin">
+                        <label for="id">아이디 :</label>
+                        <div class="conId">
+                            <input type="text" name="userId">
+                        </div>
 
-                    <label for="title">비밀번호 :</label>
-                    <div class="conPwd">
-                        <input type="password" name="pw" placeholder="비밀번호를 입력하세요.">
-                    </div>
-                    <div class="login">
-                    <button>로그인</button>
-                </form>
-                <a href="#">아이디 찾기</a>
-                <a href="#">비밀번호 찾기</a>
-                <a href="/jmt/signup">회원가입</a>
-            </div>
-            </div>
+                        <label for="pwd">비밀번호 :</label>
+                        <div class="conPwd">
+                            <input type="password" name="pw">
+                        </div>
+                        <div class="login">
+                            <button>로그인</button>
+                    </form>
+                    <a href="/jmt/findUserId">아이디 찾기</a>
+                    <a href="/jmt/resetPassword">비밀번호 찾기</a>
+                    <a href="/jmt/signup">회원가입</a>
+                </div>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="footer"></div>
