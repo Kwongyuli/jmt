@@ -60,7 +60,7 @@ public class UserController {
 
         if (dbUser != null && passwordEncoder.matches(user.getPw(), dbUser.getPw())) {
             session.setAttribute("user_info", dbUser);
-            return "redirect:/jmt/mypageEdit";
+            return "redirect:/meals/list";
         } else {
             return "redirect:/jmt/signin";
         }
