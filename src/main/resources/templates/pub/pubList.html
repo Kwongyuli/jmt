@@ -147,20 +147,15 @@
                             <td colspan="6">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                        <a class="page-link"
-                                            th:href="@{|/pubs/list?page=${currentPage - 1}&search=${search}&sort=${sort}|}">이전</a>
+                                        <a class="page-link" th:href="@{|/pubs/list?page=${currentPage - 1}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}">이전</a>
                                     </li>
 
-                                    <li class="page-item"
-                                        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
-                                        <a class="page-link"
-                                            th:href="@{|/pubs/list?page=${page}&search=${search}&sort=${sort}|}"
-                                            th:text="${page}"></a>
+                                    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                        <a class="page-link" th:href="@{|/pubs/list?page=${page}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}" th:text="${page}"></a>
                                     </li>
 
-                                    <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
-                                        <a class="page-link"
-                                            th:href="@{|/pubs/list?page=${currentPage + 1}&search=${search}&sort=${sort}|}">다음</a>
+                                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                        <a class="page-link" th:href="@{|/pubs/list?page=${currentPage + 1}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}">다음</a>
                                     </li>
                                 </ul>
                             </td>

@@ -14,8 +14,12 @@ import com.example.jmt.service.FileInfoService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -48,11 +51,11 @@ public class PubController {
     @GetMapping("/list")
     public String getPubs(Model model,
                           @RequestParam(value = "page", defaultValue = "1") int page,
-                          @RequestParam(value = "search", required = false) String search,
-                          @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
+                          @RequestParam(value = "search", defaultValue = "") String search,
+                          @RequestParam(value = "sort", defaultValue = "createdAt") String sort) {
 
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(Sort.Order.desc(sort)));
         List<PubResponse> pubs = pubService.getList(pageable, search, sort);
 
         long totalElements = pubService.getTotalCount(search); // 전체 글의 수
@@ -65,6 +68,7 @@ public class PubController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page);  // currentPage 변수 설정
+        model.addAttribute("totalPages", totalPages); // totalPages 변수 설정
 
         model.addAttribute("search", search);  // 검색
         model.addAttribute("sort", sort);

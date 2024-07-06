@@ -1,5 +1,6 @@
 package com.example.jmt.pub.service;
 
+import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.User;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.model.VotePub;
@@ -8,12 +9,10 @@ import com.example.jmt.pub.repository.VotePubRepository;
 import com.example.jmt.pub.request.PubCreate;
 import com.example.jmt.pub.request.PubUpdate;
 import com.example.jmt.pub.response.PubResponse;
-import com.example.jmt.desert.model.Desert;
-import com.example.jmt.desert.response.DesertResponse;
-import com.example.jmt.model.FileInfo;
-import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -150,10 +148,13 @@ public class PubService {
 
     // 전체 게시글 조회
     public List<PubResponse> getList(Pageable pageable, String search, String sort) {
+
         Pageable sortedPageable = pageable;
 
         if ("viewCount".equals(sort)) {
             sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+        } else {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
         }
 
         Page<Pub> pubs;
@@ -163,7 +164,7 @@ public class PubService {
             pubs = pubRepository.findByTitleContainingOrContentContaining(search, search, sortedPageable);
         }
 
-        List<PubResponse> pubResponses = pubs.stream()
+        return pubs.stream()
                 .map(pub -> {
                     long upvotes = getUpvotes(pub.getId());
                     long downvotes = getDownvotes(pub.getId());
@@ -184,15 +185,6 @@ public class PubService {
                             .build();
                 })
                 .collect(Collectors.toList());
-
-        if ("upvotes".equals(sort)) {
-            pubResponses.sort(Comparator.comparingLong(PubResponse::getUpvotes).reversed());
-        }
-
-        int start = Math.min((int) sortedPageable.getOffset(), pubResponses.size());
-        int end = Math.min((start + sortedPageable.getPageSize()), pubResponses.size());
-
-        return pubResponses.subList(start, end);
     }
 
 
@@ -278,7 +270,7 @@ public class PubService {
         String filename = file.getOriginalFilename();
         try {
 //        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("c://files/" + filename));
+            file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
