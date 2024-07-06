@@ -93,6 +93,10 @@
         background-color: white;
     }
 
+    td>a {
+        text-decoration: none;
+    }
+
     div.write {
         margin-top: 0.8vw;
     }
@@ -136,7 +140,8 @@
                     <tbody>
                         <tr th:each="meal : ${meals}">
                             <td th:text="${meal.id}"></td>
-                            <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title} + ' [' + ${meal.commentCount} + ']'"></a></td>
+                            <td><a th:href="@{/meals/{id}(id=${meal.id})}"
+                                    th:text="${meal.title} + ' [' + ${meal.commentCount} + ']'"></a></td>
                             <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
                             <td th:text="${meal.username}"></td>
                             <td th:text="${meal.viewCount}"></td>
@@ -146,8 +151,7 @@
                             <td colspan="6">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                        <a class="page-link"
-                                            th:href="@{|/meals/list?page=${currentPage - 1}|}">이전</a>
+                                        <a class="page-link" th:href="@{|/meals/list?page=${currentPage - 1}|}">이전</a>
                                     </li>
 
                                     <li class="page-item"

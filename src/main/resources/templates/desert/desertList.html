@@ -93,6 +93,10 @@
         background-color: white;
     }
 
+    td>a {
+        text-decoration: none;
+    }
+
     div.write {
         margin-top: 0.8vw;
     }
@@ -136,7 +140,8 @@
                     <tbody>
                         <tr th:each="desert : ${deserts}">
                             <td th:text="${desert.id}"></td>
-                            <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title} + ' [' + ${desert.commentCount} + ']'"></a>
+                            <td><a th:href="@{/deserts/{id}(id=${desert.id})}"
+                                    th:text="${desert.title} + ' [' + ${desert.commentCount} + ']'"></a>
                             </td>
                             <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd')}"></td>
                             <td th:text="${desert.username}"></td>

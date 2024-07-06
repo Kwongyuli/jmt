@@ -1,79 +1,184 @@
-Q&A 리스트 페이지 입니다.
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <title>Q&A List</title>
   <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: beige;
+  }
+
+  .container {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2vw;
+    height: 100vh;
+    margin-top: 17vh;
+    margin-left: 15vw;
+    margin-right: 15vw;
+  }
+
+  .main {
+    width: 100%;
+    padding-top: 2vw;
+  }
+
+  div#head {
+    text-align: center;
+    border: 0.15vw solid black;
+    border-radius: 1vw;
+    background-color: white;
+    height: 4vw;
+    margin-bottom: 2vw;
+    padding-left: 1.5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.7vw;
+  }
+
+  div.search {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1vw;
+  }
+
+  form.search {
+    display: flex;
+    align-items: center;
+  }
+
+  input[name=search] {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.8vw;
+    border: 0.15vw solid black;
+    border-radius: 0.8vw;
+    width: 25vw;
+    height: 2.6vw;
+    margin-right: 0.5vw;
+    padding-left: 0.7vw;
+  }
+
+  button#write,
+  button#search,
+  button#sort {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2vw;
+    border: 0.15vw solid black;
+    border-radius: 0.8vw;
+    width: 5vw;
+    height: 3vw;
+  }
+
+  table {
+    width: 100%;
+    text-align: center;
+    border: 0.15vw solid black;
+    border-radius: 1vw;
+    background-color: white;
+  }
+
+  td>a {
+    text-decoration: none;
+  }
+
+  div.write {
+    margin-top: 0.8vw;
+  }
+</style>
+
 <body>
-  <div class="container my-3">
-    <div class="row my-3">
-      <div class="col-6">
-        <a href="/question/form" class="btn btn-primary">질문 등록하기</a>
+  <div th:replace="common/header"></div>
+
+  <div class="container">
+    <div class="main">
+      <div id="head">
+        <div>질문 리스트</div>
+      </div>
+      <div id="con">
+        <div class="search">
+          <div>
+            <!-- 검색 -->
+            <form th:action="@{/question/list}" method="get" class="search">
+              <input type="text" name="search" th:value="${search}" placeholder="검색어를 입력하세요." />
+              <button type="submit" id="search">
+                <div>검색</div>
+              </button>
+            </form>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:10%">글번호</th>
+              <th style="width:56%">제목</th>
+              <th style="width:17%">작성일</th>
+              <th style="width:17%">글쓴이</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="question : ${question}" th:attr="id=${question.id}">
+              <!-- 글 번호 -->
+              <td th:text="${question.id}"></td>
+              <!-- 제목 -->
+              <td><a th:href="@{|/question/${question.id}|}"
+                  th:text="${question.title} + ' [' + ${#lists.size(question.answers)} + ']'"></a></td>
+              <!-- 작성일시 -->
+              <td th:text="${#temporals.format(question.createdAt, 'yyyy.MM.dd')}"></td>
+              <!-- 닉네임 -->
+              <td th:text="${question.userId}"></td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <!-- 페이징 -->
+                <ul class="pagination">
+                  <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{|/question/list?page=${currentPage - 1}|}">이전</a>
+                  </li>
+
+                  <!-- 페이지 번호 -->
+                  <li class="page-item"
+                    th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
+
+                    <a class="page-link" th:href="@{|/question/list?page=${page}|}" th:text="${page}"></a>
+                  </li>
+
+                  <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+                    <a class="page-link" th:href="@{|/question/list?page=${currentPage + 1}|}">다음</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="write">
+          <form th:action="@{/question/form}" method="get">
+            <button type="submit" id="write">
+              <div>작성</div>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
+  </div>
 
-    <table class="table">
-      <thead class="table-dark">
-        <tr class="text-center">
-          <th>번호</th>
-          <th>제목</th>
-          <th>댓글 수</th>
-          <th>작성자</th>
-          <th>작성일시</th>
-          <th>관리자의 답변완료되었으면 check표시</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="question : ${question}" th:attr="id=${question.id}">
-          <!-- 글 번호 -->
-          <td th:text="${question.id}"></td>
-
-          <!-- 제목 -->
-          <td>
-            <a th:href="@{|/question/${question.id}|}" th:text="${question.title}"></a>
-          </td>
-
-          <!-- 답변수 확인 -->
-          <td><span class="badge bg-warning" th:text="@{|${#lists.size(question.answers)}|}"></span></td>
-
-          <td>닉네임</td>
-          <!-- <td th:text="${question.userId}"></td> -->
-
-          <!-- 작성일시 -->
-          <td th:text="${#temporals.format(question.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-
-          <td>
-            답변이 확인 되었으면 작동하게 하는 checkbox
-          </td>
-        </tr>
-    </table>
-
-    <!-- 페이징 -->
-    <ul class="pagination">
-      <!-- 이전 버튼 -->
-      <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-        <a class="page-link" th:href="@{|/question/list?page=${currentPage - 1}|}">이전</a>
-      </li>
-
-      <!-- 페이지 번호 -->
-      <li class="page-item"
-        th:each="page : ${#numbers.sequence(startPage > 0 ? startPage : 1, endPage > 0 ? endPage : 1)}">
-        <a class="page-link" th:href="@{|/question/list?page=${page}|}" th:text="${page}"></a>
-      </li>
-
-      <!-- 다음 버튼 -->
-      <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
-        <a class="page-link" th:href="@{|/question/list?page=${currentPage + 1}|}">다음</a>
-      </li>
-
-
-      <!-- 검색 -->
-      <form th:action="@{/question/list}" method="get">
-        <input type="text" name="search" th:value="${search}" placeholder="Search..." />
-        <button type="submit">Search</button>
-      </form>
-      
-    </ul>
+  <div class="footer"></div>
 </body>
 
 <script>
@@ -82,3 +187,5 @@ Q&A 리스트 페이지 입니다.
     location = `/question/list?search=${search.value}`;
   }
 </script>
+
+</html>
