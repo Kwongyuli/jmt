@@ -346,8 +346,8 @@
                 </div>
 
                 <div class="comment-write">
-                    <form th:action="@{/pubs/{id}/comment(id=${pub.id})}" method="post">
-                        <textarea name="comment" placeholder="댓글을 작성해주세요."></textarea>
+                    <form id="comment-form">
+                        <textarea id="comment" name="comment" placeholder="댓글을 작성해주세요."></textarea>
                         <div class="comment-button">
                             <span>바른말 고운말</span>
                             <button type="submit" class="save">작성</button>
@@ -356,19 +356,16 @@
                 </div>
 
                 <div class="concomment">
-                    <table th:each="comment : ${comments}">
-                        <tr class="user">
+                    <table id="comments-table">
+                        <tr th:each="comment : ${comments}" class="user">
                             <td class="user">
-                                <span
-                                    th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
-                                <form
-                                    th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}"
-                                    method="post">
+                                <span th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <form th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}" method="post">
                                     <button type="submit" class="delete">삭제</button>
                                 </form>
                             </td>
                         </tr>
-                        <tr class="content">
+                        <tr th:each="comment : ${comments}" class="content">
                             <td class="content">
                                 <span th:text="${comment.comment}"></span>
                             </td>
@@ -451,7 +448,7 @@
 
     function addComment(event) {
         event.preventDefault();
-        const pubId = document.querySelector('#pubId').value;
+        const pubId = [[${pub.id}]];
         const commentText = document.querySelector('#comment').value;
 
         fetch('/pubs/' + pubId + '/comment', {
@@ -463,33 +460,41 @@
                 comment: commentText
             })
         })
-            .then(response => {
-                return response.json().then(data => {
-                    if (!response.ok) {
-                        alert(data.message);
-                        if (response.status === 403) {
-                            window.location.href = '/jmt/signin'; // 로그인 페이지로 리다이렉트
-                        }
-                        throw new Error(data.message);
-                    }
-                    return data;
-                });
-            })
+            .then(response => response.json())
             .then(data => {
-                alert(data.message);
-                const commentsList = document.querySelector('ul');
-                const newComment = document.createElement('li');
-                newComment.innerHTML = `<p>${commentText}</p><span>${data.username}</span>
-                                            <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
-                                                <button type="submit">삭제</button>
-                                            </form>`;
-                commentsList.appendChild(newComment);
-                document.querySelector('#comment').value = '';
+                if (data.message) {
+                    alert(data.message);
+                }
+                if (data.username) {
+                    const commentsTable = document.querySelector('#comments-table');
+                    const newCommentUserRow = document.createElement('tr');
+                    newCommentUserRow.classList.add('user');
+                    newCommentUserRow.innerHTML = `
+                <td class="user">
+                    <span>${data.username} ${data.createdAt}</span>
+                    <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
+                        <button type="submit" class="delete">삭제</button>
+                    </form>
+                </td>
+            `;
+                    const newCommentContentRow = document.createElement('tr');
+                    newCommentContentRow.classList.add('content');
+                    newCommentContentRow.innerHTML = `
+                <td class="content">
+                    <span>${commentText}</span>
+                </td>
+            `;
+                    commentsTable.appendChild(newCommentUserRow);
+                    commentsTable.appendChild(newCommentContentRow);
+                    document.querySelector('#comment').value = '';
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
+
+    document.querySelector('#comment-form').addEventListener('submit', addComment);
 
     function deleteComment(event, pubId, commentId) {
         event.preventDefault();
@@ -502,7 +507,10 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        event.target.closest('li').remove();
+                        const userRow = event.target.closest('tr.user');
+                        const contentRow = userRow.nextElementSibling;
+                        userRow.remove();
+                        contentRow.remove();
                     } else {
                         return response.json().then(data => {
                             alert(data.message);
@@ -515,6 +523,7 @@
                 });
         }
     }
+
     /*]]>*/
 </script>
 

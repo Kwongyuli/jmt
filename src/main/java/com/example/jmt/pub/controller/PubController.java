@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +122,8 @@ public class PubController {
             response.put("message", "댓글이 추가되었습니다.");
             response.put("username", user.getName());
             response.put("commentId", String.valueOf(commentPub.getId())); // commentId 추가
+            response.put("createdAt", commentPub.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+
             return ResponseEntity.ok(response);
         } catch (IllegalStateException e) {
             response.put("message", "로그인해주세요.");
