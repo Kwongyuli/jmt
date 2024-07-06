@@ -3,6 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Page</title>
     <style>
@@ -12,24 +16,144 @@
     </style>
 </head>
 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    /* p {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+    } */
+
+    #a {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        top: -10%;
+        left: 5%;
+    }
+
+    #b {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        top: 10%;
+        left: 23%;
+    }
+
+    #c {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        top: -15%;
+        right: 38%;
+    }
+
+    #d {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        top: -10%;
+        right: 5%;
+    }
+
+    #e {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        bottom: 15%;
+        left: 2%;
+    }
+
+    #f {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        bottom: -10%;
+        left: 20%;
+    }
+
+    #g {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        bottom: -5%;
+        right: 30%;
+    }
+
+    #h {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        top: 25%;
+        right: 16%;
+    }
+
+    #i {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+        bottom: -10%;
+        right: 3%;
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    button.jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 4.3vw;
+        text-align: center;
+        background-color: transparent;
+        border: none;
+        height: 100%;
+    }
+</style>
+
 <body>
-    <h1>My Page</h1>
-    <div id="userInfo">
-        <p>ID: <span th:text="${user.userId}"></span></p>
-        <p>Name: <span th:text="${user.name}"></span></p>
+    <div class="header"></div>
+    <div class="container">
+        <p id="a">🍙</p>
+        <p id="b">🍕</p>
+        <p id="c">🍩</p>
+        <p id="d">🍦</p>
+        <p id="e">🍺</p>
+        <p id="f">🍭</p>
+        <p id="g">🌮</p>
+        <p id="h">🍟</p>
+        <p id="i">🍱</p>
+        <div class="main">
+            <div class="jmt-container">
+                <button type="button" class="jmt">ㅈㅁㅌ</button>
+            </div>
+            <div id="con">
+                <div id="userInfo">
+                    <p>ID: <span th:text="${user.userId}"></span></p>
+                    <p>Name: <span th:text="${user.name}"></span></p>
+                </div>
+                <form id="editForm" th:action="@{/jmt/mypageEdit}" th:object="${user}" method="post">
+                    <input type="hidden" th:field="*{userId}">
+                    <label for="name">이름:</label>
+                    <input type="text" id="name" th:field="*{name}">
+                    <label for="currentPw">현재 비밀번호:</label>
+                    <input type="password" id="currentPw">
+                    <label for="newPw">새로운 비밀번호:</label>
+                    <input type="password" id="newPw" th:field="*{pw}">
+                    <label for="name">이메일:</label>
+                    <input type="text" id="email" th:field="*{email}">
+                    <button type="submit" id="saveButton">저장</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <form id="editForm" th:action="@{/jmt/mypageEdit}" th:object="${user}" method="post">
-        <input type="hidden" th:field="*{userId}">
-        <label for="name">이름:</label>
-        <input type="text" id="name" th:field="*{name}">
-        <label for="currentPw">현재 비밀번호:</label>
-        <input type="password" id="currentPw">
-        <label for="newPw">새로운 비밀번호:</label>
-        <input type="password" id="newPw" th:field="*{pw}">
-        <label for="name">이메일:</label>
-        <input type="text" id="email" th:field="*{email}">
-        <button type="submit" id="saveButton">저장</button>
-    </form>
 
     <button id="editButton">수정</button>
     <button id="deleteButton">회원탈퇴</button>
@@ -95,5 +219,12 @@
         });
     </script>
 </body>
+
+<script>
+    const jmt = document.querySelector('.jmt');
+    jmt.addEventListener('click', () => {
+        location.href = '/home';
+    });
+</script>
 
 </html>
