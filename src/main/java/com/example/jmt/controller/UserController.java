@@ -116,19 +116,37 @@ public class UserController {
     }
 
     @PostMapping("/jmt/mypageEdit")
-    public String updateUser(@ModelAttribute User user) {
+    public String updateUser(@ModelAttribute @Valid User user, @RequestParam String currentPw,
+            BindingResult bindingResult, Model model) {
         User dbUser = (User) session.getAttribute("user_info");
 
         if (dbUser != null) {
-            dbUser.setName(user.getName());
+            if (!currentPw.isEmpty() && passwordEncoder.matches(currentPw, dbUser.getPw())) {
+                dbUser.setName(user.getName());
 
-            if (!user.getPw().isEmpty()) {
-                dbUser.setPw(passwordEncoder.encode(user.getPw()));
+                if (bindingResult.hasErrors()) {
+                    bindingResult.getFieldErrors().forEach(error -> {
+                        System.out.println(error.getField());
+                        System.out.println(error.getDefaultMessage());
+                    });
+                    model.addAttribute("error", "유효하지 않은 입력 값이 있습니다.");
+                    model.addAttribute("user", user);
+                    return "mypageEdit";
+                }
+
+                dbUser.setEmail(user.getEmail());
+
+                if (!user.getPw().isEmpty()) {
+                    dbUser.setPw(passwordEncoder.encode(user.getPw()));
+                }
+
+                userRepository.save(dbUser);
+                session.setAttribute("user_info", dbUser);
+            } else {
+                model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+                model.addAttribute("user", user);
+                return "mypageEdit";
             }
-
-            userRepository.save(dbUser);
-
-            session.setAttribute("user_info", dbUser);
         }
 
         return "redirect:/jmt/mypageEdit";
@@ -216,33 +234,33 @@ public class UserController {
     public Map<String, Object> resetPassword(@RequestBody Map<String, String> requestBody) {
         Map<String, Object> response = new HashMap<>();
         String userId = requestBody.get("userId");
-    
+
         User user = userRepository.findByUserId(userId);
-    
+
         if (user != null) {
             String verificationCode = RandomCodeGenerator.generateCode();
-    
+
             session.setAttribute("verificationCode", verificationCode);
             session.setAttribute("resetEmail", user.getEmail());
-    
+
             String emailContent = "<html>"
-                + "<body>"
-                + "<h2>비밀번호 재설정</h2>"
-                + "<p>비밀번호를 재설정하려면 다음 인증 코드를 입력하세요:</p>"
-                + "<br>"
-                + "<h2 style='color:blue;'>" + verificationCode + "</h2>"
-                + "</body>"
-                + "</html>";
+                    + "<body>"
+                    + "<h2>비밀번호 재설정</h2>"
+                    + "<p>비밀번호를 재설정하려면 다음 인증 코드를 입력하세요:</p>"
+                    + "<br>"
+                    + "<h2 style='color:blue;'>" + verificationCode + "</h2>"
+                    + "</body>"
+                    + "</html>";
 
             mailer.sendMail(user.getEmail(), EMAIL_SUBJECT, emailContent, new SMTPAuthenticator());
-    
+
             response.put("success", true);
             response.put("userId", userId);
         } else {
             response.put("success", false);
             response.put("message", "사용자 아이디가 존재하지 않습니다.");
         }
-    
+
         return response;
     }
 
@@ -277,11 +295,11 @@ public class UserController {
             user.setPw(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             session.invalidate();
-            return "redirect:/jmt/signin"; 
+            return "redirect:/jmt/signin";
         } else {
             String errorMessage = "해당 이메일로 등록된 사용자가 없습니다. 다시 시도해 주세요.";
             model.addAttribute("error", errorMessage);
-            return "resetPasswordForm"; 
+            return "resetPasswordForm";
         }
     }
 
