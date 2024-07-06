@@ -129,14 +129,19 @@ public class QnAController {
 
     // 답변 작성 및 저장
     @PostMapping("/question/{id}")
-    public String questionDetail(@PathVariable("id") long id, @RequestParam String text){
+    public String questionDetail(@PathVariable("id") long id, @RequestParam String text, HttpSession session) {
         Question question = new Question();
-        Answer answer = new Answer();
-
         question.setId(id);
+    
+        User user = (User) session.getAttribute("user_info");
+        String username = user.getName();
+
+        Answer answer = new Answer();
         answer.setQuestion(question);
+        answer.setUsername(username);
         answer.setText(text);
         answer.setCreatedAt(LocalDateTime.now());
+    
         answerRepository.save(answer);
         return "redirect:/question/" + id;
     }

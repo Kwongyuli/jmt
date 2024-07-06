@@ -242,7 +242,7 @@
                     <table th:each="answer : ${question.answers}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|댓쓴이 ${#temporals.format(answer.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <span th:text="@{|${answer.username} ${#temporals.format(answer.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <button type="submit" class="delete-answer"
                                     th:attr="data-id=${answer.id},data-qid=${question.id}">삭제</button>
                                 <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->

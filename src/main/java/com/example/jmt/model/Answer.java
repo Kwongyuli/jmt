@@ -20,6 +20,8 @@ public class Answer {
 
     LocalDateTime createdAt = LocalDateTime.now();
 
+    String username;
+
     @ManyToOne
     Question question;
 
