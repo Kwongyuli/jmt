@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,7 +165,7 @@ public class PubService {
             pubs = pubRepository.findByTitleContainingOrContentContaining(search, search, sortedPageable);
         }
 
-        return pubs.stream()
+        List<PubResponse> pubResponses = pubs.stream()
                 .map(pub -> {
                     long upvotes = getUpvotes(pub.getId());
                     long downvotes = getDownvotes(pub.getId());
@@ -185,8 +186,13 @@ public class PubService {
                             .build();
                 })
                 .collect(Collectors.toList());
-    }
 
+        if ("upvotes".equals(sort)) {
+            pubResponses.sort(Comparator.comparingLong(PubResponse::getUpvotes).reversed());
+        }
+
+        return pubResponses;
+    }
 
     // 글 수정
     public PubResponse update(Long id, PubUpdate pubUpdate, MultipartFile[] files,User user) throws IOException {
