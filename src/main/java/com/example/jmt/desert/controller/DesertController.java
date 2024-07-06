@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +47,9 @@ public class DesertController {
     public String getDeserts(Model model,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(Sort.Order.desc(sort)));
         List<DesertResponse> deserts = desertService.getList(pageable, search, sort);
 
         long totalElements = desertService.getTotalCount(search); // 전체 글의 수
@@ -60,6 +62,7 @@ public class DesertController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page); // currentPage 변수 설정
+        model.addAttribute("totalPages", totalPages); // totalPages 변수 설정
 
         model.addAttribute("search", search); // 검색
         model.addAttribute("sort", sort);
@@ -115,6 +118,8 @@ public class DesertController {
             response.put("message", "댓글이 추가되었습니다.");
             response.put("username", user.getName());
             response.put("commentId", String.valueOf(commentDesert.getId())); // commentId 추가
+            response.put("createdAt", commentDesert.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+
             return ResponseEntity.ok(response);
         } catch (IllegalStateException e) {
             response.put("message", "로그인해주세요.");
@@ -127,19 +132,10 @@ public class DesertController {
 
     // 댓글 삭제
     @PostMapping("/{id}/comment/{commentId}/delete")
-    public String deleteComment(@PathVariable Long id, @PathVariable Long commentId, HttpSession session) {
-        User user = (User) session.getAttribute("user_info");
-        CommentDesert comment = commentDesertService.getCommentById(commentId);
+    public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
+        User user = getCurrentUser();
 
-        if (user == null) {
-            return "redirect:/jmt/signin";
-        }
-
-        if (user.equals(comment.getUser())) {
-            commentDesertService.deleteComment(commentId);
-        }
-
-        commentDesertService.deleteComment(commentId);
+        commentDesertService.deleteComment(commentId, user);
         return "redirect:/deserts/" + id;
     }
 
@@ -188,19 +184,6 @@ public class DesertController {
         }
     }
 
-    // // 추천/비추천 컨트롤러
-    // @PostMapping("/{id}/upvote")
-    // public String upvoteDesert(@PathVariable Long id) {
-    // desertService.upvote(id);
-    // return "redirect:/deserts/" + id;
-    // }
-    //
-    // @PostMapping("/{id}/downvote")
-    // public String downvoteDesert(@PathVariable Long id) {
-    // desertService.downvote(id);
-    // return "redirect:/deserts/" + id;
-    // }
-
     @PostMapping("/{id}/upvote")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> upvoteDesert(@PathVariable Long id) {
@@ -232,6 +215,7 @@ public class DesertController {
         return ResponseEntity.ok(response);
     }
 
+    // 파일 삭제
     @PostMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<?> deleteFile(@RequestParam Integer fileId) {
@@ -259,5 +243,10 @@ public class DesertController {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
         return user;
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public String handleIllegalArgumentException(IllegalArgumentException ex) {
+        return "<script>alert('" + ex.getMessage() + "'); window.location.href = document.referrer;</script>";
     }
 }

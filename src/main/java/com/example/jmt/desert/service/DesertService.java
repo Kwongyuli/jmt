@@ -145,8 +145,9 @@ public class DesertService {
         Pageable sortedPageable = pageable;
 
         if ("viewCount".equals(sort)) {
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                    Sort.by(Sort.Order.desc("viewCount")));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+        } else {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
         }
 
         Page<Desert> deserts;
@@ -182,10 +183,7 @@ public class DesertService {
             desertResponses.sort(Comparator.comparingLong(DesertResponse::getUpvotes).reversed());
         }
 
-        int start = Math.min((int) sortedPageable.getOffset(), desertResponses.size());
-        int end = Math.min((start + sortedPageable.getPageSize()), desertResponses.size());
-
-        return desertResponses.subList(start, end);
+        return desertResponses;
     }
 
     // 글 수정

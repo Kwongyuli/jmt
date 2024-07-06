@@ -332,8 +332,8 @@
                 </div>
 
                 <div class="comment-write">
-                    <form th:action="@{/deserts/{id}/comment(id=${desert.id})}" method="post">
-                        <textarea name="comment" placeholder="댓글을 작성해주세요."></textarea>
+                    <form id="comment-form" th:action="@{/deserts/{id}/comment(id=${desert.id})}" method="post">
+                        <textarea id="comment" name="comment" placeholder="댓글을 작성해주세요."></textarea>
                         <div class="comment-button">
                             <span>바른말 고운말</span>
                             <button type="submit" class="save">작성</button>
@@ -342,14 +342,11 @@
                 </div>
 
                 <div class="concomment">
-                    <table th:each="comment : ${comments}">
+                    <table id="comments-table"th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span
-                                        th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
-                                <form
-                                    th:action="@{/deserts/{desertId}/comment/{commentId}/delete(desertId=${desert.id}, commentId=${comment.id})}"
-                                    method="post">
+                                <span th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <form th:action="@{/deserts/{desertId}/comment/{commentId}/delete(desertId=${desert.id}, commentId=${comment.id})}" method="post">
                                     <button type="submit" class="delete">삭제</button>
                                 </form>
                             </td>
@@ -433,6 +430,108 @@
         var desertId = /*[[${desert.id}]]*/ 0;
         var url = '/deserts/' + desertId + '/downvote';
         sendVote(url);
+    }
+
+    function addComment(event) {
+        event.preventDefault();
+        const desertId = /*[[${desert.id}]]*/ 1; // 실제로는 Thymeleaf 변수를 사용하여 desert.id 값을 가져옵니다.
+        const commentText = document.querySelector('#comment').value;
+
+        fetch('/deserts/' + desertId + '/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                comment: commentText
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                }
+                if (data.username) {
+                    let commentsTable = document.querySelector('#comments-table');
+
+                    // 댓글 테이블이 없으면 생성
+                    if (!commentsTable) {
+                        const concomment = document.querySelector('.concomment');
+                        commentsTable = document.createElement('table');
+                        commentsTable.id = 'comments-table';
+                        commentsTable.innerHTML = `
+                        <tr class="user">
+                            <td class="user">
+                                <span>${data.username} ${data.createdAt}</span>
+                                <form method="post" onsubmit="deleteComment(event, ${desertId}, ${data.commentId})">
+                                    <button type="submit" class="delete">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="content">
+                            <td class="content">
+                                <span>${commentText}</span>
+                            </td>
+                        </tr>
+                    `;
+                        concomment.appendChild(commentsTable);
+                    } else {
+                        // 댓글 테이블이 이미 있으면 prepend로 추가
+                        const newCommentUserRow = document.createElement('tr');
+                        newCommentUserRow.classList.add('user');
+                        newCommentUserRow.innerHTML = `
+                        <td class="user">
+                            <span>${data.username} ${data.createdAt}</span>
+                            <form method="post" onsubmit="deleteComment(event, ${desertId}, ${data.commentId})">
+                                <button type="submit" class="delete">삭제</button>
+                            </form>
+                        </td>
+                    `;
+                        const newCommentContentRow = document.createElement('tr');
+                        newCommentContentRow.classList.add('content');
+                        newCommentContentRow.innerHTML = `
+                        <td class="content">
+                            <span>${commentText}</span>
+                        </td>
+                    `;
+                        commentsTable.prepend(newCommentContentRow);
+                        commentsTable.prepend(newCommentUserRow);
+                    }
+
+                    document.querySelector('#comment').value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    document.querySelector('#comment-form').addEventListener('submit', addComment);
+
+    function deleteComment(event, desertId, commentId) {
+        event.preventDefault();
+        if (confirm('삭제하시겠습니까?')) {
+            fetch(`/deserts/${desertId}/comment/${commentId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        event.target.closest('tr.user').nextElementSibling.remove();
+                        event.target.closest('tr.user').remove();
+                    } else {
+                        return response.json().then(data => {
+                            alert(data.message);
+                            throw new Error(data.message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     }
     /*]]>*/
 </script>
