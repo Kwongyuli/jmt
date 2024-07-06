@@ -1,5 +1,6 @@
 package com.example.jmt.service;
 
+import com.example.jmt.desert.model.CommentDesert;
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
 import com.example.jmt.model.User;
@@ -45,7 +46,14 @@ public class CommentMealService {
     }
 
     // 삭제
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId,User user) {
+        CommentMeal commentMeal = commentMealRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        if (!commentMeal.getUser().equals(user)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
         commentMealRepository.deleteById(commentId);
     }
 }

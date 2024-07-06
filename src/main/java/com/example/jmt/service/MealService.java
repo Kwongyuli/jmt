@@ -155,8 +155,9 @@ public class MealService {
         Pageable sortedPageable = pageable;
 
         if ("viewCount".equals(sort)) {
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                    Sort.by(Sort.Order.desc("viewCount")));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("viewCount")));
+        }else {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
         }
 
         Page<Meal> meals;
@@ -192,13 +193,8 @@ public class MealService {
             mealResponses.sort(Comparator.comparingLong(MealResponse::getUpvotes).reversed());
         }
 
-        int start = Math.min((int) sortedPageable.getOffset(), mealResponses.size());
-        int end = Math.min((start + sortedPageable.getPageSize()), mealResponses.size());
+        return mealResponses;
 
-        return mealResponses.subList(start, end);
-        // return mealRepository.findAll().stream()
-        // .map(MealResponse::new)
-        // .collect(Collectors.toList());
     }
 
     // 글 수정

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +47,9 @@ public class MealController {
     public String getMeals(Model model,
                            @RequestParam(value = "page", defaultValue = "1") int page,
                            @RequestParam(value = "search", required = false) String search,
-                           @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
+                           @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(Sort.Order.desc(sort)));
         List<MealResponse> meals = mealService.getList(pageable, search, sort);
 
 
@@ -118,6 +120,7 @@ public class MealController {
             response.put("message", "댓글이 추가되었습니다.");
             response.put("username", user.getName());
             response.put("commentId", String.valueOf(commentMeal.getId())); // commentId 추가
+            response.put("createdAt", commentMeal.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
             return ResponseEntity.ok(response);
         } catch (IllegalStateException e) {
             response.put("message", "로그인해주세요.");
@@ -131,18 +134,9 @@ public class MealController {
     // 댓글 삭제
     @PostMapping("/{id}/comment/{commentId}/delete")
     public String deleteComment(@PathVariable Long id, @PathVariable Long commentId, HttpSession session) {
-        User user = (User) session.getAttribute("user_info");
-        CommentMeal comment = commentMealService.getCommentById(commentId);
+        User user = getCurrentUser();
 
-        if (user == null) {
-            return "redirect:/jmt/signin";
-        }
-
-        if (user.equals(comment.getUser())) {
-            commentMealService.deleteComment(commentId);
-        }
-
-        commentMealService.deleteComment(commentId);
+        commentMealService.deleteComment(commentId, user);
         return "redirect:/meals/" + id;
     }
 
@@ -190,19 +184,6 @@ public class MealController {
             return "redirect:/jmt/signin";
         }
     }
-
-    // // 추천/비추천 컨트롤러
-    // @PostMapping("/{id}/upvote")
-    // public String upvoteMeal(@PathVariable Long id) {
-    // mealService.upvote(id);
-    // return "redirect:/meals/" + id;
-    // }
-    //
-    // @PostMapping("/{id}/downvote")
-    // public String downvoteMeal(@PathVariable Long id) {
-    // mealService.downvote(id);
-    // return "redirect:/meals/" + id;
-    // }
 
     @PostMapping("/{id}/upvote")
     @ResponseBody
@@ -261,5 +242,10 @@ public class MealController {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
         return user;
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public String handleIllegalArgumentException(IllegalArgumentException ex) {
+        return "<script>alert('" + ex.getMessage() + "'); window.location.href = document.referrer;</script>";
     }
 }
