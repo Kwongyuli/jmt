@@ -175,15 +175,6 @@ public class PubController {
         return "redirect:/pubs/" + id;
     }
 
-    // 글 삭제
-//    @PostMapping("/{id}/delete")
-//    public String deletePub(@PathVariable Long id) {
-//
-//        User user = getCurrentUser();
-//
-//        pubService.delete(id, user);
-//        return "redirect:/pubs/list";
-//    }
 
     @PostMapping("/{id}/delete")
     public String deletePub(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -261,5 +252,11 @@ public class PubController {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
         return user;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public String handleIllegalArgumentException(IllegalArgumentException ex) {
+        return "<script>alert('" + ex.getMessage() + "'); window.location.href = document.referrer;</script>";
     }
 }

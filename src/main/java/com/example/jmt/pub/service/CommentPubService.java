@@ -27,6 +27,7 @@ public class CommentPubService {
                 .user(user)
                 .comment(comment)
                 .createdAt(LocalDateTime.now())
+                .user(user)
                 .build();
         return commentPubRepository.save(commentPub);
     }
