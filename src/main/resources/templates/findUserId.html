@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find User ID</title>
+    <title>Find ID</title>
     <style>
         .disabled {
             background-color: #ccc;
@@ -11,52 +15,255 @@
         }
     </style>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    p {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+    }
+
+    #a {
+        top: -10%;
+        left: 5%;
+    }
+
+    #b {
+        top: 10%;
+        left: 23%;
+    }
+
+    #c {
+        top: -15%;
+        right: 38%;
+    }
+
+    #d {
+        top: -10%;
+        right: 5%;
+    }
+
+    #e {
+        bottom: 15%;
+        left: 2%;
+    }
+
+    #f {
+        bottom: -10%;
+        left: 20%;
+    }
+
+    #g {
+        bottom: -5%;
+        right: 30%;
+    }
+
+    #h {
+        top: 25%;
+        right: 16%;
+    }
+
+    #i {
+        bottom: -10%;
+        right: 3%;
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .jmt-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button.jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 5vw;
+        background-color: transparent;
+        border: none;
+        height: 100%;
+        margin-bottom: 0.8vw;
+    }
+
+    .main {
+        width: 100%;
+        margin-left: 37vw;
+        margin-right: 37vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+
+    div.write {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    label {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+    }
+
+    div.conId {
+        margin-bottom: 1vw;
+    }
+
+    div.conPwd {
+        margin-bottom: 2vw;
+    }
+
+    input {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 18vw;
+        height: 2vw;
+        padding-left: 0.7vw;
+    }
+
+    div.findID {
+        text-align: center;
+    }
+
+    button#findUserIdBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 100%;
+        height: 2.3vw;
+        background-color: black;
+        color: white;
+    }
+
+    a {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        text-decoration: none;
+        color: gray;
+        margin: 0 0.3vw;
+    }
+</style>
+
 <body>
-    <h1>아이디 찾기</h1>
-    <form id="findUserIdForm" method="post" action="/jmt/findUserId">
-        <label for="name">이름 : </label>
-        <input type="text" id="name" name="name"> <br>
+    <div class="header"></div>
 
-        <label for="email">이메일 : </label>
-        <input type="email" id="email" name="email"> <br>
+    <div class="container">
+        <p id="a">🍙</p>
+        <p id="b">🍕</p>
+        <p id="c">🍩</p>
+        <p id="d">🍦</p>
+        <p id="e">🍺</p>
+        <p id="f">🍭</p>
+        <p id="g">🌮</p>
+        <p id="h">🍟</p>
+        <p id="i">🍱</p>
+        <div class="main">
+            <div class="jmt-container">
+                <button type="button" class="jmt">ㅈㅁㅌ</button>
+            </div>
+            <div id="con">
+                <div class="write">
+                    <form id="findUserIdForm" method="post" action="/jmt/findUserId">
+                        <label for="name">이름 : </label>
+                        <div class="conId">
+                            <input type="text" id="name" name="name">
+                        </div>
 
-        <div class="resultMessage" style="display: none;">아이디를 찾을 수 없습니다.</div>
+                        <label for="email">이메일 : </label>
+                        <div class="conPwd">
+                            <input type="email" id="email" name="email">
+                        </div>
 
-        <button type="submit" id="findUserIdBtn" class="disabled" disabled>아이디 찾기</button>
-    </form>
+                        <div class="findID">
+                            <button type="submit" id="findUserIdBtn" class="disabled" disabled>아이디 찾기</button>
+                    </form>
+                    <a href="/jmt/signin">로그인</a>
+                    <a href="/jmt/signup">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        let nameInput = document.querySelector('#name');
-        let emailInput = document.querySelector('#email');
-        let resultMessage = document.querySelector('.resultMessage');
-        let findUserIdBtn = document.querySelector('#findUserIdBtn');
+    <div class="footer"></div>
+</body>
 
-        function checkFormValidity() {
-            const nameValid = nameInput.value.length > 0;
-            const emailValid = emailInput.value.length > 0 && emailInput.validity.valid;
+<script>
+    const jmt = document.querySelector('.jmt');
+    jmt.addEventListener('click', () => {
+        location.href = '/home';
+    });
+</script>
 
-            if (nameValid && emailValid) {
-                findUserIdBtn.disabled = false;
-                findUserIdBtn.classList.remove('disabled');
-            } else {
-                findUserIdBtn.disabled = true;
-                findUserIdBtn.classList.add('disabled');
-            }
+<script>
+    let nameInput = document.querySelector('#name');
+    let emailInput = document.querySelector('#email');
+    let resultMessage = document.querySelector('.resultMessage');
+    let findUserIdBtn = document.querySelector('#findUserIdBtn');
+
+    function checkFormValidity() {
+        const nameValid = nameInput.value.length > 0;
+        const emailValid = emailInput.value.length > 0 && emailInput.validity.valid;
+
+        if (nameValid && emailValid) {
+            findUserIdBtn.disabled = false;
+            findUserIdBtn.classList.remove('disabled');
+        } else {
+            findUserIdBtn.disabled = true;
+            findUserIdBtn.classList.add('disabled');
         }
+    }
 
-        nameInput.addEventListener('input', checkFormValidity);
-        emailInput.addEventListener('input', checkFormValidity);
+    nameInput.addEventListener('input', checkFormValidity);
+    emailInput.addEventListener('input', checkFormValidity);
 
-        document.querySelector('#findUserIdForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+    document.querySelector('#findUserIdForm').addEventListener('submit', function (event) {
+        event.preventDefault();
 
-            fetch('/jmt/findUserId', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
-            })
+        fetch('/jmt/findUserId', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.exists) {
@@ -66,7 +273,7 @@
                     resultMessage.style.display = 'block';
                 }
             });
-        });
-    </script>
-</body>
+    });
+</script>
+
 </html>

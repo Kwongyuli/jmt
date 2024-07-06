@@ -200,13 +200,21 @@
         .user {
             text-align: center;
             margin-top: 0.5vw;
+            margin-bottom: -1vw;
         }
 
-        .user>a {
+        .userfind {
+            text-align: center;
+            margin-top: 0.5vw;
+            margin-bottom: -2vw;
+        }
+
+        .user>a,
+        .userfind>a {
             font-family: "Dongle", sans-serif;
             font-weight: 400;
             font-style: normal;
-            font-size: 2.5vw;
+            font-size: 2vw;
             color: black;
             margin: 0 1vw;
             text-decoration: none;
@@ -228,6 +236,10 @@
             <div class="user" id="user-links">
                 <a href="/jmt/signin" id="auth-link">로그인</a>
                 <a href="/jmt/signup" id="signup-link">회원가입</a>
+            </div>
+            <div class="userfind" id="user-find">
+                <a href="/jmt/findUserId">아이디 찾기</a>
+                <a href="/jmt/resetPassword">비밀번호 찾기</a>
             </div>
             <div class="span">
                 <span id="a">🍙</span>
