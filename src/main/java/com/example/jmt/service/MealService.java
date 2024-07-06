@@ -146,6 +146,7 @@ public class MealService {
                 .fileInfos(meal.getFileInfos())
                 .comments(meal.getCommentMeals())
                 .viewCount(meal.getViewCount())
+                .username(meal.getUser().getName())
                 .build();
     }
 

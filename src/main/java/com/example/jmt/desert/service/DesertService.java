@@ -136,6 +136,7 @@ public class DesertService {
                 .fileInfos(desert.getFileInfos())
                 .comments(desert.getCommentDeserts()) // 댓글
                 .viewCount(desert.getViewCount()) // 조회수
+                .username(desert.getUser().getName())
                 .build();
     }
 
@@ -172,6 +173,7 @@ public class DesertService {
                             .fileInfos(desert.getFileInfos())
                             .comments(desert.getCommentDeserts())
                             .commentCount(desert.getCommentDeserts().size()) // 댓글 개수 설정
+                            .username(desert.getUser().getName())
                             .build();
                 })
                 .collect(Collectors.toList());

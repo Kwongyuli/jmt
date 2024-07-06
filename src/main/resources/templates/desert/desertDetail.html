@@ -285,12 +285,12 @@
 
                 <div class="contitle">
                     <span class="title" th:text="${desert.title}"></span>
-                    <span class="user" th:text="@{|이예림 ${#temporals.format(desert.createdAt, 'yyyy.MM.dd')}|}"></span>
+                    <span class="user" th:text="@{|${desert.username} ${#temporals.format(desert.createdAt, 'yyyy.MM.dd')}|}"></span>
                 </div>
 
-                <div class="slider__wrap">
+                <div class="slider__wrap" th:if="${desert.fileInfos != null and !desert.fileInfos.isEmpty()}">
                     <div class="slider__btn">
-                        <a href="#" class="prev" title="이전이미지"><</a>
+                        <a href="#" class="prev" title="이전이미지">←</a>
                     </div>
                     <div class="slider__img">
                         <div class="slider__inner">
@@ -300,7 +300,7 @@
                         </div>
                     </div>
                     <div class="slider__btn">
-                        <a href="#" class="next" title="다음이미지">></a>
+                        <a href="#" class="next" title="다음이미지">→</a>
                     </div>
                 </div>
 
@@ -345,7 +345,7 @@
                     <table th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|이예림 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <span th:text="@{|댓쓴이 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/deserts/{desertId}/comment/{commentId}/delete(desertId=${desert.id}, commentId=${comment.id})}"
                                     method="post">

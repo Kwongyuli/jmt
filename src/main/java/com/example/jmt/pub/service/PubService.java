@@ -144,6 +144,7 @@ public class PubService {
                 .fileInfos(pub.getFileInfos())
                 .comments(pub.getCommentPubs()) // 댓글
                 .viewCount(pub.getViewCount()) // 조회수
+                .username(pub.getUser().getName())
                 .build();
     }
 
@@ -179,6 +180,7 @@ public class PubService {
                             .fileInfos(pub.getFileInfos())
                             .comments(pub.getCommentPubs())
                             .commentCount(pub.getCommentPubs().size())
+                            .username(pub.getUser().getName())
                             .build();
                 })
                 .collect(Collectors.toList());

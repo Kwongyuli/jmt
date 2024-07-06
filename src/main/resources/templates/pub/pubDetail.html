@@ -298,12 +298,13 @@
 
                 <div class="contitle">
                     <span class="title" th:text="${pub.title}"></span>
-                    <span class="user" th:text="@{|이예림 ${#temporals.format(pub.createdAt, 'yyyy.MM.dd')}|}"></span>
+                    <span class="user"
+                        th:text="@{|${pub.username} ${#temporals.format(pub.createdAt, 'yyyy.MM.dd')}|}"></span>
                 </div>
 
-                <div class="slider__wrap">
+                <div class="slider__wrap" th:if="${pub.fileInfos != null and !pub.fileInfos.isEmpty()}">
                     <div class="slider__btn">
-                        <a href="#" class="prev" title="이전이미지"><</a>
+                        <a href="#" class="prev" title="이전이미지">←</a>
                     </div>
                     <div class="slider__img">
                         <div class="slider__inner">
@@ -313,7 +314,7 @@
                         </div>
                     </div>
                     <div class="slider__btn">
-                        <a href="#" class="next" title="다음이미지">></a>
+                        <a href="#" class="next" title="다음이미지">→</a>
                     </div>
                 </div>
 
@@ -358,7 +359,8 @@
                     <table th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|이예림 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <span
+                                    th:text="@{|댓쓴이 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}"
                                     method="post">
@@ -374,136 +376,8 @@
                     </table>
                 </div>
             </div>
-
-<div>
-    <!-- <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=da146a2a6ff6a54903c1d2a7caecd1c7"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        document.addEventListener('DOMContentLoaded', function() {
-            const lat = /*[[${pub.lat}]]*/ 33.450701;
-            const lng = /*[[${pub.lng}]]*/ 126.570667;
-
-            var mapContainer = document.getElementById('map'),
-                mapOption = {
-                    center: new kakao.maps.LatLng(lat, lng),
-                    level: 3
-                };
-
-            var map = new kakao.maps.Map(mapContainer, mapOption);
-
-            var markerPosition = new kakao.maps.LatLng(lat, lng);
-
-            var marker = new kakao.maps.Marker({
-                position: markerPosition
-            });
-
-            marker.setMap(map);
-        });
-
-        function sendVote(url) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    document.getElementById('upvotes').innerText = response.upvotes;
-                    document.getElementById('downvotes').innerText = response.downvotes;
-                    alert(response.message);
-                }
-            };
-            xhr.send();
-        }
-
-        function upvote() {
-            var pubId = /*[[${pub.id}]]*/ 0;
-            var url = '/pubs/' + pubId + '/upvote';
-            sendVote(url);
-        }
-
-        function downvote() {
-            var pubId = /*[[${pub.id}]]*/ 0;
-            var url = '/pubs/' + pubId + '/downvote';
-            sendVote(url);
-        }
-
-        function addComment(event) {
-            event.preventDefault();
-            const pubId = document.querySelector('#pubId').value;
-            const commentText = document.querySelector('#comment').value;
-
-            fetch('/pubs/' + pubId + '/comment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    comment: commentText
-                })
-            })
-                .then(response => {
-                    return response.json().then(data => {
-                        if (!response.ok) {
-                            alert(data.message);
-                            if (response.status === 403) {
-                                window.location.href = '/jmt/signin'; // 로그인 페이지로 리다이렉트
-                            }
-                            throw new Error(data.message);
-                        }
-                        return data;
-                    });
-                })
-                .then(data => {
-                    alert(data.message);
-                    const commentsList = document.querySelector('ul');
-                    const newComment = document.createElement('li');
-                    newComment.innerHTML = `<p>${commentText}</p><span>${data.username}</span>
-                                            <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
-                                                <button type="submit">삭제</button>
-                                            </form>`;
-                    commentsList.appendChild(newComment);
-                    document.querySelector('#comment').value = '';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function deleteComment(event, pubId, commentId) {
-            event.preventDefault();
-            if (confirm('삭제하시겠습니까?')) {
-                fetch(`/pubs/${pubId}/comment/${commentId}/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            event.target.closest('li').remove();
-                        } else {
-                            return response.json().then(data => {
-                                alert(data.message);
-                                throw new Error(data.message);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        }
-
-        /*]]>*/
-    </script> -->
-
-
-    <div>
-        <div th:each="fileInfo : ${pub.fileInfos}">
-            <img th:src="@{|/download?fileId=${fileInfo.id}|}" style="max-width: 100px; max-height: 100px;">
         </div>
     </div>
-
     <div class="footer"></div>
 </body>
 
@@ -557,6 +431,7 @@
                 var response = JSON.parse(xhr.responseText);
                 document.getElementById('upvotes').innerText = "추천👍 " + response.upvotes;
                 document.getElementById('downvotes').innerText = "비추천👎 " + response.downvotes;
+                alert(response.message);
             }
         };
         xhr.send();
@@ -572,6 +447,73 @@
         var pubId = /*[[${pub.id}]]*/ 0;
         var url = '/pubs/' + pubId + '/downvote';
         sendVote(url);
+    }
+
+    function addComment(event) {
+        event.preventDefault();
+        const pubId = document.querySelector('#pubId').value;
+        const commentText = document.querySelector('#comment').value;
+
+        fetch('/pubs/' + pubId + '/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                comment: commentText
+            })
+        })
+            .then(response => {
+                return response.json().then(data => {
+                    if (!response.ok) {
+                        alert(data.message);
+                        if (response.status === 403) {
+                            window.location.href = '/jmt/signin'; // 로그인 페이지로 리다이렉트
+                        }
+                        throw new Error(data.message);
+                    }
+                    return data;
+                });
+            })
+            .then(data => {
+                alert(data.message);
+                const commentsList = document.querySelector('ul');
+                const newComment = document.createElement('li');
+                newComment.innerHTML = `<p>${commentText}</p><span>${data.username}</span>
+                                            <form method="post" onsubmit="deleteComment(event, ${pubId}, ${data.commentId})">
+                                                <button type="submit">삭제</button>
+                                            </form>`;
+                commentsList.appendChild(newComment);
+                document.querySelector('#comment').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function deleteComment(event, pubId, commentId) {
+        event.preventDefault();
+        if (confirm('삭제하시겠습니까?')) {
+            fetch(`/pubs/${pubId}/comment/${commentId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        event.target.closest('li').remove();
+                    } else {
+                        return response.json().then(data => {
+                            alert(data.message);
+                            throw new Error(data.message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     }
     /*]]>*/
 </script>

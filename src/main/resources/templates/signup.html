@@ -2,49 +2,149 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up</title>
+        <style>
+            .hide {
+                display: none;
+            }
+
+            .disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+        </style>
+    </head>
+
     <style>
-        .hide {
-            display: none;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: beige;
         }
 
-        .disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+        p {
+            font-size: 7.5vw;
+            position: absolute;
+            z-index: -1;
+        }
+
+        #a {
+            top: -10%;
+            left: 5%;
+        }
+
+        #b {
+            top: 10%;
+            left: 23%;
+        }
+
+        #c {
+            top: -15%;
+            right: 38%;
+        }
+
+        #d {
+            top: -10%;
+            right: 5%;
+        }
+
+        #e {
+            bottom: 15%;
+            left: 2%;
+        }
+
+        #f {
+            bottom: -10%;
+            left: 20%;
+        }
+
+        #g {
+            bottom: -5%;
+            right: 30%;
+        }
+
+        #h {
+            top: 25%;
+            right: 16%;
+        }
+
+        #i {
+            bottom: -10%;
+            right: 3%;
+        }
+
+        @font-face {
+            font-family: 'PartialSansKR-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        button.jmt {
+            font-family: 'PartialSansKR-Regular';
+            font-size: 4.3vw;
+            text-align: center;
+            background-color: transparent;
+            border: none;
+            height: 100%;
         }
     </style>
-</head>
 
 <body>
-    <form method="post" action="/jmt/signup">
-        <label for="name">이름 : </label>
-        <input type="text" id="name" name="name" th:field="${user.name}"> <br>
-        <div class="name_sMessage hide">사용할 수 있는 이름입니다.</div>
-        <div class="name_fMessage1 hide">이름은 3~8자여야 합니다.</div>
-        <div class="name_fMessage2 hide">이미 사용 중인 이름입니다.</div>
+    <div class="header"></div>
+    <div class="container">
+        <p id="a">🍙</p>
+        <p id="b">🍕</p>
+        <p id="c">🍩</p>
+        <p id="d">🍦</p>
+        <p id="e">🍺</p>
+        <p id="f">🍭</p>
+        <p id="g">🌮</p>
+        <p id="h">🍟</p>
+        <p id="i">🍱</p>
+        <div class="main">
+            <div class="jmt-container">
+                <button type="button" class="jmt">ㅈㅁㅌ</button>
+            </div>
+            <div id="con">
+                <form method="post" action="/jmt/signup">
+                    <label for="name">이름 : </label>
+                    <input type="text" id="name" name="name" th:field="${user.name}"> <br>
+                    <div class="name_sMessage hide">사용할 수 있는 이름입니다.</div>
+                    <div class="name_fMessage1 hide">이름은 3~8자여야 합니다.</div>
+                    <div class="name_fMessage2 hide">이미 사용 중인 이름입니다.</div>
 
-        <label for="userId">아이디 : </label>
-        <input type="text" id="userId" name="userId" th:field="${user.userId}"> <br>
-        <div class="id_sMessage hide">사용할 수 있는 아이디입니다.</div>
-        <div class="id_fMessage1 hide">아이디는 4~12글자이어야 합니다.</div>
-        <div class="id_fMessage2 hide">영어 소문자와 숫자만 가능합니다.</div>
-        <div class="id_fMessage3 hide">이미 사용 중인 아이디입니다.</div>
+                    <label for="userId">아이디 : </label>
+                    <input type="text" id="userId" name="userId" th:field="${user.userId}"> <br>
+                    <div class="id_sMessage hide">사용할 수 있는 아이디입니다.</div>
+                    <div class="id_fMessage1 hide">아이디는 4~12글자이어야 합니다.</div>
+                    <div class="id_fMessage2 hide">영어 소문자와 숫자만 가능합니다.</div>
+                    <div class="id_fMessage3 hide">이미 사용 중인 아이디입니다.</div>
 
-        <label for="pw">비밀번호 : </label>
-        <input type="password" name="pw" id="pw1" th:field="${user.pw}"> <br>
-        <div class="pw_fMessage1 hide">비밀번호는 특수문자 1개 이상 포함하며, 10~20자여야 합니다.</div>
-        <label for="pw">비밀번호 확인 : </label>
-        <input type="password" id="pw2"> <br>
-        <div class="pw_fMessage2 hide">비밀번호가 일치하지 않습니다.</div>
+                    <label for="pw">비밀번호 : </label>
+                    <input type="password" name="pw" id="pw1" th:field="${user.pw}"> <br>
+                    <div class="pw_fMessage1 hide">비밀번호는 특수문자 1개 이상 포함하며, 10~20자여야 합니다.</div>
+                    <label for="pw">비밀번호 확인 : </label>
+                    <input type="password" id="pw2"> <br>
+                    <div class="pw_fMessage2 hide">비밀번호가 일치하지 않습니다.</div>
 
-        <label for="email">이메일 : </label>
-        <input type="text" name="email" id="email" th:field="${user.email}"> <br>
-        <div class="email_fMessage hide">이메일 형식이 올바르지 않습니다.</div>
+                    <label for="email">이메일 : </label>
+                    <input type="text" name="email" id="email" th:field="${user.email}"> <br>
+                    <div class="email_fMessage hide">이메일 형식이 올바르지 않습니다.</div>
 
-        <button type="submit" id="signupBtn" class="disabled" disabled>Sign Up</button>
-    </form>
+                    <button type="submit" id="signupBtn" class="disabled" disabled>Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         let username = document.querySelector('#name');
@@ -116,21 +216,21 @@
                     },
                     body: JSON.stringify({ name: username.value })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        name_fMessage2.classList.remove('hide');
-                        name_fMessage1.classList.add('hide');
-                        name_sMessages.classList.add('hide');
-                        isNameValid = false;
-                    } else {
-                        name_fMessage2.classList.add('hide');
-                        name_fMessage1.classList.add('hide');
-                        name_sMessages.classList.remove('hide');
-                        isNameValid = true;
-                    }
-                    checkValidity();
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            name_fMessage2.classList.remove('hide');
+                            name_fMessage1.classList.add('hide');
+                            name_sMessages.classList.add('hide');
+                            isNameValid = false;
+                        } else {
+                            name_fMessage2.classList.add('hide');
+                            name_fMessage1.classList.add('hide');
+                            name_sMessages.classList.remove('hide');
+                            isNameValid = true;
+                        }
+                        checkValidity();
+                    });
             }
             checkValidity();
         });
@@ -162,23 +262,23 @@
                     },
                     body: JSON.stringify({ userId: userId.value })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        id_sMessage.classList.add('hide');
-                        id_fMessage1.classList.add('hide');
-                        id_fMessage2.classList.add('hide');
-                        id_fMessage3.classList.remove('hide');
-                        isUserIdValid = false;
-                    } else {
-                        id_sMessage.classList.remove('hide');
-                        id_fMessage1.classList.add('hide');
-                        id_fMessage2.classList.add('hide');
-                        id_fMessage3.classList.add('hide');
-                        isUserIdValid = true;
-                    }
-                    checkValidity();
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            id_sMessage.classList.add('hide');
+                            id_fMessage1.classList.add('hide');
+                            id_fMessage2.classList.add('hide');
+                            id_fMessage3.classList.remove('hide');
+                            isUserIdValid = false;
+                        } else {
+                            id_sMessage.classList.remove('hide');
+                            id_fMessage1.classList.add('hide');
+                            id_fMessage2.classList.add('hide');
+                            id_fMessage3.classList.add('hide');
+                            isUserIdValid = true;
+                        }
+                        checkValidity();
+                    });
             }
             checkValidity();
         });
@@ -217,6 +317,14 @@
         });
 
     </script>
+    <div class="footer"></div>
 </body>
+
+<script>
+    const jmt = document.querySelector('.jmt');
+    jmt.addEventListener('click', () => {
+        location.href = '/home';
+    });
+</script>
 
 </html>

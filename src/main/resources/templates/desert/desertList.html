@@ -136,10 +136,10 @@
                     <tbody>
                         <tr th:each="desert : ${deserts}">
                             <td th:text="${desert.id}"></td>
-                            <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="@{|${desert.title} [댓]|}"></a>
+                            <td><a th:href="@{/deserts/{id}(id=${desert.id})}" th:text="${desert.title} + ' [' + ${desert.commentCount} + ']'"></a>
                             </td>
                             <td th:text="${#temporals.format(desert.createdAt, 'yyyy.MM.dd')}"></td>
-                            <td>이예림ㅇㅇㅇㅇㅇ</td>
+                            <td th:text="${desert.username}"></td>
                             <td th:text="${desert.viewCount}"></td>
                             <td th:text="${desert.upvotes}"></td>
                         </tr>

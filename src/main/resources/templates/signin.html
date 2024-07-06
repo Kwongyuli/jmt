@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
     <title>Login</title>
+
     <script>
-        window.onload = function() {
+        window.onload = function () {
             // Thymeleaf 변수를 사용하여 message를 가져옵니다
             let message = /*[[${message}]]*/ 'null';
             if (message !== 'null' && message !== '') {
@@ -12,11 +19,117 @@
         };
     </script>
 </head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    p {
+        font-size: 7.5vw;
+        position: absolute;
+        z-index: -1;
+    }
+
+    #a {
+        top: -10%;
+        left: 5%;
+    }
+
+    #b {
+        top: 10%;
+        left: 23%;
+    }
+
+    #c {
+        top: -15%;
+        right: 38%;
+    }
+
+    #d {
+        top: -10%;
+        right: 5%;
+    }
+
+    #e {
+        bottom: 15%;
+        left: 2%;
+    }
+
+    #f {
+        bottom: -10%;
+        left: 20%;
+    }
+
+    #g {
+        bottom: -5%;
+        right: 30%;
+    }
+
+    #h {
+        top: 25%;
+        right: 16%;
+    }
+
+    #i {
+        bottom: -10%;
+        right: 3%;
+    }
+
+    @font-face {
+        font-family: 'PartialSansKR-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    button.jmt {
+        font-family: 'PartialSansKR-Regular';
+        font-size: 4.3vw;
+        text-align: center;
+        background-color: transparent;
+        border: none;
+        height: 100%;
+    }
+</style>
+
 <body>
-<form method="post" action="/jmt/signin">
-    <input type="text" name="userId" placeholder="id">
-    <input type="password" name="pw" placeholder="password">
-    <button>Sign In</button>
-</form>
+    <div class="header"></div>
+
+    <div class="container">
+        <p id="a">🍙</p>
+        <p id="b">🍕</p>
+        <p id="c">🍩</p>
+        <p id="d">🍦</p>
+        <p id="e">🍺</p>
+        <p id="f">🍭</p>
+        <p id="g">🌮</p>
+        <p id="h">🍟</p>
+        <p id="i">🍱</p>
+        <div class="main">
+            <div class="jmt-container">
+                <button type="button" class="jmt">ㅈㅁㅌ</button>
+            </div>
+            <div id="con">
+                <form method="post" action="/jmt/signin">
+                    <input type="text" name="userId" placeholder="id">
+                    <input type="password" name="pw" placeholder="password">
+                    <button>Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer"></div>
 </body>
+
+<script>
+    const jmt = document.querySelector('.jmt');
+    jmt.addEventListener('click', () => {
+        location.href = '/home';
+    });
+</script>
+
 </html>

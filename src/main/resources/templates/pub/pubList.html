@@ -136,10 +136,10 @@
                     <tbody>
                         <tr th:each="pub : ${pubs}">
                             <td th:text="${pub.id}"></td>
-                            <td><a th:href="@{/pubs/{id}(id=${pub.id})}" th:text="@{|${pub.title} [댓]|}"></a>
+                            <td><a th:href="@{/pubs/{id}(id=${pub.id})}" th:text="${pub.title} + ' [' + ${pub.commentCount} + ']'"></a>
                             </td>
                             <td th:text="${#temporals.format(pub.createdAt, 'yyyy.MM.dd')}"></td>
-                            <td>이예림ㅇㅇㅇㅇㅇ</td>
+                            <td th:text="${pub.username}"></td>
                             <td th:text="${pub.viewCount}"></td>
                             <td th:text="${pub.upvotes}"></td>
                         </tr>
