@@ -167,6 +167,7 @@
             var deleteButton = document.getElementById('deleteButton');
             var currentPw = document.getElementById('currentPw');
             var newPw = document.getElementById('newPw');
+            var name = document.getElementById('name');
             var email = document.getElementById('email');
 
             editButton.addEventListener('click', function () {
@@ -180,10 +181,16 @@
                 event.preventDefault();
                 var currentPassword = currentPw.value;
                 var newPassword = newPw.value;
+                var nameValue = name.value;
                 var emailValue = email.value;
 
                 if (!isValidPassword(newPassword)) {
                     alert('비밀번호는 영문 대,소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함된 8자 ~ 20자의 비밀번호여야 합니다.');
+                    return;
+                }
+
+                if (!isValidName(nameValue)) {
+                    alert('이름은 3글자 이상 12글자 이하이어야 합니다.');
                     return;
                 }
 
@@ -241,12 +248,15 @@
                 return regex.test(password);
             }
 
+            function isValidName(name) {
+                return name.length >= 3 && name.length <= 12;
+            }
+
             function isValidEmail(email) {
                 var regex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
                 return regex.test(email);
             }
         });
-
     </script>
 </body>
 

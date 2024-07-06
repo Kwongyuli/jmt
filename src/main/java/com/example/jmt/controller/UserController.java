@@ -122,8 +122,6 @@ public class UserController {
 
         if (dbUser != null) {
             if (!currentPw.isEmpty() && passwordEncoder.matches(currentPw, dbUser.getPw())) {
-                dbUser.setName(user.getName());
-
                 if (bindingResult.hasErrors()) {
                     bindingResult.getFieldErrors().forEach(error -> {
                         System.out.println(error.getField());
@@ -134,6 +132,7 @@ public class UserController {
                     return "mypageEdit";
                 }
 
+                dbUser.setName(user.getName());
                 dbUser.setEmail(user.getEmail());
 
                 if (!user.getPw().isEmpty()) {
