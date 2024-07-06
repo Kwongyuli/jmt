@@ -1,23 +1,135 @@
-질문 수정 페이지 입니다.
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <title>Question Edit Form</title>
+</head>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: beige;
+  }
+
+  .container {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2vw;
+    height: 100vh;
+    margin-top: 17vh;
+    margin-left: 15vw;
+    margin-right: 15vw;
+  }
+
+  .main {
+    width: 100%;
+    padding-top: 2vw;
+  }
+
+  div#head {
+    text-align: center;
+    border: 0.15vw solid black;
+    border-radius: 1vw;
+    background-color: white;
+    height: 4vw;
+    margin-bottom: 2vw;
+    padding-left: 1.5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.7vw;
+  }
+
+  div#con {
+    border: 0.15vw solid black;
+    border-radius: 1vw;
+    background-color: white;
+    padding: 1vw;
+  }
+
+  div.contitle,
+  div.concontent {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5vw;
+    margin-bottom: 1vw;
+  }
+
+  input#title {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.8vw;
+    border: 0.15vw solid black;
+    border-radius: 0.8vw;
+    width: 67vw;
+    height: 2.6vw;
+    padding-left: 0.7vw;
+  }
+
+  textarea#content {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.8vw;
+    border: 0.15vw solid black;
+    border-radius: 0.8vw;
+    width: 67vw;
+    height: 25vw;
+    padding-left: 0.7vw;
+    resize: none;
+  }
+
+  button#complete {
+    font-family: "Dongle", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2vw;
+    border: 0.15vw solid black;
+    border-radius: 0.8vw;
+    width: 100%;
+    height: 100%;
+  }
+</style>
 
 <body>
-    <div class="container mt-5">
-        <div class="row">
-          <form method="post" th:action="@{/question/edit/} + ${question.id}">
-            <div class="mb-3">
-              <label for="title">제목:</label>
-              <input type="text" class="form-control" id="title" name="title"
-                    th:value="${question.title}">
-            </div>
-            <div class="mb-3">
-              <label for="content">내용:</label>
-              <textarea class="form-control" rows="5" name="content" 
-                    id="content">[[ ${question.content} ]]</textarea>
-            </div>
-            <div class="d-grid gap-2">
-              <button class="btn btn-primary" id="complete">수정완료</button>
-            </div>
-          </form>
-        </div>
+  <div th:replace="common/header"></div>
+
+  <div class="container">
+    <div class="main">
+      <div id="head">
+        <div>질문 작성</div>
       </div>
+
+      <div id="con">
+        <form id="writeForm" method="post" th:action="@{/question/edit/} + ${question.id}">
+
+          <label for="title">제목 :</label>
+          <div class="contitle">
+            <input type="text" name="title" id="title" th:value="${question.title}">
+          </div>
+
+          <label for="content">내용 :</label>
+          <div class="concontent">
+            <textarea class="form-control" name="content" id="content">[[ ${question.content} ]]</textarea>
+          </div>
+
+          <div class="consave">
+            <button type="submit" id="complete">저장</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"></div>
 </body>
+
+</html>

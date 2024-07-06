@@ -24,11 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.jmt.model.Answer;
 import com.example.jmt.model.QFileInfo;
 import com.example.jmt.model.Question;
+import com.example.jmt.model.User;
 import com.example.jmt.model.VoteQuestion;
 import com.example.jmt.repository.AnswerRepository;
 import com.example.jmt.repository.QFileInfoRepository;
 import com.example.jmt.repository.QuestionRepository;
 import com.example.jmt.repository.VoteQuestionRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class QnAController {
@@ -144,6 +147,9 @@ public class QnAController {
         return "/question/form";
     }
 
+    @Autowired
+    HttpSession session;
+
     @PostMapping("/question/form")
     public String questionForm(@ModelAttribute Question question,
                                @RequestParam("file") MultipartFile qFile){
@@ -158,6 +164,10 @@ public class QnAController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+        User user = (User) session.getAttribute("user_info");
+        String username = user.getName();
+        question.setUsername(username);
 
         Question saveQuestion = questionRepository.save(question);
 

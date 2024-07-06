@@ -284,8 +284,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/jmt/saveNewPassword")
+    public String saveNewPassword() {
+        return "saveNewPassword";
+    }
+
     @PostMapping("/jmt/saveNewPassword")
-    public String saveNewPassword(@RequestParam String newPassword, Model model) {
+    public String saveNewPasswordPost(@RequestParam String newPassword, Model model) {
+        if (!newPassword.matches("(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}")) {
+            String errorMessage = "비밀번호는 영문 대,소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함된 8자 ~ 20자의 비밀번호여야 합니다.";
+            model.addAttribute("error", errorMessage);
+            return "saveNewPassword";
+        }
+
         String email = (String) session.getAttribute("resetEmail");
         Optional<User> userOptional = userRepository.findByEmail(email);
 
