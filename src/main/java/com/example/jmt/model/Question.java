@@ -30,6 +30,8 @@ public class Question {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
+    private String username;
+
     // 파일다운
     @OneToMany(mappedBy = "question")
     List<QFileInfo> qFileInfos = new ArrayList<>();

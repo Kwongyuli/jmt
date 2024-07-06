@@ -200,7 +200,7 @@
             <div id="con">
                 <div class="contitle">
                     <span class="title" th:text="${question.title}"></span>
-                    <span class="user" th:text="@{|글쓴이 ${#temporals.format(question.createdAt, 'yyyy.MM.dd')}|}"></span>
+                    <span class="user" th:text="@{|${question.username} ${#temporals.format(question.createdAt, 'yyyy.MM.dd')}|}"></span>
                 </div>
 
                 <div class="image">
