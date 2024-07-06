@@ -214,10 +214,10 @@
 
                         <div class="findID">
                             <button type="submit" id="findUserIdBtn" class="disabled" disabled>아이디 찾기</button>
+                            <a href="/jmt/signin">로그인</a>
+                            <a href="/jmt/signup">회원가입</a>
                         </div>
                     </form>
-                    <a href="/jmt/signin">로그인</a>
-                    <a href="/jmt/signup">회원가입</a>
                 </div>
             </div>
         </div>
@@ -264,14 +264,14 @@
             },
             body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                alert('아이디: ' + data.userId);
-            } else {
-                alert('회원 정보가 존재하지 않습니다.');
-            }
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    alert('아이디: ' + data.userId);
+                } else {
+                    alert('회원 정보가 존재하지 않습니다.');
+                }
+            });
     });
 </script>
 

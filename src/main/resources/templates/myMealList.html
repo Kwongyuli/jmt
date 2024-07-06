@@ -2,44 +2,163 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>나의 Meal 글 목록</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>My Meal List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#head {
+        height: 4vw;
+        margin-bottom: 2vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    div#head>button {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 3vw;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        width: 32%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button#meal {
+        background-color: black;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        text-align: center;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+    }
+
+    td>a {
+        text-decoration: none;
+        color: black;
+    }
+</style>
+
 <body>
-    <h1>나의 Meal 글 목록</h1>
+    <div th:replace="common/header"></div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>제목</th>
-                <th>내용</th>
-                <th>작성일</th>
-                <th>조회수</th>
-                <th>추천수</th>
-                <th>수정</th>
-                <th>삭제</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="meal : ${meals}">
-                <td><a th:href="@{/meals/{id}(id=${meal.id})}" th:text="${meal.title}"></a></td>
-                <td th:text="${meal.content}"></td>
-                <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-                <td th:text="${meal.viewCount}"></td>
-                <td th:text="${meal.upvotes}"></td>
-                <td><a th:href="@{/meals/{id}/edit(id=${meal.id})}">수정</a></td>
-                <td>
-                    <form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post">
-                        <button type="submit">삭제</button>
+    <div class="container">
+        <div class="main">
+            <div id="head">
+                <button id="meal">meal</button>
+                <button id="dessert">dessert</button>
+                <button id="pub">pub</button>
+            </div>
+            <div id="con">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:10%">글번호</th>
+                            <th style="width:58%">제목</th>
+                            <th style="width:16%">작성일</th>
+                            <th style="width:8%">조회수</th>
+                            <th style="width:8%">추천수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="meal : ${meals}">
+                            <td th:text="${meal.id}"></td>
+                            <td><a th:href="@{/meals/{id}(id=${meal.id})}"
+                                    th:text="${meal.title} + ' [' + ${meal.commentCount} + ']'"></a></td>
+                            <td th:text="${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}"></td>
+                            <td th:text="${meal.viewCount}"></td>
+                            <td th:text="${meal.upvotes}"></td>
+                        </tr>
+                        <!-- <tr>
+                            <td colspan="5">
+                                <ul class="pagination">
+                                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{|/meals/list?page=${currentPage - 1}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}">이전</a>
+                                    </li>
+
+                                    <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+
+                                        <a class="page-link"
+                                           th:href="@{|/meals/list?page=${page}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}"
+                                            th:text="${page}"></a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{|/meals/list?page=${currentPage + 1}&search=${search == null ? '' : search}&sort=${sort == null ? '' : sort}|}">다음</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr> -->
+                    </tbody>
+                </table>
+
+                <!-- <div class="write">
+                    <form th:action="@{/meals/write}" method="get">
+                        <button type="submit" id="write">
+                            <div>작성</div>
+                        </button>
                     </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div> -->
+                <!-- <a href="/meals/write" id="write-desert-btn">Meal 글 작성</a>
+                <a href="/meals/list" id="list-desert-btn">Meal 글 리스트</a> -->
+            </div>
+        </div>
+    </div>
 
-    <a href="/meals/write" id="write-desert-btn">Meal 글 작성</a>
-    <a href="/meals/list" id="list-desert-btn">Meal 글 리스트</a>
-
+    <div class="footer"></div>
 </body>
+
+<script>
+    const meal = document.querySelector('#meal');
+    meal.addEventListener('click', () => {
+        location = '/meals/myMealList';
+    });
+    const dessert = document.querySelector('#dessert');
+    dessert.addEventListener('click', () => {
+        location = '/deserts/myDesertList';
+    });
+    const pub = document.querySelector('#pub');
+    pub.addEventListener('click', () => {
+        location = '/pubs/myPubList';
+    });
+</script>
 
 </html>
