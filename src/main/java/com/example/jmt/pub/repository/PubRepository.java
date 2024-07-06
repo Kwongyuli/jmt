@@ -1,6 +1,5 @@
 package com.example.jmt.pub.repository;
 
-import com.example.jmt.model.Meal;
 import com.example.jmt.model.User;
 import com.example.jmt.pub.model.Pub;
 

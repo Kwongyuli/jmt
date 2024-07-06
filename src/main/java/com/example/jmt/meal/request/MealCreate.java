@@ -1,4 +1,4 @@
-package com.example.jmt.request;
+package com.example.jmt.meal.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

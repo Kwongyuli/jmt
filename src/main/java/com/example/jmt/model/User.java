@@ -1,13 +1,14 @@
 package com.example.jmt.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.example.jmt.desert.model.CommentDesert;
 import com.example.jmt.desert.model.Desert;
 import com.example.jmt.desert.model.VoteDesert;
+import com.example.jmt.meal.model.CommentMeal;
+import com.example.jmt.meal.model.Meal;
+import com.example.jmt.meal.model.Vote;
 import com.example.jmt.pub.model.CommentPub;
 import com.example.jmt.pub.model.Pub;
 import com.example.jmt.pub.model.VotePub;

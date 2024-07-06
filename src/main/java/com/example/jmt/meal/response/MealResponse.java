@@ -1,11 +1,10 @@
-    package com.example.jmt.response;
+    package com.example.jmt.meal.response;
 
-    import com.example.jmt.model.CommentMeal;
+    import com.example.jmt.meal.model.CommentMeal;
     import com.example.jmt.model.FileInfo;
-    import com.example.jmt.model.Meal;
-import com.example.jmt.model.User;
+    import com.example.jmt.meal.model.Meal;
 
-import lombok.Builder;
+    import lombok.Builder;
     import lombok.Getter;
 
     import java.time.LocalDateTime;

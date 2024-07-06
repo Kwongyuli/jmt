@@ -1,6 +1,7 @@
 package com.example.jmt.model;
 
 import com.example.jmt.desert.model.Desert;
+import com.example.jmt.meal.model.Meal;
 import com.example.jmt.pub.model.Pub;
 import jakarta.persistence.*;
 import lombok.Data;

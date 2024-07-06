@@ -1,11 +1,10 @@
-package com.example.jmt.service;
+package com.example.jmt.meal.service;
 
-import com.example.jmt.desert.model.CommentDesert;
-import com.example.jmt.model.CommentMeal;
-import com.example.jmt.model.Meal;
+import com.example.jmt.meal.model.CommentMeal;
+import com.example.jmt.meal.model.Meal;
 import com.example.jmt.model.User;
-import com.example.jmt.repository.CommentMealRepository;
-import com.example.jmt.repository.MealRepository;
+import com.example.jmt.meal.repository.CommentMealRepository;
+import com.example.jmt.meal.repository.MealRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

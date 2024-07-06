@@ -1,11 +1,8 @@
 package com.example.jmt;
 
-import com.example.jmt.desert.model.Desert;
-import com.example.jmt.desert.repository.DesertRepository;
-import com.example.jmt.model.Meal;
-import com.example.jmt.repository.MealRepository;
-import com.example.jmt.service.MealService;
-import jakarta.transaction.Transactional;
+import com.example.jmt.meal.model.Meal;
+import com.example.jmt.meal.repository.MealRepository;
+import com.example.jmt.meal.service.MealService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

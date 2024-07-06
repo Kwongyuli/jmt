@@ -1,7 +1,6 @@
-package com.example.jmt.repository;
+package com.example.jmt.meal.repository;
 
-import com.example.jmt.model.Vote;
-import com.example.jmt.pub.model.VotePub;
+import com.example.jmt.meal.model.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {

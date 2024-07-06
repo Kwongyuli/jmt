@@ -1,5 +1,6 @@
-package com.example.jmt.model;
+package com.example.jmt.meal.model;
 
+import com.example.jmt.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 

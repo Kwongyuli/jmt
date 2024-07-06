@@ -1,16 +1,16 @@
-package com.example.jmt.controller;
+package com.example.jmt.meal.controller;
 
-import com.example.jmt.model.CommentMeal;
-import com.example.jmt.model.Meal;
+import com.example.jmt.meal.model.CommentMeal;
+import com.example.jmt.meal.model.Meal;
 import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
-import com.example.jmt.repository.MealRepository;
-import com.example.jmt.request.MealCreate;
-import com.example.jmt.request.MealUpdate;
-import com.example.jmt.response.MealResponse;
-import com.example.jmt.service.CommentMealService;
+import com.example.jmt.meal.repository.MealRepository;
+import com.example.jmt.meal.request.MealCreate;
+import com.example.jmt.meal.request.MealUpdate;
+import com.example.jmt.meal.response.MealResponse;
+import com.example.jmt.meal.service.CommentMealService;
 import com.example.jmt.service.FileInfoService;
-import com.example.jmt.service.MealService;
+import com.example.jmt.meal.service.MealService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +68,7 @@ public class MealController {
         model.addAttribute("search", search);  // 검색
         model.addAttribute("sort", sort);
 
-        return "mealList";
+        return "meal/mealList";
     }
 
     // 글 상세페이지
@@ -83,13 +83,13 @@ public class MealController {
         model.addAttribute("downvotes", mealService.getDownvotes(id));
         model.addAttribute("comments", comments);
 
-        return "mealDetail";
+        return "meal/mealDetail";
     }
 
     @GetMapping("/write")
     public String createMealForm(Model model) {
         model.addAttribute("mealCreate", new MealCreate());
-        return "mealForm";
+        return "meal/mealForm";
     }
 
     // 글 작성
@@ -149,7 +149,7 @@ public class MealController {
             MealUpdate mealUpdate = mealService.getMealUpdate(id);
             mealUpdate.setId(id);
             model.addAttribute("mealUpdate", mealUpdate);
-            return "mealEditForm";
+            return "meal/mealEditForm";
         } else {
             return "redirect:/jmt/signin";
         }

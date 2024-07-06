@@ -1,4 +1,4 @@
-package com.example.jmt.request;
+package com.example.jmt.meal.request;
 
 import com.example.jmt.model.FileInfo;
 import lombok.Builder;
