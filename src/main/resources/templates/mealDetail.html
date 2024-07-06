@@ -345,7 +345,8 @@
                     <table th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|댓쓴이 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <span
+                                        th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}"
                                     method="post">

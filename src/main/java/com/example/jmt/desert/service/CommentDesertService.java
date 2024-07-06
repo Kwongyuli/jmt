@@ -4,6 +4,7 @@ import com.example.jmt.desert.model.CommentDesert;
 import com.example.jmt.desert.model.Desert;
 import com.example.jmt.desert.repository.CommentDesertRepository;
 import com.example.jmt.desert.repository.DesertRepository;
+import com.example.jmt.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,14 @@ public class CommentDesertService {
     private final DesertRepository desertRepository;
 
     // 댓글 추가
-    public CommentDesert addComment(Long desertId, String comment) {
+    public CommentDesert addComment(Long desertId, String comment, User user) {
         Desert desert = desertRepository.findById(desertId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         CommentDesert commentDesert = CommentDesert.builder()
                 .desert(desert)
                 .comment(comment)
                 .createdAt(LocalDateTime.now())
+                .user(user)
                 .build();
         return commentDesertRepository.save(commentDesert);
     }

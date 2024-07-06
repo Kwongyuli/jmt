@@ -360,7 +360,7 @@
                         <tr class="user">
                             <td class="user">
                                 <span
-                                    th:text="@{|댓쓴이 ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                    th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}"
                                     method="post">

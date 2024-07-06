@@ -2,6 +2,7 @@ package com.example.jmt.service;
 
 import com.example.jmt.model.CommentMeal;
 import com.example.jmt.model.Meal;
+import com.example.jmt.model.User;
 import com.example.jmt.repository.CommentMealRepository;
 import com.example.jmt.repository.MealRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,12 @@ public class CommentMealService {
     private final MealRepository mealRepository;
 
     // 댓글 추가
-    public CommentMeal addComment(Long mealId, String comment) {
+    public CommentMeal addComment(Long mealId, String comment, User user) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         CommentMeal commentMeal = CommentMeal.builder()
                 .meal(meal)
+                .user(user)
                 .comment(comment)
                 .createdAt(LocalDateTime.now())
                 .build();

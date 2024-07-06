@@ -109,16 +109,23 @@ public class MealController {
 
     // 댓글 쓰기 메서드
     @PostMapping("/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestParam("comment") String comment, HttpSession session) {
-
-        User user = (User) session.getAttribute("user_info");
-
-        if (user == null) {
-            return "redirect:/jmt/signin";
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> addComment(@PathVariable Long id, @RequestParam("comment") String comment) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            User user = getCurrentUser();
+            CommentMeal commentMeal = commentMealService.addComment(id, comment, user);
+            response.put("message", "댓글이 추가되었습니다.");
+            response.put("username", user.getName());
+            response.put("commentId", String.valueOf(commentMeal.getId())); // commentId 추가
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            response.put("message", "로그인해주세요.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
-        commentMealService.addComment(id, comment);
-        return "redirect:/meals/" + id;
     }
 
     // 댓글 삭제

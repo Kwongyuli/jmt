@@ -10,14 +10,10 @@ import com.example.jmt.desert.service.CommentDesertService;
 import com.example.jmt.desert.service.DesertService;
 import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
-import com.example.jmt.request.MealUpdate;
 import com.example.jmt.service.FileInfoService;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -110,15 +106,23 @@ public class DesertController {
 
     // 댓글 쓰기 메서드
     @PostMapping("/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestParam("comment") String comment, HttpSession session) {
-        User user = (User) session.getAttribute("user_info");
-
-        if (user == null) {
-            return "redirect:/jmt/signin";
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> addComment(@PathVariable Long id, @RequestParam("comment") String comment) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            User user = getCurrentUser();
+            CommentDesert commentDesert = commentDesertService.addComment(id, comment, user);
+            response.put("message", "댓글이 추가되었습니다.");
+            response.put("username", user.getName());
+            response.put("commentId", String.valueOf(commentDesert.getId())); // commentId 추가
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            response.put("message", "로그인해주세요.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
-        commentDesertService.addComment(id, comment);
-        return "redirect:/deserts/" + id;
     }
 
     // 댓글 삭제

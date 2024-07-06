@@ -22,14 +22,16 @@ public class CommentMeal {
     @JoinColumn(name = "meal_id")
     private Meal meal;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public CommentMeal(Long id, String comment, LocalDateTime createdAt, Meal meal) {
+    public CommentMeal(Long id, String comment, LocalDateTime createdAt, Meal meal,User user) {
         this.id = id;
         this.comment = comment;
         this.createdAt = createdAt;
         this.meal = meal;
+        this.user = user;
     }
-
-    @ManyToOne
-    User user;
 }
