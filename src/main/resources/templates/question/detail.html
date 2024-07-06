@@ -1,63 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>Q&A Detail</title>
+</head>
+
 <style>
-    #img {
-        width: 200px;
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: beige;
+    }
+
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 17vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
+    }
+
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw;
+    }
+
+    div.contitle {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        border-bottom: 0.15vw solid black;
+    }
+
+    div.image {
+        display: flex;
+        justify-content: center;
+        margin-top: 1vw;
+        margin-left: 14vw;
+        margin-right: 14vw;
+    }
+
+    img#img {
+        width: 100%;
+        height: 100%;
+    }
+
+    div.concontent {
+        width: 100%;
+        margin-bottom: 1vw;
+    }
+
+    div.button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1vw;
+        margin-bottom: 1vw;
+        border-bottom: 0.15vw solid black;
+    }
+
+    button.list {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 12%;
+        height: 100%;
+    }
+
+    button.edit,
+    button.delete {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 8vw;
+        height: 100%;
+    }
+
+    a#edit {
+        text-decoration: none;
+        color: black;
+    }
+
+    div.comment-write {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5vw;
+        margin-bottom: 1vw;
+    }
+
+    div.comment-write>form {
+        width: 100%;
+        text-align: center;
+    }
+
+    textarea[name=text] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 98%;
+        height: 10vw;
+        padding-left: 0.7vw;
+        resize: none;
+    }
+
+    div.comment-button {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 0.15vw solid black;
+        padding-bottom: 0.5vw;
+        margin-top: -0.8vw;
+    }
+
+    button.save {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 10%;
+        height: 100%;
+    }
+
+    div.concomment {
+        margin-top: 1vw;
+    }
+
+    table {
+        width: 100%;
+        border: 0.15vw solid black;
+        border-collapse: collapse;
+        margin-bottom: 1vw;
+    }
+
+    tr.user {
+        border-bottom: 0.15vw dashed gray;
+    }
+
+    tr.content {
+        border-bottom: 0.15vw solid black;
+    }
+
+    td.user {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1vw;
+    }
+
+    td.content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1vw;
+        padding-right: 1vw;
+    }
+
+    button.delete-answer {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.8vw;
+        border: 0.15vw solid black;
+        width: 6%;
+        padding: 0 0.8vw;
     }
 </style>
 
-질문 상세 페이지 입니다.
-
 <body>
-    몇번째 글 <br> <br> 작성자 <br> <br>
+    <div th:replace="common/header"></div>
 
-    <!-- 제목 -->
-    <div class="mb-3">
-        <label for="title">제목:</label>
-        <input type="text" class="form-control" id="title" name="title" th:value="${question.title}">
+    <div class="container">
+        <div class="main">
+            <div id="con">
+                <div class="contitle">
+                    <span class="title" th:text="${question.title}"></span>
+                    <span class="user" th:text="@{|글쓴이 ${#temporals.format(question.createdAt, 'yyyy.MM.dd')}|}"></span>
+                </div>
+
+                <div class="image">
+                    <img id="img" th:each="fileInfo : ${question.qFileInfos}" th:src="@{|/down?fileId=${fileInfo.id}|}">
+                </div>
+
+                <div class="concontent">
+                    <span th:text="${question.content}"></span>
+                </div>
+
+                <!--추천 비추천-->
+                <!-- <div class="recommend">
+                    <form id="voteForm" method="post">
+                        <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
+                        <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
+                            onclick="downvote()"></button>
+                    </form>
+                </div> -->
+
+                <div class="button">
+                    <button class="list">목록</button>
+                    <div class="user-button">
+                        <button class="edit"><a th:href="@{|/question/edit/${question.id}|}" id="edit">수정</a></button>
+                        <button class="delete" type="submit" id="delete" th:num="${question.id}">삭제</button>
+                    </div>
+                </div>
+
+                <div class="comment-write">
+                    <form th:action="@{|/question/${question.id}|}" method="post">
+                        <textarea name="text" placeholder="댓글을 작성해주세요."></textarea>
+                        <div class="comment-button">
+                            <span>바른말 고운말</span>
+                            <button type="submit" class="save">작성</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="concomment">
+                    <table th:each="answer : ${question.answers}">
+                        <tr class="user">
+                            <td class="user">
+                                <span th:text="@{|댓쓴이 ${#temporals.format(answer.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <button type="submit" class="delete-answer"
+                                    th:attr="data-id=${answer.id},data-qid=${question.id}">삭제</button>
+                                <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->
+                            </td>
+                        </tr>
+                        <tr class="content">
+                            <td class="content">
+                                <span th:text="${answer.text}"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <h5>내용: </h5>
-    <!-- 내용 -->
-    <div th:text="${question.content}"></div>
-    <!-- 사진 -->
-    <div>
-        <img id="img" th:each="fileInfo : ${question.qFileInfos}" th:src="@{|/down?fileId=${fileInfo.id}|}">
-    </div>
 
-    <!--추천 비추천-->
-    <div>
-        <form id="voteForm" method="post">
-            <button type="button" id="upvotes" th:text="'추천👍 ' + ${upvotes}" onclick="upvote()"></button>
-            <button type="button" id="downvotes" th:text="'비추천👎 ' + ${downvotes}" onclick="downvote()"></button>
-        </form>
-    </div>
-
-    <!-- 목록 -->
-    <a class="nav-link" th:href="@{|/question/list|}" id="list">목록</a>
-
-    <br>
-
-    <!-- 질문 수정 -->
-    <a class="nav-link" th:href="@{|/question/edit/${question.id}|}" id="edit">수정</a>
-
-    <br>
-
-    <!-- 질문 삭제 -->
-    <a class="nav-link" href="#" id="delete" th:num="${question.id}">삭제</a>
-
-    <form th:action="@{|/question/${question.id}|}" method="post" class="my-3">
-        <textarea name="text" class="form-control" rows="10"></textarea>
-        <input type="submit" value="답변등록" class="btn btn-primary my-2">
-    </form>
-
-    <!-- 답변 보이게하기 & 답변작성된 시간 (수정되면 수정된 시간으로 변경시킴 {고객의 소리에 대한 답변이여서}) & 삭제 & 수정 -->
-    <div th:each="answer : ${question.answers}">
-        <div th:text="${answer.text}"></div>
-        <div th:text="${#temporals.format(answer.createdAt, 'yyyy.MM.dd HH:mm')}"></div>
-        <a class="nav-link delete-answer" href="#" th:attr="data-id=${answer.id},data-qid=${question.id}">답변 삭제</a>
-        <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->
-    </div>
+    <div class="footer"></div>
 </body>
 
 <script>
+    const list = document.querySelector('.list');
+    list.addEventListener('click', () => {
+        location = '/question/list';
+    });
+
     // 질문 삭제
     document.querySelector('#delete').addEventListener('click', (e) => {
         e.preventDefault();

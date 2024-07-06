@@ -285,7 +285,8 @@
 
                 <div class="contitle">
                     <span class="title" th:text="${meal.title}"></span>
-                    <span class="user" th:text="@{|${meal.username} ${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}|}"></span>
+                    <span class="user"
+                        th:text="@{|${meal.username} ${#temporals.format(meal.createdAt, 'yyyy.MM.dd')}|}"></span>
                 </div>
 
                 <div class="slider__wrap" th:if="${meal.fileInfos != null and !meal.fileInfos.isEmpty()}">
@@ -316,7 +317,7 @@
                 <div class="recommend">
                     <button type="button" id="upvotes" th:text="@{|추천👍 ${upvotes}|}" onclick="upvote()"></button>
                     <button type="button" id="downvotes" th:text="@{|비추천👎 ${downvotes}|}"
-                        onclick="downvote()">비추천</button>
+                        onclick="downvote()"></button>
                 </div>
 
                 <div class="button">
@@ -346,7 +347,7 @@
                         <tr class="user">
                             <td class="user">
                                 <span
-                                        th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                    th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/meals/{mealId}/comment/{commentId}/delete(mealId=${meal.id}, commentId=${comment.id})}"
                                     method="post">

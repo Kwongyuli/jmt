@@ -1,24 +1,165 @@
-질문 작성 페이지입니다.
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+	<meta charset="UTF-8">
+	<title>Q&A Form</title>
+</head>
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: beige;
+	}
+
+	.container {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 2vw;
+		height: 100vh;
+		margin-top: 17vh;
+		margin-left: 15vw;
+		margin-right: 15vw;
+	}
+
+	.main {
+		width: 100%;
+		padding-top: 2vw;
+	}
+
+	div#head {
+		text-align: center;
+		border: 0.15vw solid black;
+		border-radius: 1vw;
+		background-color: white;
+		height: 4vw;
+		margin-bottom: 2vw;
+		padding-left: 1.5vw;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 2.7vw;
+	}
+
+	div#con {
+		border: 0.15vw solid black;
+		border-radius: 1vw;
+		background-color: white;
+		padding: 1vw;
+	}
+
+	div.contitle,
+	div.concontent {
+		display: flex;
+		justify-content: center;
+		margin-top: 0.5vw;
+		margin-bottom: 1vw;
+	}
+
+	div.confile {
+		margin-top: 0.5vw;
+		margin-bottom: 1.5vw;
+	}
+
+	input#title {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 1.8vw;
+		border: 0.15vw solid black;
+		border-radius: 0.8vw;
+		width: 67vw;
+		height: 2.6vw;
+		padding-left: 0.7vw;
+	}
+
+	textarea#content {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 1.8vw;
+		border: 0.15vw solid black;
+		border-radius: 0.8vw;
+		width: 67vw;
+		height: 25vw;
+		padding-left: 0.7vw;
+		resize: none;
+	}
+
+	input[type=file] {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 1.8vw;
+	}
+
+	input[type=file]::file-selector-button {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 1.8vw;
+		border: 0.15vw solid black;
+		border-radius: 0.8vw;
+		width: 30%;
+		height: 100%;
+		margin-right: 1vw;
+	}
+
+	button#save {
+		font-family: "Dongle", sans-serif;
+		font-weight: 400;
+		font-style: normal;
+		font-size: 2vw;
+		border: 0.15vw solid black;
+		border-radius: 0.8vw;
+		width: 100%;
+		height: 100%;
+	}
+</style>
 
 <body>
-    <div class="container">
-		<h5 class="my-3 border-bottom pb-2">질문하기</h5>
-		<form method="post" action="/question/form" enctype="multipart/form-data">
-			<div class="mb-3">
-				<label for="title" class="form-label">제목</label>
-				<input type="text" name="title" class="form-control">
-			</div>
-			<div class="mb-3">
-				<label for="content" class="form-label">내용</label>
-				<textarea name="content" class="form-control" rows="10"></textarea>
+	<div th:replace="common/header"></div>
+
+	<div class="container">
+		<div class="main">
+			<div id="head">
+				<div>질문 작성</div>
 			</div>
 
-			<div class="mb-3">
-				<label for="file">파일첨부:</label>
-				<input type="file" class="form-control" id="file" name="file" accept="image/*"> 
-			</div>
+			<div id="con">
+				<form id="writeForm" th:action="@{/question/form}" method="post" enctype="multipart/form-data">
 
-			<input type="submit" value="저장하기" class="btn btn-primary my-2">
-		</form>
+					<label for="title" class="form-label">제목 :</label>
+					<div class="contitle">
+						<input type="text" name="title" id="title"
+							placeholder="제목을 입력하세요.(최대 25자)">
+					</div>
+
+					<label for="content" class="form-label">내용 :</label>
+					<div class="concontent">
+						<textarea name="content" id="content" placeholder="내용을 입력하세요."></textarea>
+					</div>
+
+					<label for="file">사진 :</label>
+					<div class="confile">
+						<input type="file" id="file" name="file" accept="image/*">
+					</div>
+
+					<div class="consave">
+						<button type="submit" id="save">저장</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
+
+	<div class="footer"></div>
 </body>
+
+</html>
