@@ -35,17 +35,31 @@
     }
 
     div#head {
-        text-align: center;
-        border: 0.15vw solid black;
-        border-radius: 1vw;
-        background-color: white;
         height: 4vw;
         margin-bottom: 2vw;
-        padding-left: 1.5vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    div#head>button {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 3vw;
+        background-color: white;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        width: 32%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 2.7vw;
+    }
+
+    button#dessert {
+        background-color: black !important;
+        color: white;
     }
 
     div.search {
@@ -109,7 +123,9 @@
     <div class="container">
         <div class="main">
             <div id="head">
-                <div>디저트 리스트</div>
+                <button id="meal">meal</button>
+                <button id="dessert">dessert</button>
+                <button id="pub">pub</button>
             </div>
             <div id="con">
                 <div class="search">
@@ -192,6 +208,19 @@
         const search = document.querySelector('[name=search]');
         location = `/deserts/list?search=${search.value}`;
     }
+
+    const meal = document.querySelector('#meal');
+    meal.addEventListener('click', () => {
+        location = '/meals/list';
+    });
+    const dessert = document.querySelector('#dessert');
+    dessert.addEventListener('click', () => {
+        location = '/deserts/list';
+    });
+    const pub = document.querySelector('#pub');
+    pub.addEventListener('click', () => {
+        location = '/pubs/list';
+    });
 </script>
 
 </html>
