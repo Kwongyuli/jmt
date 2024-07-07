@@ -356,11 +356,14 @@
                 </div>
 
                 <div class="concomment">
-                    <table id="comments-table" th:each="comment : ${comments}" >
+                    <table id="comments-table" th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
-                                <form th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}" method="post">
+                                <span
+                                    th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <form
+                                    th:action="@{/pubs/{pubId}/comment/{commentId}/delete(pubId=${pub.id}, commentId=${comment.id})}"
+                                    method="post">
                                     <button type="submit" class="delete">삭제</button>
                                 </form>
                             </td>
@@ -399,24 +402,24 @@
         const lat = /*[[${pub.lat}]]*/ 33.450701;
         const lng = /*[[${pub.lng}]]*/ 126.570667;
 
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
-                center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-                level: 3 // 지도의 확대 레벨
-            };
-
-        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(lat, lng);
-
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
-        });
-
-        // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
+        if (lat !== 0 && lng !== 0) { // lat와 lng 값이 0이 아닐 때만 지도 출력
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                    level: 3 // 지도의 확대 레벨
+                };
+            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+            // 마커가 표시될 위치입니다
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
+            // 마커를 생성합니다
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+            // 마커가 지도 위에 표시되도록 설정합니다
+            marker.setMap(map);
+        } else {
+            document.querySelector('div.map').style.display = 'none'; // lat와 lng 값이 0일 때 map div 숨김
+        }
     });
 
     function sendVote(url) {
