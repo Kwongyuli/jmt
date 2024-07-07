@@ -23,140 +23,155 @@
         background-color: beige;
     }
 
-    /* p {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-    } */
-
-    #a {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        top: -10%;
-        left: 5%;
-    }
-
-    #b {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        top: 10%;
-        left: 23%;
-    }
-
-    #c {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        top: -15%;
-        right: 38%;
-    }
-
-    #d {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        top: -10%;
-        right: 5%;
-    }
-
-    #e {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        bottom: 15%;
-        left: 2%;
-    }
-
-    #f {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        bottom: -10%;
-        left: 20%;
-    }
-
-    #g {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        bottom: -5%;
-        right: 30%;
-    }
-
-    #h {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        top: 25%;
-        right: 16%;
-    }
-
-    #i {
-        font-size: 7.5vw;
-        position: absolute;
-        z-index: -1;
-        bottom: -10%;
-        right: 3%;
-    }
-
-    @font-face {
-        font-family: 'PartialSansKR-Regular';
-        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
-        font-weight: normal;
+    .container {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
         font-style: normal;
+        font-size: 2vw;
+        height: 100vh;
+        margin-top: 13vh;
+        margin-left: 15vw;
+        margin-right: 15vw;
     }
 
-    button.jmt {
-        font-family: 'PartialSansKR-Regular';
-        font-size: 4.3vw;
+    .main {
+        width: 100%;
+        padding-top: 2vw;
+    }
+
+    div#head {
         text-align: center;
-        background-color: transparent;
-        border: none;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        height: 4vw;
+        margin-bottom: 2vw;
+        padding-left: 1.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.7vw;
+    }
+
+    div#con {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        background-color: white;
+        padding: 1vw 10vw;
+    }
+
+    div#userInfo {
+        margin-top: 1vw;
+        margin-bottom: 3vw;
+    }
+
+    div.id,
+    div.name {
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        padding-left: 1vw;
+        margin-bottom: 1vw;
+    }
+
+    input[type=text],
+    input[type=password] {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 1vw;
+        padding-left: 1vw;
+        width: 97%;
+        height: 2.5vw;
+    }
+
+    div.button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1vw;
+    }
+
+    button#editButton,
+    button#deleteButton {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 48%;
         height: 100%;
+        background-color: black;
+        color: white;
+    }
+
+    button#saveButton {
+        font-family: "Dongle", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2vw;
+        border: 0.15vw solid black;
+        border-radius: 0.8vw;
+        width: 100%;
+        height: 100%;
+        margin-top: 1.5vw;
+        background-color: black;
+        color: white;
     }
 </style>
 
 <body>
-    <div class="header"></div>
+    <div th:replace="common/header"></div>
+
     <div class="container">
-        <p id="a">🍙</p>
-        <p id="b">🍕</p>
-        <p id="c">🍩</p>
-        <p id="d">🍦</p>
-        <p id="e">🍺</p>
-        <p id="f">🍭</p>
-        <p id="g">🌮</p>
-        <p id="h">🍟</p>
-        <p id="i">🍱</p>
         <div class="main">
-            <div class="jmt-container">
-                <button type="button" class="jmt">ㅈㅁㅌ</button>
+            <div id="head">
+                <div>My page</div>
             </div>
+
             <div id="con">
                 <div id="userInfo">
-                    <p>ID: <span th:text="${user.userId}"></span></p>
-                    <p>Name: <span th:text="${user.name}"></span></p>
+                    <label for="id">아이디 :</label>
+                    <div class="id" th:text="${user.userId}"></div>
+                    <label for="name">이름 :</label>
+                    <div class="name" th:text="${user.name}"></div>
+                    <!-- <p>이름 : <span th:text="${user.name}"></span></p> -->
                 </div>
+
                 <form id="editForm" th:action="@{/jmt/mypageEdit}" th:object="${user}" method="post">
                     <input type="hidden" th:field="*{userId}">
-                    <label for="name">이름:</label>
-                    <input type="text" id="name" th:field="*{name}">
-                    <label for="currentPw">현재 비밀번호:</label>
-                    <input type="password" id="currentPw" name="currentPw">
-                    <label for="newPw">새로운 비밀번호:</label>
-                    <input type="password" id="newPw" th:field="*{pw}">
-                    <label for="email">이메일:</label>
-                    <input type="text" id="email" th:field="*{email}">
+
+                    <label for="name">이름 :</label>
+                    <div>
+                        <input type="text" id="name" th:field="*{name}">
+                    </div>
+
+                    <label for="currentPw">현재 비밀번호 :</label>
+                    <div>
+                        <input type="password" id="currentPw" name="currentPw">
+                    </div>
+
+                    <label for="newPw">새로운 비밀번호 :</label>
+                    <div>
+                        <input type="password" id="newPw" th:field="*{pw}">
+                    </div>
+
+                    <label for="email">이메일 :</label>
+                    <div>
+                        <input type="text" id="email" th:field="*{email}">
+                    </div>
+
                     <button type="submit" id="saveButton">저장</button>
                 </form>
+                <div class="button">
+                    <button id="editButton">회원정보 수정</button>
+                    <button id="deleteButton">회원탈퇴</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <button id="editButton">수정</button>
-    <button id="deleteButton">회원탈퇴</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -258,13 +273,8 @@
             }
         });
     </script>
-</body>
 
-<script>
-    const jmt = document.querySelector('.jmt');
-    jmt.addEventListener('click', () => {
-        location.href = '/home';
-    });
-</script>
+    <div class="footer"></div>
+</body>
 
 </html>
