@@ -124,7 +124,7 @@ public class QnAController {
         // 여기까지
 
         model.addAttribute("question", question);
-        return "/question/detail";
+        return "question/detail";
     }
 
     // 답변 작성 및 저장
@@ -244,6 +244,6 @@ public class QnAController {
 
         model.addAttribute("search", search);  // 검색
 
-        return "/question/list";
+        return "question/list";
     }
 }

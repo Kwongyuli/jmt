@@ -73,7 +73,7 @@ public class PubController {
         model.addAttribute("search", search);  // 검색
         model.addAttribute("sort", sort);
 
-        return "/pub/pubList";
+        return "pub/pubList";
     }
 
 
@@ -243,7 +243,7 @@ public class PubController {
         List<PubResponse> myPubs = pubService.getMyPubs(loggedInUser);
 
         model.addAttribute("pubs", myPubs);
-        return "/pub/myPubList";
+        return "pub/myPubList";
     }
 
     private User getCurrentUser() {
