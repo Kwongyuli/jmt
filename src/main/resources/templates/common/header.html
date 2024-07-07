@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,19 +27,33 @@
     }
 
     .sidebar {
-        /* position: relative;
-        flex: 1; */
+        width: 12%;
         height: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .jmt-container {
+        display: flex;
+        justify-content: center;
+        width: 76%;
+        height: 100%;
+    }
+
+    div.span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     div.span>span {
         position: relative;
-        /* flex: 1; */
         top: 0.1vw;
         display: inline-block;
         animation: bounce .3s ease infinite alternate;
         font-family: 'Titan One', cursive;
-        font-size: 1.8vw;
+        font-size: 2vw;
     }
 
     @keyframes bounce {
@@ -54,34 +69,25 @@
         font-style: normal;
     }
 
-    .jmt-container {
-        /* flex: 1; */
-        display: flex;
-        justify-content: center;
-        height: 100%;
-        /* margin-left: 0.8vw;
-        margin-right: 0.8vw; */
-    }
-
     button.jmt {
         font-family: 'PartialSansKR-Regular';
-        font-size: 4.3vw;
+        font-size: 4.5vw;
         text-align: center;
         background-color: beige;
-        /* display: inline-block; */
         border: none;
         height: 100%;
-        margin-left: 0.8vw;
-        margin-right: 0.8vw;
+        margin-left: 2vw;
+        margin-right: 2vw;
     }
 
     .user {
+        width: 12%;
         /* flex: 1; */
-        /* display: flex;
-        justify-content: flex-end; */
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
     }
 
-    .sidebar>a,
     .user>a {
         font-family: "Dongle", sans-serif;
         font-weight: 400;
@@ -97,37 +103,33 @@
     <div class="header">
         <div class="sidebar">
             <div th:replace="common/sidebar"></div>
-            <!-- <a href="#">메뉴</a> -->
-        </div>
-
-        <div class="span">
-            <span id="a">🍙</span>
-            <span id="b">🍕</span>
-            <span id="c">🍩</span>
-            <span id="d">🍦</span>
-            <span id="e">🍺</span>
-            <span id="f">🍭</span>
-            <span id="g">🌮</span>
-            <span id="h">🍟</span>
-            <span id="i">🍱</span>
         </div>
 
         <div class="jmt-container">
+            <div class="span">
+                <span id="a">🍙</span>
+                <span id="b">🍕</span>
+                <span id="c">🍩</span>
+                <span id="d">🍦</span>
+                <span id="e">🍺</span>
+                <span id="f">🍭</span>
+                <span id="g">🌮</span>
+                <span id="h">🍟</span>
+                <span id="i">🍱</span>
+            </div>
             <button type="button" class="jmt">ㅈㅁㅌ</button>
+            <div class="span">
+                <span id="a">🍙</span>
+                <span id="b">🍕</span>
+                <span id="c">🍩</span>
+                <span id="d">🍦</span>
+                <span id="e">🍺</span>
+                <span id="f">🍭</span>
+                <span id="g">🌮</span>
+                <span id="h">🍟</span>
+                <span id="i">🍱</span>
+            </div>
         </div>
-
-        <div class="span">
-            <span id="a">🍙</span>
-            <span id="b">🍕</span>
-            <span id="c">🍩</span>
-            <span id="d">🍦</span>
-            <span id="e">🍺</span>
-            <span id="f">🍭</span>
-            <span id="g">🌮</span>
-            <span id="h">🍟</span>
-            <span id="i">🍱</span>
-        </div>
-
         <div class="user">
             <a href="/jmt/signin" id="auth-link">로그인</a>
             <a href="/jmt/signup" id="signup-link">회원가입</a>
@@ -144,7 +146,7 @@
                 if (data.loggedIn) {
                     authLink.textContent = '로그아웃';
                     authLink.href = '/jmt/signout';
-                    signupLink.style.display = 'none'; 
+                    signupLink.style.display = 'none';
                 }
             })
             .catch(error => {
@@ -157,4 +159,5 @@
         });
     </script>
 </body>
+
 </html>
