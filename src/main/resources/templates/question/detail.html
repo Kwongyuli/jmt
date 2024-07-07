@@ -166,11 +166,8 @@
         margin-bottom: 1vw;
     }
 
-    tr.user {
-        border-bottom: 0.15vw dashed gray;
-    }
-
     tr.content {
+        border-top: 0.15vw dashed gray;
         border-bottom: 0.15vw solid black;
     }
 
@@ -178,7 +175,17 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 1vw;
+        width: 100%;
+    }
+
+    td.user>span {
+        margin-left: 1vw;
+    }
+
+    td.user>.form {
+        margin-left: 1vw;
+        display: flex;
+        align-items: center;
     }
 
     td.content {
@@ -195,8 +202,12 @@
         font-style: normal;
         font-size: 1.8vw;
         border: 0.15vw solid black;
-        width: 6%;
+        width: 4.5vw;
+        height: 2.2vw;
         padding: 0 0.8vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
     }
 </style>
@@ -209,7 +220,8 @@
             <div id="con">
                 <div class="contitle">
                     <span class="title" th:text="${question.title}"></span>
-                    <span class="user" th:text="@{|${question.username} ${#temporals.format(question.createdAt, 'yyyy.MM.dd')}|}"></span>
+                    <span class="user"
+                        th:text="@{|${question.username} ${#temporals.format(question.createdAt, 'yyyy.MM.dd')}|}"></span>
                 </div>
 
                 <div class="image">
@@ -251,9 +263,14 @@
                     <table th:each="answer : ${question.answers}">
                         <tr class="user">
                             <td class="user">
-                                <span th:text="@{|${answer.username} ${#temporals.format(answer.createdAt, 'yyyy.MM.dd')}|}"></span>
-                                <button type="submit" class="delete-answer"
-                                    th:attr="data-id=${answer.id},data-qid=${question.id}">삭제</button>
+                                <span th:text="@{|${answer.username}|}"></span>
+                                <span th:text="@{|${#temporals.format(answer.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <div class="form">
+                                    <button type="submit" class="delete-answer"
+                                        th:attr="data-id=${answer.id},data-qid=${question.id}">
+                                        <div>삭제</div>
+                                    </button>
+                                </div>
                                 <!-- <a class="nav-link" th:href="@{|/answer/edit/${answer.id}|}" id="edit">답변 수정</a> -->
                             </td>
                         </tr>

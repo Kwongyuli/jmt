@@ -192,11 +192,8 @@
         margin-bottom: 1vw;
     }
 
-    tr.user {
-        border-bottom: 0.15vw dashed gray;
-    }
-
     tr.content {
+        border-top: 0.15vw dashed gray;
         border-bottom: 0.15vw solid black;
     }
 
@@ -204,7 +201,17 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 1vw;
+        width: 100%;
+    }
+
+    td.user>span {
+        margin-left: 1vw;
+    }
+
+    td.user>form {
+        margin-left: 1vw;
+        display: flex;
+        align-items: center;
     }
 
     td.content {
@@ -221,8 +228,12 @@
         font-style: normal;
         font-size: 1.8vw;
         border: 0.15vw solid black;
-        width: 100%;
+        width: 4.5vw;
+        height: 2.2vw;
         padding: 0 0.8vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
     }
 </style>
@@ -356,12 +367,14 @@
                     <table id="comments-table" th:each="comment : ${comments}">
                         <tr class="user">
                             <td class="user">
-                                <span
-                                    th:text="@{|${comment.user.name} ${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
+                                <span th:text="@{|${comment.user.name}|}"></span>
+                                <span th:text="@{|${#temporals.format(comment.createdAt, 'yyyy.MM.dd')}|}"></span>
                                 <form
                                     th:action="@{/deserts/{desertId}/comment/{commentId}/delete(desertId=${desert.id}, commentId=${comment.id})}"
                                     method="post">
-                                    <button type="submit" class="delete">삭제</button>
+                                    <button type="submit" class="delete">
+                                        <div>삭제</div>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
