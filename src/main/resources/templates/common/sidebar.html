@@ -7,106 +7,16 @@
 </head>
 
 <style>
-    li#sidebar>a {
+    body {
         font-family: "Dongle", sans-serif;
         font-weight: 400;
         font-style: normal;
-        font-size: 2vw !important;
-    }
-</style>
-
-<body>
-    <div class="btn"></div>
-    <div onclick="history.back();" class="page_cover"></div>
-
-    <div id="menu">
-        <ul class="nav">
-            <li id="sidebar"><a href="/meals/list">식사</a></li>
-            <li id="sidebar"><a href="/deserts/list">디저트</a></li>
-            <li id="sidebar"><a href="/pubs/list">술집</a></li>
-            <li id="sidebar"><a>마이페이지</a>
-                <ul class="sub_mobile">
-                    <li id="sidebar"><a href="/jmt/mypageEdit">- 회원정보</a></li>
-                    <li id="sidebar"><a href="/meals/myMealList">- 작성한글</a></li>
-                </ul>
-            </li>
-            <li id="sidebar"><a href="/question/list">고객의 소리</a></li>
-        </ul>
-        <div onclick="history.back();" class="close"></div>
-    </div>
-</body>
-
-<style>
-    html.open {
-        overflow: hidden;
+        font-size: 2vw;
     }
 
-    #menu.open {
-        left: 0px;
-    }
-
-    .page_cover.open {
-        display: block;
-    }
-
-    .btn {
-        width: 50px;
-        height: 50px;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        z-index: 1;
-        background-image: url("http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/menu.png");
-        background-size: 50%;
-        background-repeat: no-repeat;
-        background-position: center;
+    div.btn {
+        margin: 0 1vw;
         cursor: pointer;
-    }
-
-    .close {
-        width: 50px;
-        height: 50px;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        background-image: url("http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/close.png");
-        background-size: 50%;
-        background-repeat: no-repeat;
-        background-position: center;
-        cursor: pointer;
-    }
-
-    #menu {
-        width: 150px;
-        height: 100%;
-        position: fixed;
-        top: 0px;
-        left: -202px;
-        z-index: 10;
-        border: 1px solid #c9c9c9;
-        background-color: white;
-        text-align: center;
-        font-weight: bold;
-        transition: All 0.2s ease;
-        -webkit-transition: All 0.2s ease;
-        -moz-transition: All 0.2s ease;
-        -o-transition: All 0.2s ease;
-        padding-top: 50px;
-        padding-left: 0px;
-        padding-right: 40px;
-    }
-
-    #menu a {
-        padding: 0;
-        text-decoration: none;
-        font-size: 18px;
-        color: #25a4cd;
-        display: block;
-        transition: 0.3s;
-    }
-
-    #menu.open {
-        left: 0px;
     }
 
     .page_cover.open {
@@ -124,54 +34,100 @@
         display: none;
     }
 
-    #menu ul {
-        width: 190px;
+    div.close {
+        width: 2.5vw;
+        height: 2.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 1vw;
+        margin-bottom: 1vw;
+        cursor: pointer;
+    }
+
+    #menu {
+        width: 14vw;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: -20vw;
+        z-index: 10;
+        background-color: white;
+        transition: All 0.2s ease;
+        -webkit-transition: All 0.2s ease;
+        -moz-transition: All 0.2s ease;
+        -o-transition: All 0.2s ease;
+        padding-top: 3vw;
+    }
+
+    #menu.open {
+        left: 0px;
+    }
+
+    #menu>ul.nav {
         margin: 0;
         padding: 0;
     }
 
-    #menu ul.nav li {
-        position: relative;
-        float: left;
-        width: 100%;
-        list-style-type: none;
-        font-size: 18px;
-    }
-
-    #menu ul.nav li a {
-        display: block;
+    #menu>ul.nav>li {
         width: 100%;
         height: 100%;
-        line-height: 50px;
-        text-indent: 20px;
-        text-align: left;
-        /* color: #25a4cd; */
+        margin-bottom: 0.5vw;
+        padding: 0.5vw 0;
+    }
+
+    #menu>ul.nav>li:hover {
+        background-color: beige;
+    }
+
+    #menu>ul.nav>li>a {
+        width: 100%;
+        height: 100%;
         color: black;
-        font-weight: bold;
+        margin-left: 1.5vw;
         text-decoration: none;
     }
 
-    #menu ul.nav li a:hover {
-        /* background: #eee; */
-        background: beige;
-    }
-
-    #menu ul.nav li .sub_mobile a {
-        position: relative;
-        float: left;
-        display: block;
+    ul.sub_mobile>li {
         width: 100%;
+        padding: 0.3vw 0;
         z-index: 999;
-        background: rgb(244, 244, 227);
+        background: white;
+        list-style-type: none;
     }
 
-    #menu ul.nav li .sub_mobile a:hover {
-        /* background: #787878; */
+    ul.sub_mobile>li:hover {
         background: beige;
-        /* color: #fff; */
         z-index: 999;
+    }
+
+    ul.nav>li>.sub_mobile>li>a {
+        width: 100%;
+        color: black;
+        text-decoration: none;
     }
 </style>
+
+<body>
+    <div class="btn">메뉴</div>
+    <div onclick="history.back();" class="page_cover"></div>
+
+    <div id="menu">
+        <div onclick="history.back();" class="close"><span>✖︎</span></div>
+        <ul class="nav">
+            <li id="sidebar"><a href="/meals/list">식사</a></li>
+            <li id="sidebar"><a href="/deserts/list">디저트</a></li>
+            <li id="sidebar"><a href="/pubs/list">술집</a></li>
+            <li id="sidebar"><a>마이페이지</a>
+                <ul class="sub_mobile">
+                    <li id="sidebar"><a href="/jmt/mypageEdit">- 회원정보</a></li>
+                    <li id="sidebar"><a href="/meals/myMealList">- 작성한글</a></li>
+                </ul>
+            </li>
+            <li id="sidebar"><a href="/question/list">고객의 소리</a></li>
+        </ul>
+    </div>
+</body>
 
 <script>
     $(document).ready(function () {
