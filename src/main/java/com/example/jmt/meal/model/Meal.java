@@ -58,7 +58,7 @@ public class Meal {
         this.viewCount = viewCount;
         this.user = user;
     }
-
-    @ManyToOne
+    @ManyToOne(optional = false)  // 필수 필드로 설정
+    @JoinColumn(name = "user_id")
     User user;
 }

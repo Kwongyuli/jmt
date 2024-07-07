@@ -48,7 +48,7 @@ public class MealService {
 
 
     // 글 저장 메서드 _ 엔티티로 넘기기
-    public Meal write(MealCreate mealCreate, MultipartFile[] files) throws IOException {
+    public Meal write(MealCreate mealCreate, MultipartFile[] files,User user) throws IOException {
 
         Meal meal = Meal.builder()
                 .title(mealCreate.getTitle())
@@ -58,6 +58,7 @@ public class MealService {
                 .createdAt(mealCreate.getCreatedAt())
                 .user(mealCreate.getUser())
                 .viewCount(0) // 처음 글 작성시 조회수 0 으로 초기화
+                .user(user)
                 .build();
 
         Meal savedMeal = mealRepository.save(meal);

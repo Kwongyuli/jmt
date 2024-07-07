@@ -94,18 +94,12 @@ public class MealController {
 
     // 글 작성
     @PostMapping("/write")
-    public String createMeal(@Valid @ModelAttribute MealCreate mealCreate, @RequestParam("files") MultipartFile[] files,
-            HttpSession session)
+    public String createMeal(@Valid @ModelAttribute MealCreate mealCreate, @RequestParam("files") MultipartFile[] files)
             throws IOException {
-        User author = (User) session.getAttribute("user_info");
 
-        if (author == null) {
-            return "redirect:/jmt/signin";
-        }
+        User user = getCurrentUser();
 
-        mealCreate.setUser(author);
-
-        Meal savedMeal = mealService.write(mealCreate, files);
+        Meal savedMeal = mealService.write(mealCreate, files,user);
         return "redirect:/meals/" + savedMeal.getId();
     }
 
