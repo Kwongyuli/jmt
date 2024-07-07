@@ -282,42 +282,42 @@ public class PubService {
     }
 
     // 파일 저장 메서드
-   private void saveFile(MultipartFile file, Pub pub) throws IOException {
-       String filename = file.getOriginalFilename();
-       try {
-//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-           file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
+//   private void saveFile(MultipartFile file, Pub pub) throws IOException {
+//       String filename = file.getOriginalFilename();
+//       try {
+////        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+//           file.transferTo(new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/" + filename));
+//       } catch (IOException e) {
+//           e.printStackTrace();
+//       }
+//
+//       FileInfo fileInfo = new FileInfo();
+//       fileInfo.setPub(pub);
+//       fileInfo.setOriginalName(filename);
+//       fileInfo.setSaveName(filename);
+//       fileInfoRepository.save(fileInfo);
+//   }
 
-       FileInfo fileInfo = new FileInfo();
-       fileInfo.setPub(pub);
-       fileInfo.setOriginalName(filename);
-       fileInfo.setSaveName(filename);
-       fileInfoRepository.save(fileInfo);
-   }
+     // AWS 파일업로드 메서드
+     // AWS 용 업로드
+     private void saveFile(MultipartFile file, Pub pub) throws IOException {
+         String bucketName = "jmt-files";
+         String keyName = "uploads/" + file.getOriginalFilename();  // S3에 저장될 파일 이름
 
-    // // AWS 파일업로드 메서드
-    // // AWS 용 업로드
-    // private void saveFile(MultipartFile file, Pub pub) throws IOException {
-    //     String bucketName = "jmt-files";
-    //     String keyName = "uploads/" + file.getOriginalFilename();  // S3에 저장될 파일 이름
+         ObjectMetadata metadata = new ObjectMetadata();
+         metadata.setContentType(file.getContentType());
+         metadata.setContentLength(file.getSize());
+         InputStream inputStream = file.getInputStream();
 
-    //     ObjectMetadata metadata = new ObjectMetadata();
-    //     metadata.setContentType(file.getContentType());
-    //     metadata.setContentLength(file.getSize());
-    //     InputStream inputStream = file.getInputStream();
+         // S3 버킷에 파일 업로드
+         s3Client.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata));
 
-    //     // S3 버킷에 파일 업로드
-    //     s3Client.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata));
-
-    //     FileInfo fileInfo = new FileInfo();
-    //     fileInfo.setPub(pub);
-    //     fileInfo.setOriginalName(file.getOriginalFilename());
-    //     fileInfo.setSaveName(keyName);
-    //     fileInfoRepository.save(fileInfo);
-    // }
+         FileInfo fileInfo = new FileInfo();
+         fileInfo.setPub(pub);
+         fileInfo.setOriginalName(file.getOriginalFilename());
+         fileInfo.setSaveName(keyName);
+         fileInfoRepository.save(fileInfo);
+     }
 
 
 

@@ -264,41 +264,41 @@ public class MealService {
     }
 
     // 파일 저장 메서드
-   private void saveFile(MultipartFile file, Meal meal) throws IOException {
-       String filename = file.getOriginalFilename();
-       try {
-//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-           file.transferTo(new File("c://files/" + filename));
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
+//   private void saveFile(MultipartFile file, Meal meal) throws IOException {
+//       String filename = file.getOriginalFilename();
+//       try {
+////        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+//           file.transferTo(new File("c://files/" + filename));
+//       } catch (IOException e) {
+//           e.printStackTrace();
+//       }
+//
+//       FileInfo fileInfo = new FileInfo();
+//       fileInfo.setMeal(meal);
+//       fileInfo.setOriginalName(filename);
+//       fileInfo.setSaveName(filename);
+//       fileInfoRepository.save(fileInfo);
+//   }
 
-       FileInfo fileInfo = new FileInfo();
-       fileInfo.setMeal(meal);
-       fileInfo.setOriginalName(filename);
-       fileInfo.setSaveName(filename);
-       fileInfoRepository.save(fileInfo);
-   }
+     // AWS 용 업로드
+     private void saveFile(MultipartFile file, Meal meal) throws IOException {
+         String bucketName = "jmt-files";
+         String keyName = "uploads/" + file.getOriginalFilename();  // S3에 저장될 파일 이름
 
-    // // AWS 용 업로드
-    // private void saveFile(MultipartFile file, Meal meal) throws IOException {
-    //     String bucketName = "jmt-files";
-    //     String keyName = "uploads/" + file.getOriginalFilename();  // S3에 저장될 파일 이름
+         ObjectMetadata metadata = new ObjectMetadata();
+         metadata.setContentType(file.getContentType());
+         metadata.setContentLength(file.getSize());
+         InputStream inputStream = file.getInputStream();
 
-    //     ObjectMetadata metadata = new ObjectMetadata();
-    //     metadata.setContentType(file.getContentType());
-    //     metadata.setContentLength(file.getSize());
-    //     InputStream inputStream = file.getInputStream();
+         // S3 버킷에 파일 업로드
+         s3Client.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata));
 
-    //     // S3 버킷에 파일 업로드
-    //     s3Client.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata));
-
-    //     FileInfo fileInfo = new FileInfo();
-    //     fileInfo.setMeal(meal);
-    //     fileInfo.setOriginalName(file.getOriginalFilename());
-    //     fileInfo.setSaveName(keyName);
-    //     fileInfoRepository.save(fileInfo);
-    // }
+         FileInfo fileInfo = new FileInfo();
+         fileInfo.setMeal(meal);
+         fileInfo.setOriginalName(file.getOriginalFilename());
+         fileInfo.setSaveName(keyName);
+         fileInfoRepository.save(fileInfo);
+     }
 
     public Meal getMealById(Long id) {
         return mealRepository.findById(id)
