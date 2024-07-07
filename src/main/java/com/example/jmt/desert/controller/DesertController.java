@@ -67,7 +67,7 @@ public class DesertController {
         model.addAttribute("search", search); // 검색
         model.addAttribute("sort", sort);
 
-        return "/desert/desertList";
+        return "desert/desertList";
     }
 
     // 글 상세페이지
@@ -234,7 +234,7 @@ public class DesertController {
         List<DesertResponse> myDeserts = desertService.getMyDeserts(loggedInUser);
 
         model.addAttribute("deserts", myDeserts);
-        return "/desert/myDesertList";
+        return "desert/myDesertList";
     }
 
     private User getCurrentUser() {
