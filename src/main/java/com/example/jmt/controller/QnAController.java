@@ -149,7 +149,7 @@ public class QnAController {
     // 질문 작성 
     @GetMapping("/question/form")
     public String questionForm(){
-        return "/question/form";
+        return "question/form";
     }
 
     @Autowired
