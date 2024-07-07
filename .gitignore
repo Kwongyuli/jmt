@@ -34,3 +34,5 @@ build/
 
 # application.properties 파일을 제외
 src/main/resources/application.properties
+
+.env

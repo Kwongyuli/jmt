@@ -1,5 +1,8 @@
 package com.example.jmt.desert.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.jmt.desert.model.Desert;
 import com.example.jmt.desert.model.VoteDesert;
 import com.example.jmt.desert.repository.DesertRepository;
@@ -11,6 +14,7 @@ import com.example.jmt.model.FileInfo;
 import com.example.jmt.model.User;
 import com.example.jmt.repository.FileInfoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -33,6 +38,9 @@ public class DesertService {
     private final DesertRepository desertRepository;
     private final VoteDesertRepository voteDesertRepository;
     private final FileInfoRepository fileInfoRepository;
+
+    @Autowired
+    private AmazonS3 s3Client;  // S3 클라이언트 빈을 주입받아야 함
 
     // 글 저장 메서드
     public Desert write(DesertCreate desertCreate, MultipartFile[] files) throws IOException {
@@ -216,7 +224,7 @@ public class DesertService {
     }
 
     // DesertUpdate 객체 생성 메서드
-    public DesertUpdate getDesertUpdate(Long id,User user) {
+    public DesertUpdate getDesertUpdate(Long id, User user) {
 
         Desert desert = desertRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
@@ -250,20 +258,39 @@ public class DesertService {
         }
     }
 
-    // 파일 저장 메서드
+    //    // 파일 저장 메서드
+//    private void saveFile(MultipartFile file, Desert desert) throws IOException {
+//        String filename = file.getOriginalFilename();
+//        try {
+////        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
+//            file.transferTo(new File("c://files/" + filename));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        FileInfo fileInfo = new FileInfo();
+//        fileInfo.setDesert(desert);
+//        fileInfo.setOriginalName(filename);
+//        fileInfo.setSaveName(filename);
+//        fileInfoRepository.save(fileInfo);
+//    }
+    // AWS 용 업로드
     private void saveFile(MultipartFile file, Desert desert) throws IOException {
-        String filename = file.getOriginalFilename();
-        try {
-//        File file = new File("/Users/kimyoungjun/Desktop/Coding/Busan_BackLecture/fileUPloadFolder/",saveName);
-            file.transferTo(new File("c://files/" + filename));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String bucketName = "jmt-files";
+        String keyName = "uploads/" + file.getOriginalFilename();  // S3에 저장될 파일 이름
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+        InputStream inputStream = file.getInputStream();
+
+        // S3 버킷에 파일 업로드
+        s3Client.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata));
 
         FileInfo fileInfo = new FileInfo();
         fileInfo.setDesert(desert);
-        fileInfo.setOriginalName(filename);
-        fileInfo.setSaveName(filename);
+        fileInfo.setOriginalName(file.getOriginalFilename());
+        fileInfo.setSaveName(keyName);
         fileInfoRepository.save(fileInfo);
     }
 
