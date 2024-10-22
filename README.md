@@ -27,39 +27,53 @@
 # 👨‍👩‍👦‍👦 Team
 <div align="center">
 
+
 |김영준 (팀장)|이예림 (서기)|                                                  권규리                                                  |                                                  노형석                                                  |
 |:-:|:-:|:-----------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:|
+|Backend|FrontEnd|Backend|Backend|
 |<img src="https://avatars.githubusercontent.com/u/108052178?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/170378261?v=4" width=150>| <img src="https://avatars.githubusercontent.com/u/132189853?v=4" width=150> | <img src="https://avatars.githubusercontent.com/u/160802068?v=4" width=150> |
 |[@kyj4327](https://github.com/kyj4327)|[@yyerrim](https://github.com/yyerrim)|                              [@Kwongyuli](https://github.com/Kwongyuli)                               |                                 [@bro-sn](https://github.com/bro-sn)                                  |
 
 </div>
 
 # 💡 Skill Stack
+
+
+<div style="text-align: left;">
+
 ### 🖥️ ️Frond-end
 
-[//]: # ([![My Skills]&#40;https://skillicons.dev/icons?i=js,html,css&#41;]&#40;https://skillicons.dev&#41;)
+<img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/Css-1572B6?style=for-the-badge&logo=Css3&logoColor=white" style="display: inline-block;">
 
-[//]: # (<img src="https://www.thymeleaf.org/images/thymeleaf.png" alt="Thymeleaf" width="48" height="48" style="border-radius: 30%;">)
-
-<img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white">
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/Css-1572B6?style=for-the-badge&logo=Css3&logoColor=white">
+</div>
 
 ### ⚙️ ️Back-end
-<img src="https://img.shields.io/badge/java-6DB33F?style=for-the-badge&logo=java&logoColor=white&logoWidth=30">
-<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white">
-<img src="https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+
+<div style="text-align: left;">
+
+<img src="https://img.shields.io/badge/java-6DB33F?style=for-the-badge&logo=java&logoColor=white&logoWidth=30" style="display: inline-block;">
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=java&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" style="display: inline-block;">
+
+</div>
 
 ### ☁️️ ️Deploy
-<img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
-<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+
+<div style="text-align: left;">
+
+<img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white" style="display: inline-block;">
+<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white" style="display: inline-block;">
+
+</div>
+
 
 
 # 💡 Pages
-### 메인화면
 
 <div align="center">
 
